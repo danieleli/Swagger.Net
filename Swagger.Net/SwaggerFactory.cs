@@ -7,7 +7,7 @@ using System.Web.Http.Description;
 
 namespace Swagger.Net
 {
-    public static class SwaggerGen
+    public static class SwaggerFactory
     {
         public const string SWAGGER = "swagger";
         public const string SWAGGER_VERSION = "2.0";
