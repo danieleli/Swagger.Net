@@ -42,9 +42,9 @@ Configuration
 
 2. Point your browswer at /api/swagger to see the api listing for the Swagger spec or point your instance of [Swagger UI](https://github.com/wordnik/swagger-ui) (not included, see step 1) at http://YOUR-URL:PORT/api/swagger to expose all of the APIs that you have built.  If you have Swagger UI for .NET, point at /swagger.
 
-3. Two new routes are available.
-  a. /api/swagger returns json listing of all api controllers.  (Implemented by SwaggerController)
-  b. /api/docs/{controller} returns json documentation for given controller.  (Implemented by SwaggerActionFilter)
+3. Two new routes are available.  
+  a. /api/swagger returns json listing of all api controllers.  (Implemented by SwaggerController)  
+  b. /api/docs/{controller} returns json documentation for given controller.  (Implemented by SwaggerActionFilter)  
 
 Known Issues
 ------------
