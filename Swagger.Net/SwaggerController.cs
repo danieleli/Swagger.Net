@@ -2,13 +2,42 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace Swagger.Net
 {
+
     public class SwaggerController : ApiController
     {
+        private readonly IApiExplorer _apiExplorer;
+        private IDocumentationProvider _docProvider;
+        private readonly ISwaggerFactory _swaggerFactory;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SwaggerController"/> class.
+        /// </summary>
+        public SwaggerController()
+        {
+            _apiExplorer = GlobalConfiguration.Configuration.Services.GetApiExplorer();
+            _docProvider = GlobalConfiguration.Configuration.Services.GetDocumentationProvider();
+            _swaggerFactory = new SwaggerFactory();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SwaggerController"/> class.
+        /// </summary>
+        /// <param name="apiExplorer">The apiExplorer to use.</param>
+        /// <param name="docProvider">The xmlDocProvider to use.</param>
+        public SwaggerController(IApiExplorer apiExplorer, IDocumentationProvider docProvider, ISwaggerFactory swaggerFactory)
+        {
+            _apiExplorer = apiExplorer;
+            _docProvider = docProvider;
+            _swaggerFactory = swaggerFactory;
+        }
+
         /// <summary>
         /// Get the resource description of the api for swagger documentation
         /// </summary>
@@ -17,12 +46,10 @@ namespace Swagger.Net
         /// <returns>JSON document representing structure of API</returns>
         public HttpResponseMessage Get()
         {
-            var docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetDocumentationProvider();
-
-            ResourceListing r = SwaggerFactory.CreateResourceListing(ControllerContext);
+            ResourceListing r = _swaggerFactory.CreateResourceListing(base.ControllerContext);
             List<string> uniqueControllers = new List<string>();
 
-            foreach (var api in GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions)
+            foreach (var api in _apiExplorer.ApiDescriptions)
             {
                 string controllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
                 if (uniqueControllers.Contains(controllerName) ||
@@ -30,7 +57,7 @@ namespace Swagger.Net
 
                 uniqueControllers.Add(controllerName);
 
-                ResourceApi rApi = SwaggerFactory.CreateResourceApi(api);
+                ResourceApi rApi = _swaggerFactory.CreateResourceApi(api);
                 r.apis.Add(rApi);
             }
 

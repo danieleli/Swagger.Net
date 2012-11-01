@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using System.Web.Http.Description;
 using System.Web.Http.Filters;
 
 namespace Swagger.Net
@@ -13,6 +14,24 @@ namespace Swagger.Net
     /// </summary>
     public class SwaggerActionFilter : ActionFilterAttribute
     {
+        private readonly IApiExplorer _apiExplorer;
+        private readonly ISwaggerFactory _swaggerFactory;
+        private readonly XmlCommentDocumentationProvider _docProvider;
+
+        public SwaggerActionFilter()
+        {
+            _apiExplorer = GlobalConfiguration.Configuration.Services.GetApiExplorer();
+            _swaggerFactory = new SwaggerFactory();
+            _docProvider = (XmlCommentDocumentationProvider) GlobalConfiguration.Configuration.Services.GetDocumentationProvider();
+        }
+
+        public SwaggerActionFilter(IApiExplorer apiExplorer, XmlCommentDocumentationProvider docProvider, ISwaggerFactory swaggerFactory)
+        {
+            _apiExplorer = apiExplorer;
+            _docProvider = docProvider;
+            _swaggerFactory = swaggerFactory;
+        }
+
         /// <summary>
         /// Executes each request to give either a JSON Swagger spec doc or passes through the request
         /// </summary>
@@ -38,11 +57,9 @@ namespace Swagger.Net
 
         private ResourceListing getDocs(HttpActionContext actionContext)
         {
-            var docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetDocumentationProvider();
+            ResourceListing r = _swaggerFactory.CreateResourceListing(actionContext);
 
-            ResourceListing r = SwaggerFactory.CreateResourceListing(actionContext);
-
-            foreach (var api in GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions)
+            foreach (var api in _apiExplorer.ApiDescriptions)
             {
                 string apiControllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
                 if (api.Route.Defaults.ContainsKey(SwaggerFactory.SWAGGER) ||
@@ -53,15 +70,15 @@ namespace Swagger.Net
                 if (!apiControllerName.Equals(actionContext.ControllerContext.ControllerDescriptor.ControllerName))
                     continue;
 
-                ResourceApi rApi = SwaggerFactory.CreateResourceApi(api);
+                ResourceApi rApi = _swaggerFactory.CreateResourceApi(api);
                 r.apis.Add(rApi);
 
-                ResourceApiOperation rApiOperation = SwaggerFactory.CreateResourceApiOperation(api, docProvider);
+                ResourceApiOperation rApiOperation = _swaggerFactory.CreateResourceApiOperation(api, _docProvider);
                 rApi.operations.Add(rApiOperation);
 
                 foreach (var param in api.ParameterDescriptions)
                 {
-                    ResourceApiOperationParameter parameter = SwaggerFactory.CreateResourceApiOperationParameter(api, param, docProvider);
+                    ResourceApiOperationParameter parameter = _swaggerFactory.CreateResourceApiOperationParameter(api, param, _docProvider);
                     rApiOperation.parameters.Add(parameter);
                 }
             }
