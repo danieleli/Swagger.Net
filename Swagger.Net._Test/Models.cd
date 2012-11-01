@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Swagger.Net.ResourceListing">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <AssociationLine Name="apis" Type="Swagger.Net.ResourceApi">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.362" Y="0.12" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier />
+    <ShowAsCollectionAssociation>
+      <Property Name="apis" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Swagger.Net.ResourceApi">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <AssociationLine Name="operations" Type="Swagger.Net.ResourceApiOperation">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.277" Y="0.081" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier />
+    <ShowAsCollectionAssociation>
+      <Property Name="operations" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Swagger.Net.ResourceApiOperation">
+    <Position X="5.75" Y="0.5" Width="2" />
+    <AssociationLine Name="parameters" Type="Swagger.Net.ResourceApiOperationParameter">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.14" Y="0.883" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier />
+    <ShowAsCollectionAssociation>
+      <Property Name="parameters" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Swagger.Net.ResourceApiOperationParameter">
+    <Position X="5" Y="4" Width="2.75" />
+    <AssociationLine Name="allowableValues" Type="Swagger.Net.OperationParameterAllowableValues">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.547" Y="0.133" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="allowableValues" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Swagger.Net.OperationParameterAllowableValues">
+    <Position X="0.5" Y="4" Width="2.75" />
+    <TypeIdentifier />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
