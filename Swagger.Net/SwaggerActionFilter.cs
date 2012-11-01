@@ -25,10 +25,10 @@ namespace Swagger.Net
             _docProvider = (XmlCommentDocumentationProvider) GlobalConfiguration.Configuration.Services.GetDocumentationProvider();
         }
 
-        public SwaggerActionFilter(IApiExplorer apiExplorer, XmlCommentDocumentationProvider docProvider, ISwaggerFactory swaggerFactory)
+        public SwaggerActionFilter(IApiExplorer apiExplorer, IDocumentationProvider docProvider, ISwaggerFactory swaggerFactory)
         {
             _apiExplorer = apiExplorer;
-            _docProvider = docProvider;
+            _docProvider = (XmlCommentDocumentationProvider) docProvider;
             _swaggerFactory = swaggerFactory;
         }
 
