@@ -1,7 +1,39 @@
 ﻿using System.Collections.Generic;
 
+
+//  https://github.com/wordnik/swagger-core/wiki/API-Declaration
 namespace Swagger.Net
 {
+
+    //{
+    //  apiVersion: "0.2",
+    //  swaggerVersion: "1.1",
+    //  basePath: "http://petstore.swagger.wordnik.com/api",
+    //  apis: [
+    //    {
+    //      path: "/pet.{format}",
+    //      description: "Operations about pets"
+    //    },
+    //    {
+    //      path: "/user.{format}",
+    //      description: "Operations about user"
+    //    }
+    //  ]
+    //}
+
+    // or
+
+    //{
+    //  apiVersion: "0.2",
+    //  swaggerVersion: "1.1",
+    //  basePath: "http://petstore.swagger.wordnik.com/api",
+    //  resourcePath: "/pet.{format}"
+    //  
+    //  ...
+    //
+    //  apis: [...]
+    //  models: [...]  
+    //}
     public class ResourceListing
     {
         public string apiVersion { get; set; }
@@ -11,6 +43,27 @@ namespace Swagger.Net
         public List<ResourceApi> apis { get; set; }
     }
 
+
+
+
+
+    //apis:[
+    //  {
+    //    path:"/pet.{format}/{petId}",
+    //    description:"Operations about pets",
+    //    operations:[
+    //      {
+    //        httpMethod:"GET",
+    //        nickname:"getPetById",
+    //        responseClass:"Pet",
+    //        parameters:[ ... ]
+    //        summary:"Find pet by its unique ID"
+    //        notes: "Only Pets which you have permission to see will be returned",
+    //        errorResponses:[ ... ]
+    //      }
+    //    ]
+    //  }
+    //]
     public class ResourceApi
     {
         public string path { get; set; }
@@ -28,6 +81,20 @@ namespace Swagger.Net
         public List<ResourceApiOperationParameter> parameters { get; set; }
     }
 
+
+//          {
+//            paramType: "path",
+//            name: "petId",
+//            description: "ID of pet that needs to be fetched",
+//            dataType: "String",
+//            required: true,
+//            allowableValues: {
+//              max: 10,
+//              min: 0,
+//              valueType: "RANGE"
+//            },
+//            allowMultiple: false
+//          }
     public class ResourceApiOperationParameter
     {
         public string paramType { get; set; }
