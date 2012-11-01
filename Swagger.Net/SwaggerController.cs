@@ -19,18 +19,18 @@ namespace Swagger.Net
         {
             var docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetDocumentationProvider();
 
-            ResourceListing r = SwaggerGen.CreateResourceListing(ControllerContext);
+            ResourceListing r = SwaggerFactory.CreateResourceListing(ControllerContext);
             List<string> uniqueControllers = new List<string>();
 
             foreach (var api in GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions)
             {
                 string controllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
                 if (uniqueControllers.Contains(controllerName) ||
-                      controllerName.ToUpper().Equals(SwaggerGen.SWAGGER.ToUpper())) continue;
+                      controllerName.ToUpper().Equals(SwaggerFactory.SWAGGER.ToUpper())) continue;
 
                 uniqueControllers.Add(controllerName);
 
-                ResourceApi rApi = SwaggerGen.CreateResourceApi(api);
+                ResourceApi rApi = SwaggerFactory.CreateResourceApi(api);
                 r.apis.Add(rApi);
             }
 
