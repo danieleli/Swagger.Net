@@ -14,7 +14,6 @@ namespace Swagger.Net
     {
         private readonly IApiExplorer _apiExplorer;
         private IDocumentationProvider _docProvider;
-        private readonly ISwaggerFactory _swaggerFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerController"/> class.
@@ -23,7 +22,6 @@ namespace Swagger.Net
         {
             _apiExplorer = GlobalConfiguration.Configuration.Services.GetApiExplorer();
             _docProvider = GlobalConfiguration.Configuration.Services.GetDocumentationProvider();
-            _swaggerFactory = new SwaggerFactory();
         }
 
         /// <summary>
@@ -35,7 +33,6 @@ namespace Swagger.Net
         {
             _apiExplorer = apiExplorer;
             _docProvider = docProvider;
-            _swaggerFactory = swaggerFactory;
         }
 
         /// <summary>
@@ -46,26 +43,63 @@ namespace Swagger.Net
         /// <returns>JSON document representing structure of API</returns>
         public HttpResponseMessage Get()
         {
-            var r = _swaggerFactory.CreateResourceListing(base.ControllerContext);
+            
+            var controllerName = base.ControllerContext.ControllerDescriptor.ControllerName;
+            var apiResourceListing = this.CreateResourceListing(controllerName);
+
             var uniqueControllers = new List<string>();
 
             foreach (var api in _apiExplorer.ApiDescriptions)
             {
-                var controllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
-                if (uniqueControllers.Contains(controllerName) ||
-                      controllerName.ToUpper().Equals(SwaggerFactory.SWAGGER.ToUpper())) continue;
+                if (controllerName.ToUpper().Equals(SwaggerFactory.SWAGGER.ToUpper())) continue;
+                if (uniqueControllers.Contains(controllerName)) continue;
 
                 uniqueControllers.Add(controllerName);
 
-                var rApi = _swaggerFactory.CreateResourceApi(api);
-                r.apis.Add(rApi);
+                var rApi = this.CreateResourceApi(api.RelativePath, api.Documentation);
+                apiResourceListing.apis.Add(rApi);
             }
 
-            var resp = new HttpResponseMessage();
+            var content = new ObjectContent<ResourceListing>(apiResourceListing, ControllerContext.Configuration.Formatters.JsonFormatter);
+            var resp = new HttpResponseMessage()
+                           {
+                               Content = content
+                           };
 
-            resp.Content = new ObjectContent<ResourceListing>(r, ControllerContext.Configuration.Formatters.JsonFormatter);            
-            
             return resp;
+        }
+
+        private ResourceListing CreateResourceListing(string controllerName)
+        {
+            var uri = base.ControllerContext.Request.RequestUri;
+            var appDomainVirtualPath = HttpRuntime.AppDomainAppVirtualPath + "";
+            
+            var rtn = new ResourceListing()
+            {
+                apiVersion = Assembly.GetCallingAssembly().GetType().Assembly.GetName().Version.ToString(),
+                swaggerVersion = SwaggerFactory.SWAGGER_VERSION,
+                basePath = uri.GetLeftPart(UriPartial.Authority) + appDomainVirtualPath.TrimEnd('/'),
+                apis = new List<ResourceApi>(),
+                resourcePath = controllerName
+            };
+
+            return rtn;
+        }
+
+        public ResourceApi CreateResourceApi(string relativePath, string documentation)
+        {
+            if (!relativePath.StartsWith("/"))
+            {
+                relativePath = "/" + relativePath;
+            }
+            var rApi = new ResourceApi()
+            {
+                path = relativePath,
+                description = documentation,
+                operations = new List<ResourceApiOperation>()
+            };
+
+            return rApi;
         }
     }
 }
