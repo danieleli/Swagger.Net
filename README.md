@@ -18,7 +18,7 @@ Swagger.Net uses a combination of the Web API [ApiExplorer](http://msdn.microsof
 
 One article that helped me tremendously: [Generating a Web API help page using ApiExplorer] (http://blogs.msdn.com/b/yaohuang1/archive/2012/05/21/asp-net-web-api-generating-a-web-api-help-page-using-apiexplorer.aspx). Thank you!
 
-Swagger.NET conforms to the [Swagger specification](http://swagger.wordnik.com/spec) to support all swagger components including client code gen.
+Swagger.NET conforms to the [Swagger specification](https://github.com/wordnik/swagger-core/wiki) to support all swagger components including client code gen.
 
 Requirements
 ------------
