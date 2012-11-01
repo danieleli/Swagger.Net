@@ -79,9 +79,9 @@ namespace Swagger.Net
         /// <returns>A resrouce listing</returns>
         public ResourceListing CreateResourceListing(HttpControllerContext controllerContext, bool includeResourcePath = false)
         {
-            Uri uri = controllerContext.Request.RequestUri;
+            var uri = controllerContext.Request.RequestUri;
 
-            ResourceListing rl = new ResourceListing()
+            var rl = new ResourceListing()
                                      {
                                          apiVersion = Assembly.GetCallingAssembly().GetType().Assembly.GetName().Version.ToString(),
                                          swaggerVersion = SWAGGER_VERSION,
@@ -101,7 +101,7 @@ namespace Swagger.Net
         /// <returns>A resource api</returns>
         public ResourceApi CreateResourceApi(ApiDescription api)
         {
-            ResourceApi rApi = new ResourceApi()
+            var rApi = new ResourceApi()
                                    {
                                        path = "/" + api.RelativePath,
                                        description = api.Documentation,
@@ -119,7 +119,7 @@ namespace Swagger.Net
         /// <returns>An api operation</returns>
         public ResourceApiOperation CreateResourceApiOperation(ApiDescription api, XmlCommentDocumentationProvider docProvider)
         {
-            ResourceApiOperation rApiOperation = new ResourceApiOperation()
+            var rApiOperation = new ResourceApiOperation()
                                                      {
                                                          httpMethod = api.HttpMethod.ToString(),
                                                          nickname = docProvider.GetNickname(api.ActionDescriptor),
@@ -141,8 +141,8 @@ namespace Swagger.Net
         /// <returns>An operation parameter</returns>
         public ResourceApiOperationParameter CreateResourceApiOperationParameter(ApiDescription api, ApiParameterDescription param, XmlCommentDocumentationProvider docProvider)
         {
-            string paramType = (param.Source.ToString().Equals(FROMURI)) ? QUERY : BODY;
-            ResourceApiOperationParameter parameter = new ResourceApiOperationParameter()
+            var paramType = (param.Source.ToString().Equals(FROMURI)) ? QUERY : BODY;
+            var parameter = new ResourceApiOperationParameter()
                                                           {
                                                               paramType = (paramType == "query" && api.RelativePath.IndexOf("{" + param.Name + "}") > -1) ? PATH : paramType,
                                                               name = param.Name,

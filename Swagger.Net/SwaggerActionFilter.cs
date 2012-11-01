@@ -46,7 +46,7 @@ namespace Swagger.Net
                 return;
             }
 
-            HttpResponseMessage response = new HttpResponseMessage();
+            var response = new HttpResponseMessage();
 
             response.Content = new ObjectContent<ResourceListing>(
                 getDocs(actionContext),
@@ -57,11 +57,11 @@ namespace Swagger.Net
 
         private ResourceListing getDocs(HttpActionContext actionContext)
         {
-            ResourceListing r = _swaggerFactory.CreateResourceListing(actionContext);
+            var r = _swaggerFactory.CreateResourceListing(actionContext);
 
             foreach (var api in _apiExplorer.ApiDescriptions)
             {
-                string apiControllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
+                var apiControllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
                 if (api.Route.Defaults.ContainsKey(SwaggerFactory.SWAGGER) ||
                     apiControllerName.ToUpper().Equals(SwaggerFactory.SWAGGER.ToUpper())) 
                     continue;
@@ -70,15 +70,15 @@ namespace Swagger.Net
                 if (!apiControllerName.Equals(actionContext.ControllerContext.ControllerDescriptor.ControllerName))
                     continue;
 
-                ResourceApi rApi = _swaggerFactory.CreateResourceApi(api);
+                var rApi = _swaggerFactory.CreateResourceApi(api);
                 r.apis.Add(rApi);
 
-                ResourceApiOperation rApiOperation = _swaggerFactory.CreateResourceApiOperation(api, _docProvider);
+                var rApiOperation = _swaggerFactory.CreateResourceApiOperation(api, _docProvider);
                 rApi.operations.Add(rApiOperation);
 
                 foreach (var param in api.ParameterDescriptions)
                 {
-                    ResourceApiOperationParameter parameter = _swaggerFactory.CreateResourceApiOperationParameter(api, param, _docProvider);
+                    var parameter = _swaggerFactory.CreateResourceApiOperationParameter(api, param, _docProvider);
                     rApiOperation.parameters.Add(parameter);
                 }
             }

@@ -46,22 +46,22 @@ namespace Swagger.Net
         /// <returns>JSON document representing structure of API</returns>
         public HttpResponseMessage Get()
         {
-            ResourceListing r = _swaggerFactory.CreateResourceListing(base.ControllerContext);
-            List<string> uniqueControllers = new List<string>();
+            var r = _swaggerFactory.CreateResourceListing(base.ControllerContext);
+            var uniqueControllers = new List<string>();
 
             foreach (var api in _apiExplorer.ApiDescriptions)
             {
-                string controllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
+                var controllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
                 if (uniqueControllers.Contains(controllerName) ||
                       controllerName.ToUpper().Equals(SwaggerFactory.SWAGGER.ToUpper())) continue;
 
                 uniqueControllers.Add(controllerName);
 
-                ResourceApi rApi = _swaggerFactory.CreateResourceApi(api);
+                var rApi = _swaggerFactory.CreateResourceApi(api);
                 r.apis.Add(rApi);
             }
 
-            HttpResponseMessage resp = new HttpResponseMessage();
+            var resp = new HttpResponseMessage();
 
             resp.Content = new ObjectContent<ResourceListing>(r, ControllerContext.Configuration.Formatters.JsonFormatter);            
             
