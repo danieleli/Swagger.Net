@@ -7,6 +7,7 @@ using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Web.Http.Filters;
+using Swagger.Net.Models;
 
 namespace Swagger.Net
 {
@@ -59,7 +60,7 @@ namespace Swagger.Net
         private ResourceListing getDocs(HttpActionContext actionContext)
         {
             var r = _swaggerFactory.CreateResourceListing(actionContext);
-            var apiModels = new Dictionary<string, ApiModel>();
+            var apiModels = new Dictionary<string, Model>();
 
             foreach (var api in _apiExplorer.ApiDescriptions)
             {
@@ -73,7 +74,7 @@ namespace Swagger.Net
                     continue;
 
                 var rApi = _swaggerFactory.CreateResourceApi(api);
-                r.apis.Add(rApi);
+               // r.apis.Add(rApi);
 
                 var rApiOperation = _swaggerFactory.CreateApiOperation(api, _docProvider);
                 rApi.operations.Add(rApiOperation);
@@ -87,14 +88,13 @@ namespace Swagger.Net
                     if(paramTypeName!=null && !apiModels.ContainsKey(paramTypeName))
                     {
                         var apiModel = _docProvider.GetApiModel(param.ParameterDescriptor.ParameterType);
-                        apiModels.Add(paramTypeName,apiModel);    
+                        apiModels.Add(paramTypeName, apiModel);    
                     }
                 }
 
-                
-            }
+          //      r.models = apiModels.Values.ToList();
 
-            r.models.AddRange(apiModels.Values);
+            }
             return r;
         }
     }

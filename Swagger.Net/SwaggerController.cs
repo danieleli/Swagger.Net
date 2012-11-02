@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Swagger.Net.Models;
 
 namespace Swagger.Net
 {
@@ -13,7 +14,7 @@ namespace Swagger.Net
     public class SwaggerController : ApiController
     {
         private readonly IApiExplorer _apiExplorer;
-        private readonly ISwaggerFactory _swaggerFactory;
+        private readonly IResourceListingFactory _resourceFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerController"/> class.
@@ -21,7 +22,7 @@ namespace Swagger.Net
         public SwaggerController()
         {
             _apiExplorer = GlobalConfiguration.Configuration.Services.GetApiExplorer();
-            _swaggerFactory = new SwaggerFactory();
+            _resourceFactory = new ResourceListingFactory();
         }
 
         /// <summary>
@@ -29,10 +30,10 @@ namespace Swagger.Net
         /// </summary>
         /// <param name="apiExplorer">The apiExplorer to use.</param>
         /// <param name="docProvider">The xmlDocProvider to use.</param>
-        public SwaggerController(IApiExplorer apiExplorer, IDocumentationProvider docProvider, ISwaggerFactory swaggerFactory)
+        public SwaggerController(IApiExplorer apiExplorer, IDocumentationProvider docProvider, IResourceListingFactory resourceFactory)
         {
             _apiExplorer = apiExplorer;
-            _swaggerFactory = swaggerFactory;
+            _resourceFactory = resourceFactory;
         }
 
         /// <summary>
@@ -43,24 +44,17 @@ namespace Swagger.Net
         /// <returns>JSON document representing structure of API</returns>
         public HttpResponseMessage Get()
         {
-            var r = _swaggerFactory.CreateResourceListing(base.ControllerContext);
-            var uniqueControllers = new List<string>();
+            var uri = base.ControllerContext.Request.RequestUri;
+            var controllerName = base.ControllerContext.ControllerDescriptor.ControllerName;
+            var r = _resourceFactory.CreateResourceListing(uri, controllerName, _apiExplorer.ApiDescriptions);
 
-            foreach (var api in _apiExplorer.ApiDescriptions)
-            {
-                var controllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
-                if (uniqueControllers.Contains(controllerName) ||
-                      controllerName.ToUpper().Equals(SwaggerConstants.SWAGGER.ToUpper())) continue;
-
-                uniqueControllers.Add(controllerName);
-
-                var rApi = _swaggerFactory.CreateResourceApi(api);
-                r.apis.Add(rApi);
-            }
-
-            var resp = new HttpResponseMessage();
-
-            resp.Content = new ObjectContent<ResourceListing>(r, ControllerContext.Configuration.Formatters.JsonFormatter);
+            var content = new ObjectContent<ResourceListing>(r,
+                                                             ControllerContext.Configuration.Formatters.
+                                                                 JsonFormatter);
+            var resp = new HttpResponseMessage
+                           {
+                               Content = content
+                           };
 
             return resp;
         }

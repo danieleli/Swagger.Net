@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Web;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
+using Swagger.Net.Models;
 
 namespace Swagger.Net
 {
@@ -30,7 +31,7 @@ namespace Swagger.Net
         /// </summary>
         /// <param name="api">Description of the api via the ApiExplorer</param>
         /// <returns>A resource api</returns>
-        ResourceApi CreateResourceApi(ApiDescription api);
+        Api CreateResourceApi(ApiDescription api);
 
         /// <summary>
         /// Creates an api operation
@@ -38,7 +39,7 @@ namespace Swagger.Net
         /// <param name="api">Description of the api via the ApiExplorer</param>
         /// <param name="docProvider">Access to the XML docs written in code</param>
         /// <returns>An api operation</returns>
-        ApiOperation CreateApiOperation(ApiDescription api, XmlCommentDocumentationProvider docProvider);
+        Operation CreateApiOperation(ApiDescription api, XmlCommentDocumentationProvider docProvider);
 
         /// <summary>
         /// Creates an operation parameter
@@ -47,7 +48,7 @@ namespace Swagger.Net
         /// <param name="param">Description of a parameter on an operation via the ApiExplorer</param>
         /// <param name="docProvider">Access to the XML docs written in code</param>
         /// <returns>An operation parameter</returns>
-        OperationParam CreateOperationParam(ApiDescription api, ApiParameterDescription param, XmlCommentDocumentationProvider docProvider);
+        Parameter CreateOperationParam(ApiDescription api, ApiParameterDescription param, XmlCommentDocumentationProvider docProvider);
     }
 
     public class SwaggerFactory : ISwaggerFactory
@@ -66,7 +67,7 @@ namespace Swagger.Net
                         apiVersion = Assembly.GetCallingAssembly().GetType().Assembly.GetName().Version.ToString(),
                         swaggerVersion = SwaggerConstants.SWAGGER_VERSION,
                         basePath = uri.GetLeftPart(UriPartial.Authority) + HttpRuntime.AppDomainAppVirtualPath.TrimEnd('/'),
-                        apis = new List<ResourceApi>()
+                    
                     };
 
             if (includeResourcePath) rl.resourcePath = controllerContext.ControllerDescriptor.ControllerName;
@@ -74,34 +75,34 @@ namespace Swagger.Net
             return rl;
         }
 
-        public ResourceApi CreateResourceApi(ApiDescription api)
+        public Api CreateResourceApi(ApiDescription api)
         {
-            var rApi = new ResourceApi()
+            var rApi = new Api()
                                    {
                                        path = "/" + api.RelativePath,
                                        description = api.Documentation,
-                                       operations = new List<ApiOperation>()
+                                       operations = new List<Operation>()
                                    };
 
             return rApi;
         }
 
-        public ApiOperation CreateApiOperation(ApiDescription api, XmlCommentDocumentationProvider docProvider)
+        public Operation CreateApiOperation(ApiDescription api, XmlCommentDocumentationProvider docProvider)
         {
-            var rApiOperation = new ApiOperation()
+            var rApiOperation = new Operation()
                                             {
                                                 httpMethod = api.HttpMethod.ToString(),
                                                 nickname = docProvider.GetNickname(api.ActionDescriptor),
                                                 responseClass = docProvider.GetResponseClass(api.ActionDescriptor),
                                                 summary = api.Documentation,
                                                 notes = docProvider.GetNotes(api.ActionDescriptor),
-                                                parameters = new List<OperationParam>()
+                                                parameters = new List<Parameter>()
                                             };
 
             return rApiOperation;
         }
 
-        public OperationParam CreateOperationParam(ApiDescription api,
+        public Parameter CreateOperationParam(ApiDescription api,
                                                     ApiParameterDescription param,
                                                     XmlCommentDocumentationProvider docProvider)
         {
@@ -119,7 +120,7 @@ namespace Swagger.Net
                 
             }
 
-            var parameter = new OperationParam()
+            var parameter = new Parameter()
                                         {
                                             paramType = paramType,
                                             name = param.Name,

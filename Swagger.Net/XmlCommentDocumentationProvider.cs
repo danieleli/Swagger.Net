@@ -7,6 +7,7 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Xml.XPath;
 using Newtonsoft.Json.Linq;
+using Swagger.Net.Models;
 
 namespace Swagger.Net
 {
@@ -243,9 +244,9 @@ namespace Swagger.Net
 //            return documentation.ToString();
 //        }
 
-        public ApiModel GetApiModel(Type modelType)
+        public Model GetApiModel(Type modelType)
         {
-            var apiModel = new ApiModel();
+            var apiModel = new Model();
             apiModel.Name = modelType.Name;
             apiModel.type = modelType.Name;
 
@@ -257,7 +258,7 @@ namespace Swagger.Net
 
                 var propertyNodes = GetTypeMemberNodes(modelType.FullName);
                 foreach (XPathNavigator propertyNode in propertyNodes)
-                    apiModel.Members.Add(new ModelMember()
+                    apiModel.Members.Add(new Properties()
                     {
                         Name = propertyNode.GetAttribute("name", "").Replace("P:" + modelType.FullName + ".", ""),
                         description = GetDocumentation(propertyNode),
