@@ -60,6 +60,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="sample_api_description.js" />
     <None Include="SwaggerModels.cd" />
   </ItemGroup>
   <Choose>
