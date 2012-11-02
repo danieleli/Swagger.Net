@@ -48,6 +48,7 @@ namespace Swagger.Net
         public List<ApiModel> models { get; set; }
     }
 
+    // see https://github.com/wordnik/swagger-core/wiki/datatypes
     public class ApiModel
     {
         public ApiModel()
@@ -56,7 +57,8 @@ namespace Swagger.Net
         }
 
         public string Name { get; set; }
-        public string Documentation { get; set; }
+        public string type { get; set; }
+        public string description { get; set; }
 
         public List<ApiModelMember> Members { get; set; }
     }
@@ -65,7 +67,8 @@ namespace Swagger.Net
     public class ApiModelMember
     {
         public string Name { get; set; }
-        public string Documentation { get; set; }
+        public string type { get; set; }
+        public string description { get; set; }
     }
 
 

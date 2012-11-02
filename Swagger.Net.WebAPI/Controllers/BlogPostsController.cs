@@ -18,7 +18,7 @@ namespace Swagger.Net.WebApi.Controllers
         /// </returns>
         public IEnumerable<BlogPost> Get()
         {
-            return new List<BlogPost> { new BlogPost(), new BlogPost()  };
+            return new List<BlogPost> { new BlogPost(), new BlogPost() };
         }
 
         /// <summary>
@@ -32,7 +32,22 @@ namespace Swagger.Net.WebApi.Controllers
             return "value";
         }
 
-        // POST api/blogposts
+        /// <summary>
+        /// Post summary
+        /// </summary>
+        /// <remarks>This shows up as notes</remarks>
+        /// <param name="blogPost"><see cref="BlogPost"/>        
+        /// <example>  
+        /// This sample shows how to call the post method.
+        /// <code>  
+        /// { 
+        ///     Title: 'some title',
+        ///     Author: 'Philip Roth' 
+        /// } 
+        /// </code> 
+        /// </example>
+        /// </param>
+        /// <returns><see cref="HttpResponseMessage"/>Status code 200 for ok</returns>
         public HttpResponseMessage Post(BlogPost blogPost)
         {
             return new HttpResponseMessage(HttpStatusCode.OK);

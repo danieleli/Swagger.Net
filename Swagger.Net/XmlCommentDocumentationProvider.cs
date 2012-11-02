@@ -221,28 +221,29 @@ namespace Swagger.Net
             return documentation.ToString();
         }
 
-        public ApiModel GetApiModel(string modelName)
+        public ApiModel GetApiModel(Type modelType)
         {
             var apiModel = new ApiModel();
-            apiModel.Name = modelName;
+            apiModel.Name = modelType.Name;
+            apiModel.type = modelType.Name;
 
-            var modelNode = this.GetTypeNode(modelName);
+            var modelNode = this.GetTypeNode(modelType.FullName);
 
             if (modelNode != null)
             {
-                apiModel.Documentation =  GetDocumentation(modelNode);
+                apiModel.description =  GetDocumentation(modelNode);
 
-                var propertyNodes = GetTypeMemberNodes(modelName);
+                var propertyNodes = GetTypeMemberNodes(modelType.FullName);
                 foreach (XPathNavigator propertyNode in propertyNodes)
                     apiModel.Members.Add(new ApiModelMember()
                     {
-                        Name = propertyNode.GetAttribute("name", "").Replace("P:" + modelName + ".", ""),
-                        Documentation = GetDocumentation(propertyNode),
+                        Name = propertyNode.GetAttribute("name", "").Replace("P:" + modelType.FullName + ".", ""),
+                        description = GetDocumentation(propertyNode),
                     });
             }
             else
             {
-                apiModel.Documentation = "No Documentation Found.";
+                apiModel.description = "No Documentation Found.";
             }
 
             return apiModel;

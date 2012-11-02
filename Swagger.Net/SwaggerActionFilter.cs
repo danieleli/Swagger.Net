@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -22,13 +23,13 @@ namespace Swagger.Net
         {
             _apiExplorer = GlobalConfiguration.Configuration.Services.GetApiExplorer();
             _swaggerFactory = new SwaggerFactory();
-            _docProvider = (XmlCommentDocumentationProvider) GlobalConfiguration.Configuration.Services.GetDocumentationProvider();
+            _docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetDocumentationProvider();
         }
 
         public SwaggerActionFilter(IApiExplorer apiExplorer, IDocumentationProvider docProvider, ISwaggerFactory swaggerFactory)
         {
             _apiExplorer = apiExplorer;
-            _docProvider = (XmlCommentDocumentationProvider) docProvider;
+            _docProvider = (XmlCommentDocumentationProvider)docProvider;
             _swaggerFactory = swaggerFactory;
         }
 
@@ -58,6 +59,7 @@ namespace Swagger.Net
         private ResourceListing getDocs(HttpActionContext actionContext)
         {
             var r = _swaggerFactory.CreateResourceListing(actionContext);
+            var apiModels = new Dictionary<string, ApiModel>();
 
             foreach (var api in _apiExplorer.ApiDescriptions)
             {
@@ -80,15 +82,19 @@ namespace Swagger.Net
                 {
                     var parameter = _swaggerFactory.CreateResourceApiOperationParameter(api, param, _docProvider);
                     rApiOperation.parameters.Add(parameter);
-                    r.models.Add(_docProvider.GetApiModel(param.ParameterDescriptor.ParameterType.FullName));
+                    var paramTypeName = param.ParameterDescriptor.ParameterType.FullName;
+                    
+                    if(paramTypeName!=null && !apiModels.ContainsKey(paramTypeName))
+                    {
+                        var apiModel = _docProvider.GetApiModel(param.ParameterDescriptor.ParameterType);
+                        apiModels.Add(paramTypeName,apiModel);    
+                    }
                 }
 
                 
             }
 
-            // todo: add models here.
-
-            
+            r.models.AddRange(apiModels.Values);
             return r;
         }
     }
