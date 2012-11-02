@@ -13,7 +13,6 @@ namespace Swagger.Net
     public class SwaggerController : ApiController
     {
         private readonly IApiExplorer _apiExplorer;
-        private IDocumentationProvider _docProvider;
         private readonly ISwaggerFactory _swaggerFactory;
 
         /// <summary>
@@ -22,7 +21,6 @@ namespace Swagger.Net
         public SwaggerController()
         {
             _apiExplorer = GlobalConfiguration.Configuration.Services.GetApiExplorer();
-            _docProvider = GlobalConfiguration.Configuration.Services.GetDocumentationProvider();
             _swaggerFactory = new SwaggerFactory();
         }
 
@@ -34,7 +32,6 @@ namespace Swagger.Net
         public SwaggerController(IApiExplorer apiExplorer, IDocumentationProvider docProvider, ISwaggerFactory swaggerFactory)
         {
             _apiExplorer = apiExplorer;
-            _docProvider = docProvider;
             _swaggerFactory = swaggerFactory;
         }
 
