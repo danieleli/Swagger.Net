@@ -80,8 +80,14 @@ namespace Swagger.Net
                 {
                     var parameter = _swaggerFactory.CreateResourceApiOperationParameter(api, param, _docProvider);
                     rApiOperation.parameters.Add(parameter);
+                    r.models.Add(_docProvider.GetApiModel(param.ParameterDescriptor.ParameterType.FullName));
                 }
+
+                
             }
+
+            // todo: add models here.
+
             
             return r;
         }

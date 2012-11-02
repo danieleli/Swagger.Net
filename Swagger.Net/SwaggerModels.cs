@@ -36,11 +36,36 @@ namespace Swagger.Net
     //}
     public class ResourceListing
     {
+        public ResourceListing()
+        {
+            this.models = new List<ApiModel>();
+        }
         public string apiVersion { get; set; }
         public string swaggerVersion { get; set; }
         public string basePath { get; set; }
         public string resourcePath { get; set; }
         public List<ResourceApi> apis { get; set; }
+        public List<ApiModel> models { get; set; }
+    }
+
+    public class ApiModel
+    {
+        public ApiModel()
+        {
+            this.Members = new List<ApiModelMember>();
+        }
+
+        public string Name { get; set; }
+        public string Documentation { get; set; }
+
+        public List<ApiModelMember> Members { get; set; }
+    }
+
+
+    public class ApiModelMember
+    {
+        public string Name { get; set; }
+        public string Documentation { get; set; }
     }
 
 
@@ -80,7 +105,6 @@ namespace Swagger.Net
         public string notes { get; set; }
         public List<ResourceApiOperationParameter> parameters { get; set; }
     }
-
 
 //          {
 //            paramType: "path",
