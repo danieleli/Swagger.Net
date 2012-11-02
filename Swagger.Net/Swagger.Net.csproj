@@ -58,9 +58,6 @@
     <Compile Include="Models\Api.cs" />
     <Compile Include="SwaggerActionFilter.cs" />
     <Compile Include="SwaggerController.cs" />
-    <Compile Include="Factories\SwaggerFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="XmlCommentDocumentationProvider.cs" />
   </ItemGroup>
   <ItemGroup>

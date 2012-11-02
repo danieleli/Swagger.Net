@@ -18,22 +18,19 @@ namespace Swagger.Net
     /// </summary>
     public class SwaggerActionFilter : ActionFilterAttribute
     {
-        private readonly IApiExplorer _apiExplorer;
-        private readonly ISwaggerFactory _swaggerFactory;
+        private readonly IEnumerable<ApiDescription> _apiDescriptions;
         private readonly XmlCommentDocumentationProvider _docProvider;
 
         public SwaggerActionFilter()
         {
-            _apiExplorer = GlobalConfiguration.Configuration.Services.GetApiExplorer();
-            _swaggerFactory = new SwaggerFactory();
+            _apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
             _docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetDocumentationProvider();
         }
 
-        public SwaggerActionFilter(IApiExplorer apiExplorer, IDocumentationProvider docProvider, ISwaggerFactory swaggerFactory)
+        public SwaggerActionFilter(IEnumerable<ApiDescription> apiDescriptions, IDocumentationProvider docProvider)
         {
-            _apiExplorer = apiExplorer;
+            _apiDescriptions = apiDescriptions;
             _docProvider = (XmlCommentDocumentationProvider)docProvider;
-            _swaggerFactory = swaggerFactory;
         }
 
         /// <summary>
@@ -50,25 +47,27 @@ namespace Swagger.Net
                 return;
             }
 
-            var response = new HttpResponseMessage();
-
-            response.Content = new ObjectContent<Resource>(
-                getDocs(actionContext),
-                actionContext.ControllerContext.Configuration.Formatters.JsonFormatter);
+            var uri = actionContext.Request.RequestUri;
+            var ctlrName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
+            
+            var docs = getDocs(uri, ctlrName);
+            var formatter = actionContext.ControllerContext.Configuration.Formatters.JsonFormatter;
+            
+            var responseContent = new ObjectContent<Resource>(docs, formatter);
+            var response = new HttpResponseMessage { Content = responseContent };
 
             actionContext.Response = response;
         }
 
-        private Resource getDocs(HttpActionContext actionContext)
+        private Resource getDocs(Uri uri, string ctlrName)
         {
-
             var factory = new ApiFactory();
-            var ctx = actionContext.ControllerContext;
-            
-            var rtn = factory.CreateResource(ctx.Request.RequestUri, ctx.ControllerDescriptor.ControllerName,
-                                   _apiExplorer.ApiDescriptions);
-            
-            
+
+            var descs = _apiDescriptions.Where(
+                    d => d.ActionDescriptor.ControllerDescriptor.ControllerName == ctlrName);
+
+            var rtn = factory.CreateResource(uri, ctlrName, descs);
+
             return rtn;
         }
     }
