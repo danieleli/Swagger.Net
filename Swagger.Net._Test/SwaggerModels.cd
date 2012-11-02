@@ -4,7 +4,7 @@
     <Position X="0.5" Y="0.5" Width="2.75" />
     <AssociationLine Name="apis" Type="Swagger.Net.ResourceApi" FixedToPoint="true">
       <Path>
-        <Point X="1.125" Y="2.632" />
+        <Point X="1.125" Y="2.824" />
         <Point X="1.125" Y="3.25" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
