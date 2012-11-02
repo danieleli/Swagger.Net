@@ -52,7 +52,7 @@
     <Compile Include="Models\Model.cs" />
     <Compile Include="Models\ResourceListing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResourceListingFactory.cs" />
+    <Compile Include="Factories\ResourceListingFactory.cs" />
     <Compile Include="SwaggerConstants.cs" />
     <Compile Include="Models\Api.cs" />
     <Compile Include="SwaggerActionFilter.cs" />

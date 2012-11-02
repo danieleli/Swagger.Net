@@ -6,7 +6,7 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using Swagger.Net.Models;
 
-namespace Swagger.Net
+namespace Swagger.Net.Factories
 {
     public interface ISwaggerFactory
     {

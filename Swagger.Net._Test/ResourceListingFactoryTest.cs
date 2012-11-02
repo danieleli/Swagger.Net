@@ -5,6 +5,7 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using Swagger.Net.Factories;
 
 namespace Swagger.Net._Test
 {

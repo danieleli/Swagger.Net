@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Swagger.Net.Factories;
 using Swagger.Net.Models;
 
 namespace Swagger.Net

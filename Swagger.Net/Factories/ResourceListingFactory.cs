@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Web;
 using System.Web.Http.Description;
-using Swagger.Net.Models;
 
-namespace Swagger.Net
+namespace Swagger.Net.Factories
 {
     public interface IResourceListingFactory
     {
