@@ -37,7 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\Swagger.Net.WebApi\bin\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Factories\ApiFactory.cs" />
     <Compile Include="Models\Model.cs" />
     <Compile Include="Models\ResourceListing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -57,13 +58,14 @@
     <Compile Include="Models\Api.cs" />
     <Compile Include="SwaggerActionFilter.cs" />
     <Compile Include="SwaggerController.cs" />
-    <Compile Include="SwaggerFactory.cs">
+    <Compile Include="Factories\SwaggerFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="XmlCommentDocumentationProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="doc\SwaggerModels.cd" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

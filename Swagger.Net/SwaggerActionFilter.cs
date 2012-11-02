@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Web.Http.Filters;
+using Swagger.Net.Factories;
 using Swagger.Net.Models;
 
 namespace Swagger.Net
@@ -40,9 +42,9 @@ namespace Swagger.Net
         /// <param name="actionContext">Context of the action</param>
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
-            var docRequest = actionContext.ControllerContext.RouteData.Values.ContainsKey(SwaggerConstants.SWAGGER);
+            var isDocRequest = actionContext.ControllerContext.RouteData.Values.ContainsKey(SwaggerConstants.SWAGGER);
 
-            if (!docRequest)
+            if (!isDocRequest)
             {
                 base.OnActionExecuting(actionContext);
                 return;
@@ -50,52 +52,24 @@ namespace Swagger.Net
 
             var response = new HttpResponseMessage();
 
-            response.Content = new ObjectContent<ResourceListing>(
+            response.Content = new ObjectContent<Resource>(
                 getDocs(actionContext),
                 actionContext.ControllerContext.Configuration.Formatters.JsonFormatter);
 
             actionContext.Response = response;
         }
 
-        private ResourceListing getDocs(HttpActionContext actionContext)
+        private Resource getDocs(HttpActionContext actionContext)
         {
-            var r = _swaggerFactory.CreateResourceListing(actionContext);
-            var apiModels = new Dictionary<string, Model>();
 
-            foreach (var api in _apiExplorer.ApiDescriptions)
-            {
-                var apiControllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
-                if (api.Route.Defaults.ContainsKey(SwaggerConstants.SWAGGER) ||
-                    apiControllerName.ToUpper().Equals(SwaggerConstants.SWAGGER.ToUpper())) 
-                    continue;
-
-                // Make sure we only report the current controller docs
-                if (!apiControllerName.Equals(actionContext.ControllerContext.ControllerDescriptor.ControllerName))
-                    continue;
-
-                var rApi = _swaggerFactory.CreateResourceApi(api);
-               // r.apis.Add(rApi);
-
-                var rApiOperation = _swaggerFactory.CreateApiOperation(api, _docProvider);
-                rApi.operations.Add(rApiOperation);
-
-                foreach (var param in api.ParameterDescriptions)
-                {
-                    var parameter = _swaggerFactory.CreateOperationParam(api, param, _docProvider);
-                    rApiOperation.parameters.Add(parameter);
-                    var paramTypeName = param.ParameterDescriptor.ParameterType.FullName;
-                    
-                    if(paramTypeName!=null && !apiModels.ContainsKey(paramTypeName))
-                    {
-                        var apiModel = _docProvider.GetApiModel(param.ParameterDescriptor.ParameterType);
-                        apiModels.Add(paramTypeName, apiModel);    
-                    }
-                }
-
-          //      r.models = apiModels.Values.ToList();
-
-            }
-            return r;
+            var factory = new ApiFactory();
+            var ctx = actionContext.ControllerContext;
+            
+            var rtn = factory.CreateResource(ctx.Request.RequestUri, ctx.ControllerDescriptor.ControllerName,
+                                   _apiExplorer.ApiDescriptions);
+            
+            
+            return rtn;
         }
     }
 }
