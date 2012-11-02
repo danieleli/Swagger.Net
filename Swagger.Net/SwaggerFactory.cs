@@ -52,14 +52,6 @@ namespace Swagger.Net
 
     public class SwaggerFactory : ISwaggerFactory
     {
-        public const string SWAGGER = "swagger";
-        public const string SWAGGER_VERSION = "2.0";
-        public const string FROMURI = "FromUri";
-        public const string FROMBODY = "FromBody";
-        public const string QUERY = "query";
-        public const string PATH = "path";
-        public const string BODY = "body";
-
         /// <summary>
         /// Create a resource listing
         /// </summary>
@@ -84,7 +76,7 @@ namespace Swagger.Net
             var rl = new ResourceListing()
                                      {
                                          apiVersion = Assembly.GetCallingAssembly().GetType().Assembly.GetName().Version.ToString(),
-                                         swaggerVersion = SWAGGER_VERSION,
+                                         swaggerVersion = SwaggerConstants.SWAGGER_VERSION,
                                          basePath = uri.GetLeftPart(UriPartial.Authority) + HttpRuntime.AppDomainAppVirtualPath.TrimEnd('/'),
                                          apis = new List<ResourceApi>()
                                      };
@@ -141,10 +133,10 @@ namespace Swagger.Net
         /// <returns>An operation parameter</returns>
         public ResourceApiOperationParameter CreateResourceApiOperationParameter(ApiDescription api, ApiParameterDescription param, XmlCommentDocumentationProvider docProvider)
         {
-            var paramType = (param.Source.ToString().Equals(FROMURI)) ? QUERY : BODY;
+            var paramType = (param.Source.ToString().Equals(SwaggerConstants.FROMURI)) ? SwaggerConstants.QUERY : SwaggerConstants.BODY;
             var parameter = new ResourceApiOperationParameter()
                                                           {
-                                                              paramType = (paramType == "query" && api.RelativePath.IndexOf("{" + param.Name + "}") > -1) ? PATH : paramType,
+                                                              paramType = (paramType == "query" && api.RelativePath.IndexOf("{" + param.Name + "}") > -1) ? SwaggerConstants.PATH : paramType,
                                                               name = param.Name,
                                                               description = param.Documentation,
                                                               dataType = param.ParameterDescriptor.ParameterType.Name,

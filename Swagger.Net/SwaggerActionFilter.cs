@@ -39,7 +39,7 @@ namespace Swagger.Net
         /// <param name="actionContext">Context of the action</param>
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
-            var docRequest = actionContext.ControllerContext.RouteData.Values.ContainsKey(SwaggerFactory.SWAGGER);
+            var docRequest = actionContext.ControllerContext.RouteData.Values.ContainsKey(SwaggerConstants.SWAGGER);
 
             if (!docRequest)
             {
@@ -64,8 +64,8 @@ namespace Swagger.Net
             foreach (var api in _apiExplorer.ApiDescriptions)
             {
                 var apiControllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
-                if (api.Route.Defaults.ContainsKey(SwaggerFactory.SWAGGER) ||
-                    apiControllerName.ToUpper().Equals(SwaggerFactory.SWAGGER.ToUpper())) 
+                if (api.Route.Defaults.ContainsKey(SwaggerConstants.SWAGGER) ||
+                    apiControllerName.ToUpper().Equals(SwaggerConstants.SWAGGER.ToUpper())) 
                     continue;
 
                 // Make sure we only report the current controller docs

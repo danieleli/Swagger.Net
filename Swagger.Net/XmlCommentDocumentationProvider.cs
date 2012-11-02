@@ -50,16 +50,6 @@ namespace Swagger.Net
             return "No Documentation Found.";
         }
 
-        public virtual bool GetRequired(HttpParameterDescriptor parameterDescriptor)
-        {
-            var reflectedParameterDescriptor = parameterDescriptor as ReflectedHttpParameterDescriptor;
-            if (reflectedParameterDescriptor != null)
-            {
-                return !reflectedParameterDescriptor.ParameterInfo.IsOptional;
-            }
-
-            return true;
-        }
 
         public virtual string GetDocumentation(HttpActionDescriptor actionDescriptor)
         {
@@ -74,6 +64,17 @@ namespace Swagger.Net
             }
 
             return "No Documentation Found.";
+        }
+
+        public virtual bool GetRequired(HttpParameterDescriptor parameterDescriptor)
+        {
+            var reflectedParameterDescriptor = parameterDescriptor as ReflectedHttpParameterDescriptor;
+            if (reflectedParameterDescriptor != null)
+            {
+                return !reflectedParameterDescriptor.ParameterInfo.IsOptional;
+            }
+
+            return true;
         }
 
         public virtual string GetNotes(HttpActionDescriptor actionDescriptor)
@@ -171,55 +172,76 @@ namespace Swagger.Net
         {
             if (node == null) return null;
 
-            var documentation = new JObject()
-										{
-											{ "summary", string.Empty },
-											{ "example", string.Empty },
-											{ "remarks", string.Empty },
-											{ "returns", string.Empty },
-											{ "ready", string.Empty },
-											{ "datatype", string.Empty },
-										};
+            var documentation = new JObject();
 
-            var summaryNode = node.SelectSingleNode("summary");
-            var exampleNode = node.SelectSingleNode("example");
-            var remarksNode = node.SelectSingleNode("remarks");
-            var returnsNode = node.SelectSingleNode("returns");
-            var readyNode = node.SelectSingleNode("ready");
-            var dataTypeNode = node.SelectSingleNode("datatype");
-
-            if (summaryNode != null)
+            var elements = new[] { "summary", "example", "remarks", "returns", "ready", "datatype" };
+            foreach (var element in elements)
             {
-                documentation["summary"] = summaryNode.InnerXml.Trim();
-            }
-
-            if (exampleNode != null)
-            {
-                documentation["example"] = exampleNode.InnerXml.Trim();
-            }
-
-            if (remarksNode != null)
-            {
-                documentation["remarks"] = remarksNode.InnerXml.Trim();
-            }
-
-            if (returnsNode != null)
-            {
-                documentation["returns"] = returnsNode.InnerXml.Trim();
-            }
-
-            if (readyNode != null)
-            {
-                documentation["ready"] = readyNode.InnerXml.Trim();
-            }
-
-            if (dataTypeNode != null)
-            {
-                documentation["datatype"] = dataTypeNode.InnerXml.Trim();
+                MapElement(element, node, documentation);    
             }
 
             return documentation.ToString();
         }
+
+        private void MapElement(string elementName, XPathNavigator sourceDoc, JObject targetDoc)
+        {
+            var sourceNode = sourceDoc.SelectSingleNode(elementName);
+            targetDoc[elementName] = sourceNode == null ? "" : sourceNode.InnerXml.Trim();
+        }
+
+//        public string GetDocumentation(XPathNavigator node)
+//        {
+//            if (node == null) return null;
+//
+//            var documentation = new JObject()
+//										{
+//											{ "summary", string.Empty },
+//											{ "example", string.Empty },
+//											{ "remarks", string.Empty },
+//											{ "returns", string.Empty },
+//											{ "ready", string.Empty },
+//											{ "datatype", string.Empty },
+//										};
+//
+//            var summaryNode = node.SelectSingleNode("summary");
+//            var exampleNode = node.SelectSingleNode("example");
+//            var remarksNode = node.SelectSingleNode("remarks");
+//            var returnsNode = node.SelectSingleNode("returns");
+//            var readyNode = node.SelectSingleNode("ready");
+//            var dataTypeNode = node.SelectSingleNode("datatype");
+//
+//            if (summaryNode != null)
+//            {
+//                documentation["summary"] = summaryNode.InnerXml.Trim();
+//            }
+//
+//            if (exampleNode != null)
+//            {
+//                documentation["example"] = exampleNode.InnerXml.Trim();
+//            }
+//
+//            if (remarksNode != null)
+//            {
+//                documentation["remarks"] = remarksNode.InnerXml.Trim();
+//            }
+//
+//            if (returnsNode != null)
+//            {
+//                documentation["returns"] = returnsNode.InnerXml.Trim();
+//            }
+//
+//            if (readyNode != null)
+//            {
+//                documentation["ready"] = readyNode.InnerXml.Trim();
+//            }
+//
+//            if (dataTypeNode != null)
+//            {
+//                documentation["datatype"] = dataTypeNode.InnerXml.Trim();
+//            }
+//
+//            return documentation.ToString();
+//        }
 
         public ApiModel GetApiModel(Type modelType)
         {
@@ -231,7 +253,7 @@ namespace Swagger.Net
 
             if (modelNode != null)
             {
-                apiModel.description =  GetDocumentation(modelNode);
+                apiModel.description = GetDocumentation(modelNode);
 
                 var propertyNodes = GetTypeMemberNodes(modelType.FullName);
                 foreach (XPathNavigator propertyNode in propertyNodes)

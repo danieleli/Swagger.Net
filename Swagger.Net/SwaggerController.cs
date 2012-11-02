@@ -50,7 +50,7 @@ namespace Swagger.Net
             {
                 var controllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
                 if (uniqueControllers.Contains(controllerName) ||
-                      controllerName.ToUpper().Equals(SwaggerFactory.SWAGGER.ToUpper())) continue;
+                      controllerName.ToUpper().Equals(SwaggerConstants.SWAGGER.ToUpper())) continue;
 
                 uniqueControllers.Add(controllerName);
 
