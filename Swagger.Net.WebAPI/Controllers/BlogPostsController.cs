@@ -4,30 +4,46 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Swagger.Net.WebApi.Models;
 
 namespace Swagger.Net.WebApi.Controllers
 {
     public class BlogPostsController : ApiController
     {
-        // GET api/blogposts
-        public IEnumerable<string> Get()
+        /// <summary>
+        /// BlogPostsController.Get Summary
+        /// </summary>
+        /// <returns>
+        /// <see cref="BlogPost"/>
+        /// </returns>
+        public IEnumerable<BlogPost> Get()
         {
-            return new string[] { "value1", "value2" };
+            return new List<BlogPost> { new BlogPost(), new BlogPost()  };
         }
 
-        // GET api/blogposts/5
+        /// <summary>
+        /// BlogPostsController.Get(id) Summary
+        /// </summary>
+        /// <returns>
+        /// <see cref="BlogPost"/>
+        /// </returns>
         public string Get(int id)
         {
             return "value";
         }
 
         // POST api/blogposts
-        public void Post([FromBody]string value)
+        public HttpResponseMessage Post(BlogPost blogPost)
         {
+            return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
-        // PUT api/blogposts/5
-        public void Put(int id, [FromBody]string value)
+        /// <summary>
+        /// BlogPostsController.Put
+        /// </summary>
+        /// <param name="id"><see cref="Int32"/></param>
+        /// <param name="value"><see cref="BlogPost"/>The post to put to database</param>
+        public void Put(int id, BlogPost value)
         {
         }
 
