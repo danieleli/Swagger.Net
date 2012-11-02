@@ -75,12 +75,12 @@ namespace Swagger.Net
                 var rApi = _swaggerFactory.CreateResourceApi(api);
                 r.apis.Add(rApi);
 
-                var rApiOperation = _swaggerFactory.CreateResourceApiOperation(api, _docProvider);
+                var rApiOperation = _swaggerFactory.CreateApiOperation(api, _docProvider);
                 rApi.operations.Add(rApiOperation);
 
                 foreach (var param in api.ParameterDescriptions)
                 {
-                    var parameter = _swaggerFactory.CreateResourceApiOperationParameter(api, param, _docProvider);
+                    var parameter = _swaggerFactory.CreateOperationParam(api, param, _docProvider);
                     rApiOperation.parameters.Add(parameter);
                     var paramTypeName = param.ParameterDescriptor.ParameterType.FullName;
                     

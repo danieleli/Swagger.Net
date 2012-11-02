@@ -257,7 +257,7 @@ namespace Swagger.Net
 
                 var propertyNodes = GetTypeMemberNodes(modelType.FullName);
                 foreach (XPathNavigator propertyNode in propertyNodes)
-                    apiModel.Members.Add(new ApiModelMember()
+                    apiModel.Members.Add(new ModelMember()
                     {
                         Name = propertyNode.GetAttribute("name", "").Replace("P:" + modelType.FullName + ".", ""),
                         description = GetDocumentation(propertyNode),
