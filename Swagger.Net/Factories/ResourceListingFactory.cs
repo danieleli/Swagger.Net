@@ -26,41 +26,37 @@ namespace Swagger.Net.Factories
 
         public ResourceListing CreateResourceListing(Uri uri, string controllerName, IEnumerable<ApiDescription> apiDescs)
         {
+            var apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString();
+            var apis = CreateApiElements(apiDescs);
+
             var rtnListing = new ResourceListing()
             {
-                apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString(),
+                apiVersion = apiVersion,
                 swaggerVersion = SwaggerConstants.SWAGGER_VERSION,
                 basePath = uri.GetLeftPart(UriPartial.Authority) + _appVirtualPath,
                 resourcePath = controllerName,
-                apis = CreateApiElements(apiDescs)
-                
+                apis = apis
             };
 
             return rtnListing;
         }
 
-
         public IList<ResourceSummary> CreateApiElements(IEnumerable<ApiDescription> apiDescs)
         {
             var rtnApis = new Dictionary<String, ResourceSummary>();
-         
-            var apiSummaries = apiDescs.Select(a => new
-                                            {
-                                                a.ActionDescriptor.ControllerDescriptor.ControllerName,
-                                                a.RelativePath,
-                                                a.Documentation
-                                            });
 
-            foreach (var apiSum in apiSummaries)
+            foreach (var desc in apiDescs)
             {
-                if(!rtnApis.ContainsKey(apiSum.ControllerName))
+                var ctlrName = desc.ActionDescriptor.ControllerDescriptor.ControllerName;
+
+                if(!rtnApis.ContainsKey(ctlrName))
                 {
                     var res = new ResourceSummary
                     {
-                        path = "/" + apiSum.RelativePath,
-                        description = apiSum.Documentation
+                        path = "/" + desc.RelativePath,
+                        description = desc.Documentation
                     };
-                    rtnApis.Add(apiSum.ControllerName, res);    
+                    rtnApis.Add(ctlrName, res);    
                 }
             }
 

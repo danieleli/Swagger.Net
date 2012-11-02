@@ -14,7 +14,7 @@ namespace Swagger.Net
 
     public class SwaggerController : ApiController
     {
-        private readonly IApiExplorer _apiExplorer;
+        private readonly IEnumerable<ApiDescription> _apiDescriptions;
         private readonly IResourceListingFactory _resourceFactory;
 
         /// <summary>
@@ -22,18 +22,18 @@ namespace Swagger.Net
         /// </summary>
         public SwaggerController()
         {
-            _apiExplorer = GlobalConfiguration.Configuration.Services.GetApiExplorer();
+            _apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
             _resourceFactory = new ResourceListingFactory();
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerController"/> class.
         /// </summary>
-        /// <param name="apiExplorer">The apiExplorer to use.</param>
+        /// <param name="apiDescriptions">The apiExplorer to use.</param>
         /// <param name="docProvider">The xmlDocProvider to use.</param>
-        public SwaggerController(IApiExplorer apiExplorer, IDocumentationProvider docProvider, IResourceListingFactory resourceFactory)
+        public SwaggerController(IEnumerable<ApiDescription> apiDescriptions, IDocumentationProvider docProvider, IResourceListingFactory resourceFactory)
         {
-            _apiExplorer = apiExplorer;
+            _apiDescriptions = apiDescriptions;
             _resourceFactory = resourceFactory;
         }
 
@@ -47,16 +47,12 @@ namespace Swagger.Net
         {
             var uri = base.ControllerContext.Request.RequestUri;
             var controllerName = base.ControllerContext.ControllerDescriptor.ControllerName;
-            var r = _resourceFactory.CreateResourceListing(uri, controllerName, _apiExplorer.ApiDescriptions);
-
-            var content = new ObjectContent<ResourceListing>(r,
-                                                             ControllerContext.Configuration.Formatters.
-                                                                 JsonFormatter);
-            var resp = new HttpResponseMessage
-                           {
-                               Content = content
-                           };
-
+            var resourceListing = _resourceFactory.CreateResourceListing(uri, controllerName, _apiDescriptions);
+            
+            var formatter = ControllerContext.Configuration.Formatters.JsonFormatter;
+            var content = new ObjectContent<ResourceListing>(resourceListing, formatter);
+            
+            var resp = new HttpResponseMessage { Content = content };
             return resp;
         }
     }
