@@ -34,10 +34,10 @@ namespace Swagger.Net._Test.Factories
             // Arrange
             ApiDescription apiDesc = GetApiDescription();
             var descriptions = new List<ApiDescription> { apiDesc };
-            var factory = new ApiDescriptionFactory(VIRTUAL_DIR);
+            var factory = new ResourceDescriptionFactory(VIRTUAL_DIR);
 
             // Act
-            var result = factory.CreateApiDescription(_uri, CONTROLLER_NAME);
+            var result = factory.CreateResourceDescription(_uri, CONTROLLER_NAME);
 
             // Asset
             var expectedVersion = "1.2.3.4";

@@ -49,7 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Factories\ApiDescriptionFactory.cs" />
+    <Compile Include="Factories\ResourceDescriptionFactory.cs" />
     <Compile Include="Models\Model.cs" />
     <Compile Include="Models\ResourceListing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

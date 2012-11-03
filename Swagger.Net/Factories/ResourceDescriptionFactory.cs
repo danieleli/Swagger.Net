@@ -11,25 +11,25 @@ using Swagger.Net.Models;
 
 namespace Swagger.Net.Factories
 {
-    public interface IApiDescriptionFactory
+    public interface IResourceDescriptionFactory
     {
-        ResourceDescription CreateApiDescription(Uri uri, string controllerName);
-        IList<Api> CreateApiElements( string controllerName, IEnumerable<ApiDescription> descriptions);
+        ResourceDescription CreateResourceDescription(Uri uri, string controllerName);
+        IList<Api> CreateApiElements(string controllerName, IEnumerable<ApiDescription> descriptions);
         IList<Operation> CreateOperations(ApiDescription desc, XmlCommentDocumentationProvider docProvider);
         IList<Parameter> CreateParameters(Collection<HttpParameterDescriptor> httpParams);
     }
 
-    public class ApiDescriptionFactory : IApiDescriptionFactory
+    public class ResourceDescriptionFactory : IResourceDescriptionFactory
     {
 
         private readonly string _appVirtualPath;
-        public ApiDescriptionFactory() : this(HttpRuntime.AppDomainAppVirtualPath) { }
-        public ApiDescriptionFactory(string appVirtualPath)
+        public ResourceDescriptionFactory() : this(HttpRuntime.AppDomainAppVirtualPath) { }
+        public ResourceDescriptionFactory(string appVirtualPath)
         {
             _appVirtualPath = appVirtualPath.TrimEnd('/');
         }
 
-        public ResourceDescription CreateApiDescription(Uri uri, string controllerName)
+        public ResourceDescription CreateResourceDescription(Uri uri, string controllerName)
         {
 
             var rtnResource = new ResourceDescription()
@@ -43,20 +43,19 @@ namespace Swagger.Net.Factories
             return rtnResource;
         }
 
-        public IList<Api> CreateApiElements( string controllerName, IEnumerable<ApiDescription> descriptions)
+        public IList<Api> CreateApiElements(string controllerName, IEnumerable<ApiDescription> descriptions)
         {
             var rtnApis = new List<Api>();
 
-            foreach (var desc in descriptions)
+            if (controllerName.ToUpper() == SwaggerConstants.SWAGGER.ToUpper()) return rtnApis;
+
+            // apis for current controller
+            var filteredDescs = descriptions.Where(d =>
+                    d.ActionDescriptor.ControllerDescriptor.ControllerName == controllerName
+            );
+
+            foreach (var desc in filteredDescs)
             {
-                if (desc.Route.Defaults.ContainsKey(SwaggerConstants.SWAGGER)) continue;
-
-                var apiControllerName = desc.ActionDescriptor.ControllerDescriptor.ControllerName;
-                if (apiControllerName.ToUpper() == SwaggerConstants.SWAGGER.ToUpper()) continue;
-
-                // Make sure we only report the current controller docs
-                if (!apiControllerName.Equals(controllerName)) continue;
-
                 var api = new Api()
                 {
                     path = "/" + desc.RelativePath,
@@ -67,7 +66,7 @@ namespace Swagger.Net.Factories
                 // todo: add operations;=
 
                 rtnApis.Add(api);
-                
+
 
             }
             return rtnApis;
@@ -86,7 +85,7 @@ namespace Swagger.Net.Factories
                 parameters = CreateParameters(desc.ActionDescriptor.GetParameters())
             };
 
-            return new List<Operation>(){rApiOperation};  
+            return new List<Operation>() { rApiOperation };
         }
 
         public IList<Parameter> CreateParameters(Collection<HttpParameterDescriptor> httpParams)
@@ -103,7 +102,7 @@ namespace Swagger.Net.Factories
             }
 
             return rtn;
-        } 
+        }
     }
 }
 
