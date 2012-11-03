@@ -36,9 +36,8 @@ namespace Swagger.Net.Factories
             initialize(path, docProvider);
         }
 
-        public ResourceDescriptionFactory(string virturalPath)
+        public ResourceDescriptionFactory(string virturalPath, XmlCommentDocumentationProvider docProvider)
         {
-            var docProvider = (IDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
             initialize(virturalPath, docProvider);
         }
 

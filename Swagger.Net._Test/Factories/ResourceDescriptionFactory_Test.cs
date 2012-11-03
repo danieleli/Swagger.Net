@@ -28,11 +28,21 @@ namespace Swagger.Net._Test.Factories
         private const string ROUTE_TEMPLATE = "fjdkl/ffdklsa/{cc}/{id}";
         private readonly Uri _uri = new Uri(ROOT + "/this/is?field=3&test=mytest");
 
-        private IResourceDescriptionFactory _factory = new ResourceDescriptionFactory(VIRTUAL_DIR);
+        private IResourceDescriptionFactory _factory;
+
+        
+        public void Setup()
+        {
+            var path = @"C:\Users\danieleli\Documents\_projects\Swagger.Net\Swagger.Net.WebApi\bin\Swagger.Net.WebApi.XML";
+            var docProvider = new XmlCommentDocumentationProvider(path);
+            _factory = new ResourceDescriptionFactory(VIRTUAL_DIR, docProvider);
+            
+        }
 
         [TestMethod]
         public void CreateResourceDesc_PopulatesRootDescProperties()
         {
+            Setup();
 
             // Arrange
             ApiDescription apiDesc = TestHelper.GetApiDescription();
@@ -57,6 +67,7 @@ namespace Swagger.Net._Test.Factories
         [TestMethod]
         public void CreateApiElements_ReturnsApis()
         {
+            Setup();
             // Arrange
             ApiDescription apiDesc = TestHelper.GetApiDescription();
             var descriptions = new List<ApiDescription> { apiDesc };
@@ -74,6 +85,7 @@ namespace Swagger.Net._Test.Factories
         [TestMethod]
         public void CreateApiElements_WithNoMatchingApiDescriptions_ReturnsNoApis()
         {
+            Setup();
             // Arrange
             ApiDescription apiDesc = TestHelper.GetApiDescription("anotherCtlr");
             var descriptions = new List<ApiDescription> { apiDesc };
@@ -90,6 +102,7 @@ namespace Swagger.Net._Test.Factories
         [TestMethod]
         public void CreateApi_ReturnsApi()
         {
+            Setup();
             // Arrange
             ApiDescription apiDesc = TestHelper.GetApiDescription();
             var descriptions = new List<ApiDescription> { apiDesc };
@@ -106,6 +119,7 @@ namespace Swagger.Net._Test.Factories
         [TestMethod]
         public void CreateParameter_Returns()
         {
+            Setup();
             // Arrange
             var config = GlobalConfiguration.Configuration;
             var path = @"C:\Users\danieleli\Documents\_projects\Swagger.Net\Swagger.Net.WebApi\bin\Swagger.Net.WebApi.XML";
