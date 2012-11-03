@@ -55,10 +55,8 @@ namespace Swagger.Net._Test.Factories
 
             StubHttpParameterDescriptor parameter = CreateParameter("pname", typeof (string), false);
 
-            apiDesc.ActionDescriptor = new StubHttpActionDescriptor
-                                           {
-                                               GetParameters01 = () => new BindingList<HttpParameterDescriptor> {parameter}
-                                           };
+//            apiDesc.ActionDescriptor = new ShimHttpActionDescriptor();
+//            apiDesc.ActionDescriptor.GetParameters01 = () => new BindingList<HttpParameterDescriptor> {parameter};
             apiDesc.ActionDescriptor.ControllerDescriptor = new ShimHttpControllerDescriptor {};
             apiDesc.ActionDescriptor.ControllerDescriptor.ControllerName = CONTROLLER_NAME;
             return apiDesc;
