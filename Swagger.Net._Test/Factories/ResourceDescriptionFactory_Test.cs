@@ -130,7 +130,7 @@ namespace Swagger.Net._Test.Factories
             
             
             // Act
-            var rtnParam = _factory.CreateParameter(input);
+            var rtnParam = _factory.CreateParameter(input, "");
 
 
             // Assert
@@ -156,7 +156,7 @@ namespace Swagger.Net._Test.Factories
 
 
             // Act
-            var rtnParam = _factory.CreateParameter(input);
+            var rtnParam = _factory.CreateParameter(input, "");
 
             var expected = new object();
             // Assert
@@ -178,7 +178,7 @@ namespace Swagger.Net._Test.Factories
 
 
             // Act
-            var rtnParam = _factory.CreateParameter(input);
+            var rtnParam = _factory.CreateParameter(input,"");
 
             var expected = new object();
             // Assert

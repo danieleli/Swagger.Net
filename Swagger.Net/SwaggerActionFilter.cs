@@ -25,6 +25,7 @@ namespace Swagger.Net
         public SwaggerActionFilter()
         {
             _factory = new ResourceDescriptionFactory();
+            _apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
         }
 
         public SwaggerActionFilter(IEnumerable<ApiDescription> apiDescriptions, IResourceDescriptionFactory factory)

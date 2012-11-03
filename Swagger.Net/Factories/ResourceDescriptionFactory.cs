@@ -17,9 +17,9 @@ namespace Swagger.Net.Factories
         ResourceDescription CreateResourceDescription(Uri uri, string controllerName);
         IList<Api> CreateApiElements(string controllerName, IEnumerable<ApiDescription> descriptions);
         IList<Operation> CreateOperations(ApiDescription desc);
-        IList<Parameter> CreateParameters(Collection<ApiParameterDescription> httpParams);
+        IList<Parameter> CreateParameters(Collection<ApiParameterDescription> httpParams, string relativePath);
         Api CreateApi(ApiDescription apiDesc);
-        Parameter CreateParameter(ApiParameterDescription parameterDescription);
+        Parameter CreateParameter(ApiParameterDescription parameterDescription, string relativePath);
     }
 
     public class ResourceDescriptionFactory : IResourceDescriptionFactory
@@ -99,7 +99,7 @@ namespace Swagger.Net.Factories
         {
 
             var returnType = desc.ActionDescriptor.ReturnType == null ? "void" : desc.ActionDescriptor.ReturnType.Name;
-            var paramtrs= CreateParameters(desc.ParameterDescriptions);
+            var paramtrs= CreateParameters(desc.ParameterDescriptions, desc.RelativePath);
             var remarks = _docProvider.GetRemarks(desc.ActionDescriptor);
 
             var rApiOperation = new Operation()
@@ -115,27 +115,47 @@ namespace Swagger.Net.Factories
             return new List<Operation>() { rApiOperation };
         }
 
-        public IList<Parameter> CreateParameters(Collection<ApiParameterDescription> httpParams)
+        public IList<Parameter> CreateParameters(Collection<ApiParameterDescription> httpParams, string relativePath)
         {
             var rtn = new List<Parameter>();
             foreach (var p in httpParams)
             {
-                var param = CreateParameter(p);
+                var param = CreateParameter(p, relativePath);
                 rtn.Add(param);
             }
 
             return rtn;
         }
 
-        public Parameter CreateParameter(ApiParameterDescription p)
+        public Parameter CreateParameter(ApiParameterDescription param, string relativePath)
         {
+            
+
+            var paramType = SwaggerConstants.BODY;
+            if (param.Source == ApiParameterSource.FromUri)
+            {
+                
+                if (relativePath.IndexOf("{" + param.Name + "}") > -1)
+                {
+                    paramType = SwaggerConstants.PATH;
+                }
+                else
+                {
+                    paramType = SwaggerConstants.QUERY;
+                }
+
+            }
+
+
+
+
             var rtn = new Parameter()
                             {
-                                name = p.Name,
-                                dataType = p.ParameterDescriptor.ParameterType.Name,
-                                required = !p.ParameterDescriptor.IsOptional,
-                                description = p.Documentation,
-                                paramType = p.Source.ToString()
+                                name = param.Name,
+                                dataType = param.ParameterDescriptor.ParameterType.Name,
+                                required = !param.ParameterDescriptor.IsOptional,
+                                description = param.Documentation,
+                                paramType = paramType
                                 // allowMultiple = p.ParameterDescriptor.
                                 // allowableValues
                             };
