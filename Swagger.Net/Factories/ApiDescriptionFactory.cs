@@ -11,17 +11,25 @@ using Swagger.Net.Models;
 
 namespace Swagger.Net.Factories
 {
-    public class ApiFactory
+    public interface IApiDescriptionFactory
+    {
+        Resource CreateApiDescription(Uri uri, string controllerName, IEnumerable<ApiDescription> apiDescs);
+        IList<Api> CreateApiElements( string controllerName, IEnumerable<ApiDescription> descriptions);
+        IList<Operation> CreateOperations(ApiDescription desc, XmlCommentDocumentationProvider docProvider);
+        IList<Parameter> CreateParameters(Collection<HttpParameterDescriptor> httpParams);
+    }
+
+    public class ApiDescriptionFactory : IApiDescriptionFactory
     {
 
         private readonly string _appVirtualPath;
-        public ApiFactory() : this(HttpRuntime.AppDomainAppVirtualPath) { }
-        public ApiFactory(string appVirtualPath)
+        public ApiDescriptionFactory() : this(HttpRuntime.AppDomainAppVirtualPath) { }
+        public ApiDescriptionFactory(string appVirtualPath)
         {
             _appVirtualPath = appVirtualPath.TrimEnd('/');
         }
 
-        public Resource CreateResource(Uri uri, string controllerName, IEnumerable<ApiDescription> apiDescs)
+        public Resource CreateApiDescription(Uri uri, string controllerName, IEnumerable<ApiDescription> apiDescs)
         {
             var apis = CreateApiElements(controllerName, apiDescs);
 

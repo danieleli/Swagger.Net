@@ -15,7 +15,7 @@ namespace Swagger.Net
     public class SwaggerController : ApiController
     {
         private readonly IEnumerable<ApiDescription> _apiDescriptions;
-        private readonly IResourceListingFactory _resourceFactory;
+        private readonly IEndpointDescriptionFactory _resourceFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerController"/> class.
@@ -23,7 +23,7 @@ namespace Swagger.Net
         public SwaggerController()
         {
             _apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
-            _resourceFactory = new ResourceListingFactory();
+            _resourceFactory = new EndpointDescriptionFactory();
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Swagger.Net
         /// </summary>
         /// <param name="apiDescriptions">The apiExplorer to use.</param>
         /// <param name="docProvider">The xmlDocProvider to use.</param>
-        public SwaggerController(IEnumerable<ApiDescription> apiDescriptions, IDocumentationProvider docProvider, IResourceListingFactory resourceFactory)
+        public SwaggerController(IEnumerable<ApiDescription> apiDescriptions, IDocumentationProvider docProvider, IEndpointDescriptionFactory resourceFactory)
         {
             _apiDescriptions = apiDescriptions;
             _resourceFactory = resourceFactory;

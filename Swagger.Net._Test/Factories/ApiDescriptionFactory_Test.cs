@@ -16,7 +16,7 @@ using Swagger.Net.Models;
 namespace Swagger.Net._Test.Factories
 {
     [TestClass]
-    public class ApiFactory_Test
+    public class ApiDescriptionFactory_Test
     {
         private const string ROOT = "http://www.google.com";
         private const string VIRTUAL_DIR = "/the/vdir/of/app";
@@ -32,10 +32,10 @@ namespace Swagger.Net._Test.Factories
                 // Arrange
                 ApiDescription apiDesc = GetApiDescription();
                 var descriptions = new List<ApiDescription> {apiDesc};
-                var factory = new ApiFactory(VIRTUAL_DIR);
+                var factory = new ApiDescriptionFactory(VIRTUAL_DIR);
 
                 // Act
-                Resource result = factory.CreateResource(_uri, CONTROLLER_NAME, descriptions);
+                Resource result = factory.CreateApiDescription(_uri, CONTROLLER_NAME, descriptions);
 
                 // Asset (visually)
                 Debug.WriteLine(JsonConvert.SerializeObject(result));

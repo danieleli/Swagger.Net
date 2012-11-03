@@ -63,8 +63,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Factories\ApiFactory_Test.cs" />
-    <Compile Include="Factories\ResourceListingFactory_Test.cs" />
+    <Compile Include="Factories\ApiDescriptionFactory_Test.cs" />
+    <Compile Include="Factories\EndpointDescriptionFactory_Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

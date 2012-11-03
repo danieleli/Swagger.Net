@@ -10,7 +10,7 @@ using Swagger.Net.Factories;
 namespace Swagger.Net._Test
 {
     [TestClass]
-    public class ResourceListingFactory_Test
+    public class EndpointDescriptionFactory_Test
     {
 
         const string ROOT = "http://www.google.com";
@@ -20,7 +20,7 @@ namespace Swagger.Net._Test
         [TestMethod]
         public void GetResourceListing_NoApis()
         {
-            var factory = new ResourceListingFactory(VIRTUAL_DIR);
+            var factory = new EndpointDescriptionFactory(VIRTUAL_DIR);
             var uri = new Uri(ROOT + "/this/is?field=3&test=mytest");
 
             var apiDescs = new List<ApiDescription>();
@@ -40,7 +40,7 @@ namespace Swagger.Net._Test
         [TestMethod]
         public void GetResourceListing_OneApis()
         {
-            var factory = new ResourceListingFactory(VIRTUAL_DIR);
+            var factory = new EndpointDescriptionFactory(VIRTUAL_DIR);
             var uri = new Uri(ROOT + "/this/is?field=3&test=mytest");
          
             var apiDescs = new List<ApiDescription>(){ 

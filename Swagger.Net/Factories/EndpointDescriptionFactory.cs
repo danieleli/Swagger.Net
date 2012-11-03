@@ -7,19 +7,19 @@ using System.Web.Http.Description;
 
 namespace Swagger.Net.Factories
 {
-    public interface IResourceListingFactory
+    public interface IEndpointDescriptionFactory
     {
         ResourceListing CreateResourceListing(Uri uri, string controllerName, IEnumerable<ApiDescription> apiDescs);
         IList<ResourceSummary> CreateApiElements(IEnumerable<ApiDescription> apiDescs);
     }
 
-    public class ResourceListingFactory : IResourceListingFactory
+    public class EndpointDescriptionFactory : IEndpointDescriptionFactory
     {
         private readonly string _appVirtualPath;
 
-        public ResourceListingFactory():this(HttpRuntime.AppDomainAppVirtualPath){}
+        public EndpointDescriptionFactory():this(HttpRuntime.AppDomainAppVirtualPath){}
 
-        public ResourceListingFactory(string appVirtualPath)
+        public EndpointDescriptionFactory(string appVirtualPath)
         {
             _appVirtualPath = appVirtualPath.TrimEnd('/');
         }
