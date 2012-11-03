@@ -56,20 +56,23 @@ namespace Swagger.Net.Factories
 
             foreach (var desc in filteredDescs)
             {
-                var api = new Api()
-                {
-                    path = "/" + desc.RelativePath,
-                    description = desc.Documentation,
-                    operations = CreateOperations(desc, null)
-                };
-
-                // todo: add operations;=
-
+                var api = CreateApi(desc);
                 rtnApis.Add(api);
-
-
             }
+
             return rtnApis;
+        }
+
+        public Api CreateApi(ApiDescription desc)
+        {
+            var ops = CreateOperations(desc, null);
+            var api = new Api()
+                          {
+                              path = "/" + desc.RelativePath,
+                              description = desc.Documentation,
+                              operations = ops
+                          };
+            return api;
         }
 
         public IList<Operation> CreateOperations(ApiDescription desc, XmlCommentDocumentationProvider docProvider)

@@ -61,6 +61,7 @@
     <Compile Include="XmlCommentDocumentationProvider.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="doc\ApiExplorerModels.cd" />
     <None Include="doc\SwaggerModels.cd" />
     <None Include="packages.config" />
   </ItemGroup>
