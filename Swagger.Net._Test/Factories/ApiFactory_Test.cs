@@ -11,18 +11,19 @@ using Microsoft.QualityTools.Testing.Fakes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Swagger.Net.Factories;
+using Swagger.Net.Models;
 
 namespace Swagger.Net._Test.Factories
 {
     [TestClass]
     public class ApiFactory_Test
     {
-        const string ROOT = "http://www.google.com";
-        const string VIRTUAL_DIR = "/the/vdir/of/app";
-        const string CONTROLLER_NAME = "myXXController";
-        const string RELATIVE_PATH = "SOME/RELATIVE/path";
-        const string DOCUMENTATION = "SOME DOCUmenation that si used";
-        private Uri _uri = new Uri(ROOT + "/this/is?field=3&test=mytest");
+        private const string ROOT = "http://www.google.com";
+        private const string VIRTUAL_DIR = "/the/vdir/of/app";
+        private const string CONTROLLER_NAME = "myXXController";
+        private const string RELATIVE_PATH = "SOME/RELATIVE/path";
+        private const string DOCUMENTATION = "SOME DOCUmenation that si used";
+        private readonly Uri _uri = new Uri(ROOT + "/this/is?field=3&test=mytest");
 
         [TestMethod]
         public void Test()
@@ -30,25 +31,21 @@ namespace Swagger.Net._Test.Factories
             using (ShimsContext.Create())
             {
                 // Arrange
-                var apiDesc = GetApiDescription();
-                var descriptions = new List<ApiDescription>(){ apiDesc };
+                ApiDescription apiDesc = GetApiDescription();
+                var descriptions = new List<ApiDescription> {apiDesc};
                 var factory = new ApiFactory(VIRTUAL_DIR);
 
                 // Act
-                var result = factory.CreateResource(_uri, CONTROLLER_NAME, descriptions);
+                Resource result = factory.CreateResource(_uri, CONTROLLER_NAME, descriptions);
 
                 // Asset (visually)
                 Debug.WriteLine(JsonConvert.SerializeObject(result));
             }
-
-
-
-
         }
 
         private static ApiDescription GetApiDescription()
         {
-            var apiDesc = new ApiDescription()
+            var apiDesc = new ApiDescription
                               {
                                   RelativePath = RELATIVE_PATH,
                                   Documentation = DOCUMENTATION,
@@ -56,11 +53,13 @@ namespace Swagger.Net._Test.Factories
                                   HttpMethod = HttpMethod.Get
                               };
 
-            var parameter = CreateParameter("pname", typeof (string), false);
+            StubHttpParameterDescriptor parameter = CreateParameter("pname", typeof (string), false);
 
-            apiDesc.ActionDescriptor = new StubHttpActionDescriptor()
-                                           {GetParameters01 = () => new BindingList<HttpParameterDescriptor>() {parameter}};
-            apiDesc.ActionDescriptor.ControllerDescriptor = new ShimHttpControllerDescriptor() {};
+            apiDesc.ActionDescriptor = new StubHttpActionDescriptor
+                                           {
+                                               GetParameters01 = () => new BindingList<HttpParameterDescriptor> {parameter}
+                                           };
+            apiDesc.ActionDescriptor.ControllerDescriptor = new ShimHttpControllerDescriptor {};
             apiDesc.ActionDescriptor.ControllerDescriptor.ControllerName = CONTROLLER_NAME;
             return apiDesc;
         }
