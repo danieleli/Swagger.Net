@@ -58,19 +58,26 @@ namespace Swagger.Net
             return false;
         }
 
-        private Resource GetDocs(HttpActionContext actionContext)
+        private ResourceDescription GetDocs(HttpActionContext actionContext)
         {
             var uri = actionContext.Request.RequestUri;
             var ctlrName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
 
-            var docs = _factory.CreateApiDescription(uri, ctlrName, _apiDescriptions);
+            var docs = _factory.CreateApiDescription(uri, ctlrName);
+
+            foreach (var api in _apiDescriptions)
+            {
+                // populate
+                //docs.apis.add(?)
+               // docs.models.add(?)
+            }
 
             return docs;
         }
         
-        private static HttpResponseMessage WrapResponse(JsonMediaTypeFormatter formatter, Resource docs)
+        private static HttpResponseMessage WrapResponse(JsonMediaTypeFormatter formatter, ResourceDescription docs)
         {
-            var responseContent = new ObjectContent<Resource>(docs, formatter);
+            var responseContent = new ObjectContent<ResourceDescription>(docs, formatter);
             var response = new HttpResponseMessage { Content = responseContent };
             return response;
         }

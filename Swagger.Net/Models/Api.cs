@@ -13,9 +13,9 @@ namespace Swagger.Net.Models
     //  apis: [...]
     //  models: [...]  
     //}
-    public class Resource
+    public class ResourceDescription
     {
-        public Resource()
+        public ResourceDescription()
         {
             this.apis = new List<Api>();
             this.models = new List<Model>();

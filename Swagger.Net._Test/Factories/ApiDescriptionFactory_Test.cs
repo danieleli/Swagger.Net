@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Reflection;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Web.Http.Routing;
@@ -27,20 +28,28 @@ namespace Swagger.Net._Test.Factories
         private readonly Uri _uri = new Uri(ROOT + "/this/is?field=3&test=mytest");
 
         [TestMethod]
-        public void Test()
+        public void CreateApiDesc_PopulatesRootDescProperties()
         {
-            
-                // Arrange
-                ApiDescription apiDesc = GetApiDescription();
-                var descriptions = new List<ApiDescription> {apiDesc};
-                var factory = new ApiDescriptionFactory(VIRTUAL_DIR);
 
-                // Act
-                Resource result = factory.CreateApiDescription(_uri, CONTROLLER_NAME, descriptions);
+            // Arrange
+            ApiDescription apiDesc = GetApiDescription();
+            var descriptions = new List<ApiDescription> { apiDesc };
+            var factory = new ApiDescriptionFactory(VIRTUAL_DIR);
 
-                // Asset (visually)
-                Debug.WriteLine(JsonConvert.SerializeObject(result));
-            
+            // Act
+            var result = factory.CreateApiDescription(_uri, CONTROLLER_NAME);
+
+            // Asset
+            var expectedVersion = "1.2.3.4";
+
+            Assert.AreEqual(expectedVersion, result.apiVersion, "api version");
+            Assert.AreEqual(SwaggerConstants.SWAGGER_VERSION, result.swaggerVersion, "SwaggerVersion");
+            Assert.AreEqual(ROOT + VIRTUAL_DIR, result.basePath, "BasePath");
+            Assert.AreEqual(CONTROLLER_NAME, result.resourcePath, "resourcePath");
+            Assert.AreEqual(0, result.apis.Count, "Api count");
+            Assert.AreEqual(0, result.models.Count, "model count");
+
+            Debug.WriteLine(JsonConvert.SerializeObject(result));
         }
 
         private static ApiDescription GetApiDescription(string docs = DOCUMENTATION, HttpMethod method = null)
@@ -61,17 +70,17 @@ namespace Swagger.Net._Test.Factories
 
         private static HttpActionDescriptor CreateActionDescriptor(string ctrlName = CONTROLLER_NAME, string paramName = "pname", bool isOptional = false, Type paramType = null)
         {
-            paramType = paramType ?? typeof (string);
+            paramType = paramType ?? typeof(string);
             var param = CreateParameter(paramName, paramType, isOptional);
-            var parameters = new BindingList<HttpParameterDescriptor> {param};
+            var parameters = new BindingList<HttpParameterDescriptor> { param };
 
             var actionDesc = MockRepository.GenerateStub<HttpActionDescriptor>();
             actionDesc.Stub(x => x.GetParameters()).Return(parameters);
 
             var ctlrDesc = MockRepository.GenerateStub<HttpControllerDescriptor>();
-            ctlrDesc.ControllerName= ctrlName;
+            ctlrDesc.ControllerName = ctrlName;
 
-            actionDesc.ControllerDescriptor= ctlrDesc;
+            actionDesc.ControllerDescriptor = ctlrDesc;
             return actionDesc;
         }
 
@@ -81,7 +90,7 @@ namespace Swagger.Net._Test.Factories
             p.Stub(x => x.ParameterName).Return(name);
             p.Stub(x => x.ParameterType).Return(type);
             p.Stub(x => x.IsOptional).Return(isOptional);
-            
+
             return p;
         }
     }

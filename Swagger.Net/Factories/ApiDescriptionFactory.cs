@@ -13,7 +13,7 @@ namespace Swagger.Net.Factories
 {
     public interface IApiDescriptionFactory
     {
-        Resource CreateApiDescription(Uri uri, string controllerName, IEnumerable<ApiDescription> apiDescs);
+        ResourceDescription CreateApiDescription(Uri uri, string controllerName);
         IList<Api> CreateApiElements( string controllerName, IEnumerable<ApiDescription> descriptions);
         IList<Operation> CreateOperations(ApiDescription desc, XmlCommentDocumentationProvider docProvider);
         IList<Parameter> CreateParameters(Collection<HttpParameterDescriptor> httpParams);
@@ -29,18 +29,15 @@ namespace Swagger.Net.Factories
             _appVirtualPath = appVirtualPath.TrimEnd('/');
         }
 
-        public Resource CreateApiDescription(Uri uri, string controllerName, IEnumerable<ApiDescription> apiDescs)
+        public ResourceDescription CreateApiDescription(Uri uri, string controllerName)
         {
-            var apis = CreateApiElements(controllerName, apiDescs);
 
-            var rtnResource = new Resource()
+            var rtnResource = new ResourceDescription()
             {
                 apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString(),
                 swaggerVersion = SwaggerConstants.SWAGGER_VERSION,
                 basePath = uri.GetLeftPart(UriPartial.Authority) + _appVirtualPath,
-                resourcePath = controllerName,
-                apis = apis,
-                models = null
+                resourcePath = controllerName
             };
 
             return rtnResource;
