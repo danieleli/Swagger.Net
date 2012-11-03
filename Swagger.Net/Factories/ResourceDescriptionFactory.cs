@@ -99,14 +99,17 @@ namespace Swagger.Net.Factories
         {
 
             var returnType = desc.ActionDescriptor.ReturnType == null ? "void" : desc.ActionDescriptor.ReturnType.Name;
+            var paramtrs= CreateParameters(desc.ParameterDescriptions);
+            var remarks = _docProvider.GetNotes(desc.ActionDescriptor);
+
             var rApiOperation = new Operation()
             {
                 httpMethod = desc.HttpMethod.ToString(),
                 nickname = desc.ActionDescriptor.ActionName,
                 responseClass = returnType,
                 summary = desc.Documentation,
-                notes = _docProvider.GetNotes(desc.ActionDescriptor),
-                parameters = CreateParameters(desc.ParameterDescriptions)
+                notes = remarks,
+                parameters = paramtrs
             };
 
             return new List<Operation>() { rApiOperation };
