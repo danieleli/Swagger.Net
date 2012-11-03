@@ -7,7 +7,6 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Controllers.Fakes;
 using System.Web.Http.Description;
 using System.Web.Http.Routing;
-using Microsoft.QualityTools.Testing.Fakes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Swagger.Net.Factories;

@@ -288,5 +288,6 @@ namespace Swagger.Net
             return node;
 
         }
+
     }
 }
