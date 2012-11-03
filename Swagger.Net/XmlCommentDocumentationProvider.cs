@@ -67,16 +67,6 @@ namespace Swagger.Net
             return "No Documentation Found.";
         }
 
-        public virtual bool GetRequired(HttpParameterDescriptor parameterDescriptor)
-        {
-            var reflectedParameterDescriptor = parameterDescriptor as ReflectedHttpParameterDescriptor;
-            if (reflectedParameterDescriptor != null)
-            {
-                return !reflectedParameterDescriptor.ParameterInfo.IsOptional;
-            }
-
-            return true;
-        }
 
         public virtual string GetRemarks(HttpActionDescriptor actionDescriptor)
         {
@@ -184,7 +174,7 @@ namespace Swagger.Net
             return documentation.ToString();
         }
 
-        private void MapElement(string elementName, XPathNavigator sourceDoc, JObject targetDoc)
+        private static void MapElement(string elementName, XPathNavigator sourceDoc, JObject targetDoc)
         {
             var sourceNode = sourceDoc.SelectSingleNode(elementName);
             targetDoc[elementName] = sourceNode == null ? "" : sourceNode.InnerXml.Trim();

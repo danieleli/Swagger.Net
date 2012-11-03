@@ -24,6 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -56,7 +57,7 @@
     <Compile Include="Factories\EndpointDescriptionFactory.cs" />
     <Compile Include="SwaggerConstants.cs" />
     <Compile Include="Models\Api.cs" />
-    <Compile Include="SwaggerActionFilter.cs" />
+    <Compile Include="SwaggerActionFilterAttribute.cs" />
     <Compile Include="SwaggerController.cs" />
     <Compile Include="XmlCommentDocumentationProvider.cs" />
   </ItemGroup>

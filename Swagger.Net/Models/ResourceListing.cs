@@ -29,7 +29,7 @@ namespace Swagger.Net
         public string swaggerVersion { get; set; }
         public string basePath { get; set; }
         public string resourcePath { get; set; }
-        public IList<ResourceSummary> apis { get; set; }
+        public IList<ResourceSummary> apis { get; private set; }
     }
 
 

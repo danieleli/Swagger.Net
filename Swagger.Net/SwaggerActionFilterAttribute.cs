@@ -15,20 +15,21 @@ namespace Swagger.Net
     /// <summary>
     /// Determines if any request hit the Swagger route. Moves on if not, otherwise responds with JSON Swagger spec doc
     /// </summary>
-    public class SwaggerActionFilter : ActionFilterAttribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    public sealed class SwaggerActionFilterAttribute : ActionFilterAttribute
     {
         #region --- fields & ctors ---
         
         private readonly IEnumerable<ApiDescription> _apiDescriptions;
         private readonly IResourceDescriptionFactory _factory;
 
-        public SwaggerActionFilter()
+        public SwaggerActionFilterAttribute()
         {
             _factory = new ResourceDescriptionFactory();
             _apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
         }
 
-        public SwaggerActionFilter(IEnumerable<ApiDescription> apiDescriptions, IResourceDescriptionFactory factory)
+        public SwaggerActionFilterAttribute(IEnumerable<ApiDescription> apiDescriptions, IResourceDescriptionFactory factory)
         {
             _apiDescriptions = apiDescriptions;
             _factory = factory;
@@ -43,8 +44,9 @@ namespace Swagger.Net
 
             var docs = GetDocs(actionContext);
             var formatter = actionContext.ControllerContext.Configuration.Formatters.JsonFormatter;
-
-            actionContext.Response = WrapResponse(formatter, docs);
+            var response = WrapResponse(formatter, docs);
+            actionContext.Response = response;
+            response.Dispose();
         }
 
         #region --- helpers ---
@@ -67,7 +69,12 @@ namespace Swagger.Net
             var ctlrName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
 
             var docs = _factory.CreateResourceDescription(uri, ctlrName);
-            docs.apis = _factory.CreateApiElements(ctlrName, _apiDescriptions);
+            var apis = _factory.CreateApiElements(ctlrName, _apiDescriptions);
+
+            foreach (var api in apis)
+            {
+                docs.apis.Add(api);
+            }
 
             // todo: models
             // docs.models = null;

@@ -16,7 +16,7 @@ namespace Swagger.Net.Factories
     {
         ResourceDescription CreateResourceDescription(Uri uri, string controllerName);
         IList<Api> CreateApiElements(string controllerName, IEnumerable<ApiDescription> descriptions);
-        IList<Operation> CreateOperations(ApiDescription desc);
+        IList<Operation> CreateOperations(ApiDescription apiDesc);
         IList<Parameter> CreateParameters(Collection<ApiParameterDescription> httpParams, string relativePath);
         Api CreateApi(ApiDescription apiDesc);
         Parameter CreateParameter(ApiParameterDescription parameterDescription, string relativePath);
@@ -36,9 +36,9 @@ namespace Swagger.Net.Factories
             initialize(path, docProvider);
         }
 
-        public ResourceDescriptionFactory(string virturalPath, XmlCommentDocumentationProvider docProvider)
+        public ResourceDescriptionFactory(string virtualPath, XmlCommentDocumentationProvider docProvider)
         {
-            initialize(virturalPath, docProvider);
+            initialize(virtualPath, docProvider);
         }
 
         public void initialize(string appVirtualPath, IDocumentationProvider docProvider)
@@ -85,32 +85,40 @@ namespace Swagger.Net.Factories
 
         public Api CreateApi(ApiDescription desc)
         {
-            var ops = CreateOperations(desc);
             var api = new Api()
                           {
                               path = "/" + desc.RelativePath,
-                              description = desc.Documentation,
-                              operations = ops
+                              description = desc.Documentation
                           };
+
+            var ops = CreateOperations(desc);
+            foreach (var operation in ops)
+            {
+                api.operations.Add(operation);
+            }
             return api;
         }
 
-        public IList<Operation> CreateOperations(ApiDescription desc)
+        public IList<Operation> CreateOperations(ApiDescription apiDesc)
         {
 
-            var returnType = desc.ActionDescriptor.ReturnType == null ? "void" : desc.ActionDescriptor.ReturnType.Name;
-            var paramtrs= CreateParameters(desc.ParameterDescriptions, desc.RelativePath);
-            var remarks = _docProvider.GetRemarks(desc.ActionDescriptor);
-
+            var returnType = apiDesc.ActionDescriptor.ReturnType == null ? "void" : apiDesc.ActionDescriptor.ReturnType.Name;
+            
+            var remarks = _docProvider.GetRemarks(apiDesc.ActionDescriptor);
             var rApiOperation = new Operation()
             {
-                httpMethod = desc.HttpMethod.ToString(),
-                nickname = desc.ActionDescriptor.ActionName,
+                httpMethod = apiDesc.HttpMethod.ToString(),
+                nickname = apiDesc.ActionDescriptor.ActionName,
                 responseClass = returnType,
-                summary = desc.Documentation,
+                summary = apiDesc.Documentation,
                 notes = remarks,
-                parameters = paramtrs
             };
+
+            var paramtrs = CreateParameters(apiDesc.ParameterDescriptions, apiDesc.RelativePath);
+            foreach (var parameter in paramtrs)
+            {
+                rApiOperation.parameters.Add(parameter);
+            }
 
             return new List<Operation>() { rApiOperation };
         }
@@ -127,15 +135,15 @@ namespace Swagger.Net.Factories
             return rtn;
         }
 
-        public Parameter CreateParameter(ApiParameterDescription param, string relativePath)
+        public Parameter CreateParameter(ApiParameterDescription parameterDescription, string relativePath)
         {
             
 
             var paramType = SwaggerConstants.BODY;
-            if (param.Source == ApiParameterSource.FromUri)
+            if (parameterDescription.Source == ApiParameterSource.FromUri)
             {
                 
-                if (relativePath.IndexOf("{" + param.Name + "}") > -1)
+                if (relativePath.IndexOf("{" + parameterDescription.Name + "}") > -1)
                 {
                     paramType = SwaggerConstants.PATH;
                 }
@@ -147,14 +155,14 @@ namespace Swagger.Net.Factories
             }
 
 
-
-
+            var isRequired = !parameterDescription.ParameterDescriptor.IsOptional;
+                
             var rtn = new Parameter()
                             {
-                                name = param.Name,
-                                dataType = param.ParameterDescriptor.ParameterType.Name,
-                                required = !param.ParameterDescriptor.IsOptional,
-                                description = param.Documentation,
+                                name = parameterDescription.Name,
+                                dataType = parameterDescription.ParameterDescriptor.ParameterType.Name,
+                                required = isRequired,
+                                description = parameterDescription.Documentation,
                                 paramType = paramType
                                 // allowMultiple = p.ParameterDescriptor.
                                 // allowableValues

@@ -39,7 +39,7 @@ namespace Swagger.Net.WebApi.App_Start
                 throw new Exception("Please enable \"XML documentation file\" in project properties with default (bin\\Swagger.Net.WebApi.XML) value or edit value in App_Start\\SwaggerNet.cs");
             }
 
-            config.Filters.Add(new SwaggerActionFilter());
+            config.Filters.Add(new SwaggerActionFilterAttribute());
 
         }
     }
