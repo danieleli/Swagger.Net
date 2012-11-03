@@ -23,6 +23,7 @@ namespace Swagger.Net._Test.Factories
         private const string CONTROLLER_NAME = "myXXController";
         private const string RELATIVE_PATH = "SOME/RELATIVE/path";
         private const string DOCUMENTATION = "SOME DOCUmenation that si used";
+        private const string ROUTE_TEMPLATE = "fjdkl/ffdklsa/{cc}/{id}";
         private readonly Uri _uri = new Uri(ROOT + "/this/is?field=3&test=mytest");
 
         [TestMethod]
@@ -42,32 +43,33 @@ namespace Swagger.Net._Test.Factories
             
         }
 
-        private static ApiDescription GetApiDescription()
+        private static ApiDescription GetApiDescription(string docs = DOCUMENTATION, HttpMethod method = null)
         {
             var actionDesc = CreateActionDescriptor();
-
+            method = method ?? HttpMethod.Get;
             var apiDesc = new ApiDescription
             {
                 RelativePath = RELATIVE_PATH,
-                Documentation = DOCUMENTATION,
-                Route = new HttpRoute("fjdkl/ffdklsa/{cc}/{id}", new HttpRouteValueDictionary()),
-                HttpMethod = HttpMethod.Get,
+                Documentation = docs,
+                Route = new HttpRoute(ROUTE_TEMPLATE, new HttpRouteValueDictionary()),
+                HttpMethod = method,
                 ActionDescriptor = actionDesc
             };
 
             return apiDesc;
         }
 
-        private static HttpActionDescriptor CreateActionDescriptor()
+        private static HttpActionDescriptor CreateActionDescriptor(string ctrlName = CONTROLLER_NAME, string paramName = "pname", bool isOptional = false, Type paramType = null)
         {
-            var param = CreateParameter("pname", typeof (string), false);
+            paramType = paramType ?? typeof (string);
+            var param = CreateParameter(paramName, paramType, isOptional);
             var parameters = new BindingList<HttpParameterDescriptor> {param};
 
             var actionDesc = MockRepository.GenerateStub<HttpActionDescriptor>();
             actionDesc.Stub(x => x.GetParameters()).Return(parameters);
 
             var ctlrDesc = MockRepository.GenerateStub<HttpControllerDescriptor>();
-            ctlrDesc.ControllerName= CONTROLLER_NAME;
+            ctlrDesc.ControllerName= ctrlName;
 
             actionDesc.ControllerDescriptor= ctlrDesc;
             return actionDesc;
