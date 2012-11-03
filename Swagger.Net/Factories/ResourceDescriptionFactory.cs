@@ -133,6 +133,8 @@ namespace Swagger.Net.Factories
                                 required = !p.ParameterDescriptor.IsOptional,
                                 description = p.Documentation,
                                 paramType = p.Source.ToString()
+                                // allowMultiple = p.ParameterDescriptor.
+                                // allowableValues
                             };
             return rtn;
         }

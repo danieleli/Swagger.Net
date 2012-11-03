@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Rhino.Mocks;
 using Swagger.Net.Factories;
 using Swagger.Net.Models;
+using Swagger.Net.WebApi.Models;
 
 namespace Swagger.Net._Test.Factories
 {
@@ -30,13 +31,13 @@ namespace Swagger.Net._Test.Factories
 
         private IResourceDescriptionFactory _factory;
 
-        
+
         public void Setup()
         {
             var path = @"C:\Users\danieleli\Documents\_projects\Swagger.Net\Swagger.Net.WebApi\bin\Swagger.Net.WebApi.XML";
             var docProvider = new XmlCommentDocumentationProvider(path);
             _factory = new ResourceDescriptionFactory(VIRTUAL_DIR, docProvider);
-            
+
         }
 
         [TestMethod]
@@ -81,7 +82,6 @@ namespace Swagger.Net._Test.Factories
             Debug.WriteLine(JsonConvert.SerializeObject(apis));
         }
 
-
         [TestMethod]
         public void CreateApiElements_WithNoMatchingApiDescriptions_ReturnsNoApis()
         {
@@ -119,41 +119,78 @@ namespace Swagger.Net._Test.Factories
         [TestMethod]
         public void CreateParameter_Returns()
         {
-            Setup();
             // Arrange
-            var config = GlobalConfiguration.Configuration;
-            var path = @"C:\Users\danieleli\Documents\_projects\Swagger.Net\Swagger.Net.WebApi\bin\Swagger.Net.WebApi.XML";
-            var docProvider = new XmlCommentDocumentationProvider(path);
-            config.Services.Replace(typeof(IDocumentationProvider), docProvider);
-
-            var apis = GlobalConfiguration.Configuration.Services.GetApiExplorer();
+            Setup();
+            var paramSource = ApiParameterSource.FromUri;
+            var dataType = typeof (BlogPost);
+            var isOptional = true;
+            var paramName = "param3";
             
-
-            foreach (var api in apis.ApiDescriptions)
-            {
-                
-                foreach (var param in api.ParameterDescriptions)
-                {
-                    var rtnParam = _factory.CreateParameter(param);
-                    Debug.WriteLine(JsonConvert.SerializeObject(rtnParam));
-                }
-            }
+            var input = TestHelper.CreateParameter(paramName, dataType, isOptional, paramSource);
             
+            
+            // Act
+            var rtnParam = _factory.CreateParameter(input);
+
+
+            // Assert
+            Assert.AreEqual(dataType.Name, rtnParam.dataType, "param source (body, uri, unknown");
+            Assert.AreEqual(!isOptional, rtnParam.required, "is required");
+            Assert.AreEqual(paramName, rtnParam.name, "param name");
+            Assert.AreEqual(paramSource.ToString(), rtnParam.paramType, "param Type");
+
+            Debug.WriteLine(JsonConvert.SerializeObject(rtnParam));
+        }
+
+        [TestMethod]
+        public void CreateParameter_Sets_AllowableValues()
+        {
+            // Arrange
+            Setup();
+            var paramSource = ApiParameterSource.FromUri;
+            var dataType = typeof(BlogPost);
+            var isOptional = true;
+            var paramName = "param3";
+
+            var input = TestHelper.CreateParameter(paramName, dataType, isOptional, paramSource);
+
 
             // Act
-            
+            var rtnParam = _factory.CreateParameter(input);
 
-            // Asset
-            //Assert.AreEqual(0, apis.Count, "api count");
+            var expected = new object();
+            // Assert
+            Assert.AreEqual(expected, rtnParam.allowableValues, "Allowable values");
+            Debug.WriteLine(JsonConvert.SerializeObject(rtnParam));
+        }
 
-            
+        [TestMethod]
+        public void CreateParameter_Sets_AllowableMultiple()
+        {
+            // Arrange
+            Setup();
+            var paramSource = ApiParameterSource.FromUri;
+            var dataType = typeof(BlogPost);
+            var isOptional = true;
+            var paramName = "param3";
+
+            var input = TestHelper.CreateParameter(paramName, dataType, isOptional, paramSource);
+
+
+            // Act
+            var rtnParam = _factory.CreateParameter(input);
+
+            var expected = new object();
+            // Assert
+            Assert.AreEqual(expected, rtnParam.allowMultiple, "Allowable values");
+            Debug.WriteLine(JsonConvert.SerializeObject(rtnParam));
         }
 
         public static class TestHelper
         {
             public static ApiDescription GetApiDescription(string ctlrName = CONTROLLER_NAME, string docs = DOCUMENTATION, HttpMethod method = null)
             {
-                var actionDesc = CreateActionDescriptor(ctrlName:ctlrName);
+                var actionDesc = CreateActionDescriptor(ctrlName: ctlrName);
                 method = method ?? HttpMethod.Get;
                 var apiDesc = new ApiDescription
                 {
@@ -170,8 +207,8 @@ namespace Swagger.Net._Test.Factories
             public static HttpActionDescriptor CreateActionDescriptor(string ctrlName, string paramName = "pname", bool isOptional = false, Type paramType = null)
             {
                 paramType = paramType ?? typeof(string);
-                var param = CreateParameter(paramName, paramType, isOptional);
-                var parameters = new BindingList<HttpParameterDescriptor> { param };
+                var param = CreateParameter(paramName, paramType, isOptional, ApiParameterSource.FromBody);
+                var parameters = new BindingList<HttpParameterDescriptor> { param.ParameterDescriptor };
 
                 var actionDesc = MockRepository.GenerateStub<HttpActionDescriptor>();
                 actionDesc.Stub(x => x.GetParameters()).Return(parameters);
@@ -183,17 +220,18 @@ namespace Swagger.Net._Test.Factories
                 return actionDesc;
             }
 
-            public static HttpParameterDescriptor CreateParameter(string name, Type type, bool isOptional)
+            public static ApiParameterDescription CreateParameter(string name, Type type, bool isOptional, ApiParameterSource source)
             {
                 var p = MockRepository.GenerateStub<HttpParameterDescriptor>();
                 p.Stub(x => x.ParameterName).Return(name);
                 p.Stub(x => x.ParameterType).Return(type);
                 p.Stub(x => x.IsOptional).Return(isOptional);
 
-                return p;
+                var apiParam = new ApiParameterDescription() {ParameterDescriptor = p, Name = name, Source = source, Documentation = "yada"};
+                return apiParam;
             }
         }
 
-  
+
     }
 }
