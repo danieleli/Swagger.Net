@@ -3,31 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using System.Web.Http;
 using System.Web.Http.Description;
 
 namespace Swagger.Net.Factories
 {
     public interface IEndpointDescriptionFactory
     {
-        ResourceListing CreateResourceListing(Uri uri, string controllerName, IEnumerable<ApiDescription> apiDescs);
+        ResourceListing CreateResourceListing(Uri uri, string controllerName);
         IList<ResourceSummary> CreateApiElements(IEnumerable<ApiDescription> apiDescs);
     }
 
     public class EndpointDescriptionFactory : IEndpointDescriptionFactory
     {
-        private readonly string _appVirtualPath;
+        private string _appVirtualPath;
+        private IEnumerable<ApiDescription> _apiDescriptions;
 
-        public EndpointDescriptionFactory():this(HttpRuntime.AppDomainAppVirtualPath){}
-
-        public EndpointDescriptionFactory(string appVirtualPath)
+        public EndpointDescriptionFactory()
         {
-            _appVirtualPath = appVirtualPath.TrimEnd('/');
+            Init(HttpRuntime.AppDomainAppVirtualPath, GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions);
         }
 
-        public ResourceListing CreateResourceListing(Uri uri, string controllerName, IEnumerable<ApiDescription> apiDescs)
+        public EndpointDescriptionFactory(string appVirtualPath, IEnumerable<ApiDescription> apiDescs)
+        {
+            Init(appVirtualPath, apiDescs);
+        }
+
+        private void Init(string appVirtualPath, IEnumerable<ApiDescription> apiDescs)
+        {
+            _appVirtualPath = appVirtualPath.TrimEnd('/');
+            _apiDescriptions = apiDescs;
+        }
+
+        
+
+        public ResourceListing CreateResourceListing(Uri uri, string controllerName)
         {
             var apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString();
-            var apis = CreateApiElements(apiDescs);
+            var apis = CreateApiElements(_apiDescriptions);
 
             var rtnListing = new ResourceListing()
             {
@@ -40,6 +53,7 @@ namespace Swagger.Net.Factories
 
             return rtnListing;
         }
+
 
         public IList<ResourceSummary> CreateApiElements(IEnumerable<ApiDescription> apiDescs)
         {

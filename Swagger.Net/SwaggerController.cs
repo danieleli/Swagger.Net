@@ -14,7 +14,8 @@ namespace Swagger.Net
 
     public class SwaggerController : ApiController
     {
-        private readonly IEnumerable<ApiDescription> _apiDescriptions;
+        #region --- fields & ctors ---
+
         private readonly IEndpointDescriptionFactory _resourceFactory;
 
         /// <summary>
@@ -22,20 +23,18 @@ namespace Swagger.Net
         /// </summary>
         public SwaggerController()
         {
-            _apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
             _resourceFactory = new EndpointDescriptionFactory();
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerController"/> class.
         /// </summary>
-        /// <param name="apiDescriptions">The apiExplorer to use.</param>
-        /// <param name="docProvider">The xmlDocProvider to use.</param>
-        public SwaggerController(IEnumerable<ApiDescription> apiDescriptions, IDocumentationProvider docProvider, IEndpointDescriptionFactory resourceFactory)
+        public SwaggerController(IEndpointDescriptionFactory resourceFactory)
         {
-            _apiDescriptions = apiDescriptions;
             _resourceFactory = resourceFactory;
         }
+
+        #endregion --- fields & ctors ---
 
         /// <summary>
         /// Get the resource description of the api for swagger documentation
@@ -45,15 +44,33 @@ namespace Swagger.Net
         /// <returns>JSON document representing structure of API</returns>
         public HttpResponseMessage Get()
         {
-            var uri = base.ControllerContext.Request.RequestUri;
-            var controllerName = base.ControllerContext.ControllerDescriptor.ControllerName;
-            var resourceListing = _resourceFactory.CreateResourceListing(uri, controllerName, _apiDescriptions);
-            
+            var resourceListing = GetResourceListing();
+            var resp = WrapResponse(resourceListing);
+            return resp;
+        }
+
+        private HttpResponseMessage WrapResponse(ResourceListing resourceListing)
+        {
+            var content = FormatContent(resourceListing);
+
+            var resp = new HttpResponseMessage {Content = content};
+            return resp;
+        }
+
+        private ObjectContent<ResourceListing> FormatContent(ResourceListing resourceListing)
+        {
             var formatter = ControllerContext.Configuration.Formatters.JsonFormatter;
             var content = new ObjectContent<ResourceListing>(resourceListing, formatter);
-            
-            var resp = new HttpResponseMessage { Content = content };
-            return resp;
+            return content;
+        }
+
+        private ResourceListing GetResourceListing()
+        {
+            var uri = base.ControllerContext.Request.RequestUri;
+            var controllerName = base.ControllerContext.ControllerDescriptor.ControllerName;
+
+            var resourceListing = _resourceFactory.CreateResourceListing(uri, controllerName);
+            return resourceListing;
         }
     }
 }

@@ -24,6 +24,7 @@ namespace Swagger.Net.Factories
 
     public class ResourceDescriptionFactory : IResourceDescriptionFactory
     {
+        #region --- fields & ctors ---
 
         private string _appVirtualPath;
         private XmlCommentDocumentationProvider _docProvider;
@@ -46,6 +47,8 @@ namespace Swagger.Net.Factories
             _appVirtualPath = appVirtualPath.TrimEnd('/');
             _docProvider = (XmlCommentDocumentationProvider) docProvider;
         }
+
+        #endregion --- fields & ctors ---
 
         public ResourceDescription CreateResourceDescription(Uri uri, string controllerName)
         {
