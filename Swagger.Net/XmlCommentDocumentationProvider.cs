@@ -78,7 +78,7 @@ namespace Swagger.Net
             return true;
         }
 
-        public virtual string GetNotes(HttpActionDescriptor actionDescriptor)
+        public virtual string GetRemarks(HttpActionDescriptor actionDescriptor)
         {
             var memberNode = GetMemberNode(actionDescriptor);
             if (memberNode != null)

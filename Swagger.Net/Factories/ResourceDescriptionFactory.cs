@@ -100,7 +100,7 @@ namespace Swagger.Net.Factories
 
             var returnType = desc.ActionDescriptor.ReturnType == null ? "void" : desc.ActionDescriptor.ReturnType.Name;
             var paramtrs= CreateParameters(desc.ParameterDescriptions);
-            var remarks = _docProvider.GetNotes(desc.ActionDescriptor);
+            var remarks = _docProvider.GetRemarks(desc.ActionDescriptor);
 
             var rApiOperation = new Operation()
             {
