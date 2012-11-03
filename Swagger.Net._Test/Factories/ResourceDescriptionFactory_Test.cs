@@ -18,6 +18,10 @@ using Swagger.Net.WebApi.Models;
 
 namespace Swagger.Net._Test.Factories
 {
+    // todo: parameter: allowableValues and allowMultiple
+    // todo: errorResponse
+    // todo: models
+
     [TestClass]
     public class ResourceDescriptionFactory_Test
     {
@@ -26,7 +30,7 @@ namespace Swagger.Net._Test.Factories
         private const string CONTROLLER_NAME = "myXXController";
         private const string RELATIVE_PATH = "SOME/RELATIVE/path";
         private const string DOCUMENTATION = "SOME DOCUmenation that si used";
-        private const string ROUTE_TEMPLATE = "fjdkl/ffdklsa/{cc}/{id}";
+        private const string ROUTE_TEMPLATE = "fjdkl/ffdklsa/{myparam}/{id}";
         private readonly Uri _uri = new Uri(ROOT + "/this/is?field=3&test=mytest");
 
         private IResourceDescriptionFactory _factory;
@@ -117,7 +121,7 @@ namespace Swagger.Net._Test.Factories
         }
 
         [TestMethod]
-        public void CreateParameter_Returns()
+        public void CreateParameter_ReturnsWith_DataType_IsOptional_ParamName_ParamType()
         {
             // Arrange
             Setup();
@@ -137,8 +141,7 @@ namespace Swagger.Net._Test.Factories
             Assert.AreEqual(dataType.Name, rtnParam.dataType, "param source (body, uri, unknown");
             Assert.AreEqual(!isOptional, rtnParam.required, "is required");
             Assert.AreEqual(paramName, rtnParam.name, "param name");
-            Assert.AreEqual(paramSource.ToString(), rtnParam.paramType, "param Type");
-
+            Assert.AreEqual(SwaggerConstants.QUERY, rtnParam.paramType, "param Type");
             Debug.WriteLine(JsonConvert.SerializeObject(rtnParam));
         }
 
@@ -165,6 +168,69 @@ namespace Swagger.Net._Test.Factories
         }
 
         [TestMethod]
+        public void CreateParameter_Returns_FromUri_When_ParamName_IsInRoute()
+        {
+            // Arrange
+            Setup();
+            var paramSource = ApiParameterSource.FromUri;
+            var dataType = typeof(BlogPost);
+            var isOptional = true;
+            var paramName = "myparam";
+
+            var input = TestHelper.CreateParameter(paramName, dataType, isOptional, paramSource);
+
+
+            // Act
+            var rtnParam = _factory.CreateParameter(input, ROUTE_TEMPLATE);
+
+            // Assert
+            Assert.AreEqual(SwaggerConstants.PATH, rtnParam.paramType, "param Type");
+            Debug.WriteLine(JsonConvert.SerializeObject(rtnParam));
+        }
+
+        [TestMethod]
+        public void CreateParameter_Returns_FromBody_When_ParamSouce_IsFromBody()
+        {
+            // Arrange
+            Setup();
+            var paramSource = ApiParameterSource.FromBody;
+            var dataType = typeof(BlogPost);
+            var isOptional = true;
+            var paramName = "myparam";
+
+            var input = TestHelper.CreateParameter(paramName, dataType, isOptional, paramSource);
+
+
+            // Act
+            var rtnParam = _factory.CreateParameter(input, ROUTE_TEMPLATE);
+
+            // Assert
+            Assert.AreEqual(SwaggerConstants.BODY, rtnParam.paramType, "param Type");
+            Debug.WriteLine(JsonConvert.SerializeObject(rtnParam));
+        }
+
+        [TestMethod]
+        public void CreateParameter_Returns_FromBody_When_ParamSouce_IsUnknown()
+        {
+            // Arrange
+            Setup();
+            var paramSource = ApiParameterSource.Unknown;
+            var dataType = typeof(BlogPost);
+            var isOptional = true;
+            var paramName = "myparam";
+
+            var input = TestHelper.CreateParameter(paramName, dataType, isOptional, paramSource);
+
+
+            // Act
+            var rtnParam = _factory.CreateParameter(input, ROUTE_TEMPLATE);
+
+            // Assert
+            Assert.AreEqual(SwaggerConstants.BODY, rtnParam.paramType, "param Type");
+            Debug.WriteLine(JsonConvert.SerializeObject(rtnParam));
+        }
+
+        [TestMethod]
         public void CreateParameter_Sets_AllowableMultiple()
         {
             // Arrange
@@ -178,7 +244,7 @@ namespace Swagger.Net._Test.Factories
 
 
             // Act
-            var rtnParam = _factory.CreateParameter(input,"");
+            var rtnParam = _factory.CreateParameter(input, "");
 
             var expected = new object();
             // Assert
