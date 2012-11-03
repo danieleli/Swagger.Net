@@ -17,23 +17,24 @@ namespace Swagger.Net
     /// </summary>
     public class SwaggerActionFilter : ActionFilterAttribute
     {
+        #region --- fields & ctors ---
+        
         private readonly IEnumerable<ApiDescription> _apiDescriptions;
         private readonly IResourceDescriptionFactory _factory;
-        private readonly XmlCommentDocumentationProvider _docProvider;
 
         public SwaggerActionFilter()
         {
             _factory = new ResourceDescriptionFactory();
             _apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
-            _docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetDocumentationProvider();
         }
 
-        public SwaggerActionFilter(IEnumerable<ApiDescription> apiDescriptions, IDocumentationProvider docProvider, IResourceDescriptionFactory factory)
+        public SwaggerActionFilter(IEnumerable<ApiDescription> apiDescriptions, IResourceDescriptionFactory factory)
         {
             _apiDescriptions = apiDescriptions;
             _factory = factory;
-            _docProvider = (XmlCommentDocumentationProvider)docProvider;
         }
+
+        #endregion // --- fields & ctors ---
 
         // Intercept all request and handle swagger requests or pass through
         public override void OnActionExecuting(HttpActionContext actionContext)
@@ -45,6 +46,8 @@ namespace Swagger.Net
 
             actionContext.Response = WrapResponse(formatter, docs);
         }
+
+        #region --- helpers ---
 
         private bool IsDocRequest(HttpActionContext actionContext)
         {
@@ -64,17 +67,14 @@ namespace Swagger.Net
             var ctlrName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
 
             var docs = _factory.CreateResourceDescription(uri, ctlrName);
+            docs.apis = _factory.CreateApiElements(ctlrName, _apiDescriptions);
 
-            foreach (var api in _apiDescriptions)
-            {
-                // populate
-                //docs.apis.add(?)
-               // docs.models.add(?)
-            }
+            // todo: models
+            // docs.models = null;
 
             return docs;
         }
-        
+
         private static HttpResponseMessage WrapResponse(JsonMediaTypeFormatter formatter, ResourceDescription docs)
         {
             var responseContent = new ObjectContent<ResourceDescription>(docs, formatter);
@@ -82,5 +82,6 @@ namespace Swagger.Net
             return response;
         }
 
+        #endregion // --- helpers ---
     }
 }

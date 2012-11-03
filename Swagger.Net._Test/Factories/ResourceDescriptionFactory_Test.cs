@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Reflection;
+using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Web.Http.Routing;
@@ -27,6 +28,8 @@ namespace Swagger.Net._Test.Factories
         private const string ROUTE_TEMPLATE = "fjdkl/ffdklsa/{cc}/{id}";
         private readonly Uri _uri = new Uri(ROOT + "/this/is?field=3&test=mytest");
 
+        private IResourceDescriptionFactory _factory = new ResourceDescriptionFactory(VIRTUAL_DIR);
+
         [TestMethod]
         public void CreateResourceDesc_PopulatesRootDescProperties()
         {
@@ -34,10 +37,9 @@ namespace Swagger.Net._Test.Factories
             // Arrange
             ApiDescription apiDesc = TestHelper.GetApiDescription();
             var descriptions = new List<ApiDescription> { apiDesc };
-            var factory = new ResourceDescriptionFactory(VIRTUAL_DIR);
 
             // Act
-            var result = factory.CreateResourceDescription(_uri, CONTROLLER_NAME);
+            var result = _factory.CreateResourceDescription(_uri, CONTROLLER_NAME);
 
             // Asset
             var expectedVersion = "1.2.3.4";
@@ -58,10 +60,9 @@ namespace Swagger.Net._Test.Factories
             // Arrange
             ApiDescription apiDesc = TestHelper.GetApiDescription();
             var descriptions = new List<ApiDescription> { apiDesc };
-            var factory = new ResourceDescriptionFactory(VIRTUAL_DIR);
 
             // Act
-            var apis = factory.CreateApiElements(CONTROLLER_NAME, descriptions);
+            var apis = _factory.CreateApiElements(CONTROLLER_NAME, descriptions);
 
             // Asset
             Assert.AreEqual(1, apis.Count, "api count");
@@ -76,10 +77,9 @@ namespace Swagger.Net._Test.Factories
             // Arrange
             ApiDescription apiDesc = TestHelper.GetApiDescription("anotherCtlr");
             var descriptions = new List<ApiDescription> { apiDesc };
-            var factory = new ResourceDescriptionFactory(VIRTUAL_DIR);
 
             // Act
-            var apis = factory.CreateApiElements(CONTROLLER_NAME, descriptions);
+            var apis = _factory.CreateApiElements(CONTROLLER_NAME, descriptions);
 
             // Asset
             Assert.AreEqual(0, apis.Count, "api count");
@@ -93,10 +93,9 @@ namespace Swagger.Net._Test.Factories
             // Arrange
             ApiDescription apiDesc = TestHelper.GetApiDescription();
             var descriptions = new List<ApiDescription> { apiDesc };
-            var factory = new ResourceDescriptionFactory(VIRTUAL_DIR);
 
             // Act
-            var api = factory.CreateApi(apiDesc);
+            var api = _factory.CreateApi(apiDesc);
 
             // Asset
             //Assert.AreEqual(0, apis.Count, "api count");
@@ -104,7 +103,37 @@ namespace Swagger.Net._Test.Factories
             Debug.WriteLine(JsonConvert.SerializeObject(api));
         }
 
+        [TestMethod]
+        public void CreateParameter_Returns()
+        {
+            // Arrange
+            var config = GlobalConfiguration.Configuration;
+            var path = @"C:\Users\danieleli\Documents\_projects\Swagger.Net\Swagger.Net.WebApi\bin\Swagger.Net.WebApi.XML";
+            var docProvider = new XmlCommentDocumentationProvider(path);
+            config.Services.Replace(typeof(IDocumentationProvider), docProvider);
 
+            var apis = GlobalConfiguration.Configuration.Services.GetApiExplorer();
+            
+
+            foreach (var api in apis.ApiDescriptions)
+            {
+                
+                foreach (var param in api.ParameterDescriptions)
+                {
+                    var rtnParam = _factory.CreateParameter(param);
+                    Debug.WriteLine(JsonConvert.SerializeObject(rtnParam));
+                }
+            }
+            
+
+            // Act
+            
+
+            // Asset
+            //Assert.AreEqual(0, apis.Count, "api count");
+
+            
+        }
 
         public static class TestHelper
         {

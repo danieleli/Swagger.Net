@@ -13,8 +13,9 @@ namespace Swagger.Net.WebApi.Controllers
         /// <summary>
         /// BlogPostsController.Get Summary
         /// </summary>
+        /// <remarks>Here are some operation remarks</remarks>
         /// <returns>
-        /// <see cref="BlogPost"/>
+        /// <see cref="BlogPost"/>a collection of blog posts
         /// </returns>
         public IEnumerable<BlogPost> Get()
         {

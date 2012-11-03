@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Web;
+using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using Swagger.Net.Models;
@@ -15,18 +16,35 @@ namespace Swagger.Net.Factories
     {
         ResourceDescription CreateResourceDescription(Uri uri, string controllerName);
         IList<Api> CreateApiElements(string controllerName, IEnumerable<ApiDescription> descriptions);
-        IList<Operation> CreateOperations(ApiDescription desc, XmlCommentDocumentationProvider docProvider);
-        IList<Parameter> CreateParameters(Collection<HttpParameterDescriptor> httpParams);
+        IList<Operation> CreateOperations(ApiDescription desc);
+        IList<Parameter> CreateParameters(Collection<ApiParameterDescription> httpParams);
+        Api CreateApi(ApiDescription apiDesc);
+        Parameter CreateParameter(ApiParameterDescription parameterDescription);
     }
 
     public class ResourceDescriptionFactory : IResourceDescriptionFactory
     {
 
-        private readonly string _appVirtualPath;
-        public ResourceDescriptionFactory() : this(HttpRuntime.AppDomainAppVirtualPath) { }
-        public ResourceDescriptionFactory(string appVirtualPath)
+        private string _appVirtualPath;
+        private XmlCommentDocumentationProvider _docProvider;
+
+        public ResourceDescriptionFactory()
+        {
+            var path = HttpRuntime.AppDomainAppVirtualPath;
+            var docProvider = (IDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
+            initialize(path, docProvider);
+        }
+
+        public ResourceDescriptionFactory(string virturalPath)
+        {
+            var docProvider = (IDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
+            initialize(virturalPath, docProvider);
+        }
+
+        public void initialize(string appVirtualPath, IDocumentationProvider docProvider)
         {
             _appVirtualPath = appVirtualPath.TrimEnd('/');
+            _docProvider = (XmlCommentDocumentationProvider) docProvider;
         }
 
         public ResourceDescription CreateResourceDescription(Uri uri, string controllerName)
@@ -65,7 +83,7 @@ namespace Swagger.Net.Factories
 
         public Api CreateApi(ApiDescription desc)
         {
-            var ops = CreateOperations(desc, null);
+            var ops = CreateOperations(desc);
             var api = new Api()
                           {
                               path = "/" + desc.RelativePath,
@@ -75,8 +93,9 @@ namespace Swagger.Net.Factories
             return api;
         }
 
-        public IList<Operation> CreateOperations(ApiDescription desc, XmlCommentDocumentationProvider docProvider)
+        public IList<Operation> CreateOperations(ApiDescription desc)
         {
+
             var returnType = desc.ActionDescriptor.ReturnType == null ? "void" : desc.ActionDescriptor.ReturnType.Name;
             var rApiOperation = new Operation()
             {
@@ -84,28 +103,38 @@ namespace Swagger.Net.Factories
                 nickname = desc.ActionDescriptor.ActionName,
                 responseClass = returnType,
                 summary = desc.Documentation,
-                notes = "notes",//docProvider.GetNotes(api.ActionDescriptor),
-                parameters = CreateParameters(desc.ActionDescriptor.GetParameters())
+                notes = _docProvider.GetNotes(desc.ActionDescriptor),
+                parameters = CreateParameters(desc.ParameterDescriptions)
             };
 
             return new List<Operation>() { rApiOperation };
         }
 
-        public IList<Parameter> CreateParameters(Collection<HttpParameterDescriptor> httpParams)
+        public IList<Parameter> CreateParameters(Collection<ApiParameterDescription> httpParams)
         {
             var rtn = new List<Parameter>();
             foreach (var p in httpParams)
             {
-                rtn.Add(new Parameter()
-                            {
-                                name = p.ParameterName,
-                                dataType = p.ParameterType.Name,
-                                required = !p.IsOptional
-                            });
+                var param = CreateParameter(p);
+                rtn.Add(param);
             }
 
             return rtn;
         }
+
+        public Parameter CreateParameter(ApiParameterDescription p)
+        {
+            var rtn = new Parameter()
+                            {
+                                name = p.Name,
+                                dataType = p.ParameterDescriptor.ParameterType.Name,
+                                required = !p.ParameterDescriptor.IsOptional,
+                                description = p.Documentation,
+                                paramType = p.Source.ToString()
+                            };
+            return rtn;
+        }
+
     }
 }
 
