@@ -51,6 +51,15 @@ Configuration
   a. /api/swagger returns json listing of all api controllers.  (Implemented by SwaggerController)   
   b. /api/docs/{controller} returns json documentation for given controller.  (Implemented by SwaggerActionFilter)   
 
+
+Data Models
+-----------
+![Source Model](/master/Swagger.Net/doc/images/ApiExplorerModels.png "ApiExplorer Model")
+    
+
+![Target Model](/master/Swagger.Net/doc/images/SwaggerModels.png "Swagger UI Model")
+   
+
 Known Issues
 ------------
 
