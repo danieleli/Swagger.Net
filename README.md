@@ -52,6 +52,14 @@ Configuration
   a. /api/swagger returns json listing of all api controllers.  (Implemented by SwaggerController)   
   b. /api/docs/{controller} returns json documentation for given controller.  (Implemented by SwaggerActionFilter)   
 
+High Level Object Mappings
+--------------------------
+||.net||swagger||
+|Endpoint|ResourceListing|
+|Model or Controller or Route|Resource|
+|Controller Methods|Operations|
+|Parameters|Parameters|
+
 
 Data Models
 -----------
