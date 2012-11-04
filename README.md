@@ -54,10 +54,10 @@ Configuration
 
 Data Models
 -----------
-![Source Model](Swagger.Net/master/Swagger.net/doc/images/ApiExplorerModels.png "ApiExplorer Model")
+![Source Model](https://raw.github.com/danieleli/Swagger.Net/master/Swagger.Net/doc/images/ApiExplorerModels.png "ApiExplorer Model")
     
 
-![Target Model](./Swagger.Net/master/Swagger.net/doc/images/SwaggerModels.png "Swagger UI Model")
+![Target Model](https://raw.github.com/danieleli/Swagger.Net/master/Swagger.Net/doc/images/SwaggerModels.png "Swagger UI Model")
    
 
 Known Issues
