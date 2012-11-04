@@ -64,20 +64,21 @@ namespace Swagger.Net
 
         private ResourceDescription GetDocs(HttpActionContext actionContext)
         {
-
             var uri = actionContext.Request.RequestUri;
             var ctlrName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
 
             var docs = _factory.CreateResourceMetadata(uri, ctlrName);
-            var apis = _factory.CreateApiElements(ctlrName, _apiDescriptions);
+            _factory.PopulateApiAndModelElements(ctlrName, _apiDescriptions, docs);
+            //var apis = _factory.CreateApiElements(ctlrName, _apiDescriptions);
+            //docs.apis.AddRange(apis);
+            
+            //var returnType = actionContext.ActionDescriptor.ReturnType;
+            //var returnModel = _factory.GetResourceModel(returnType);
+            //docs.models.Add(returnModel);
 
-            foreach (var api in apis)
-            {
-                docs.apis.Add(api);
-            }
-
-            // todo: models
-            // docs.models = null;
+            //var paramTypes = actionContext.ActionDescriptor.GetParameters().Select(p => p.ParameterType);
+            //var parameterModels = _factory.GetResourceModels(paramTypes);
+            //docs.models.AddRange(parameterModels);
 
             return docs;
         }

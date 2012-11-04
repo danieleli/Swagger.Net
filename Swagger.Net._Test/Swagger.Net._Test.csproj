@@ -62,6 +62,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="DocumentationProvider_Test.cs" />
     <Compile Include="Factories\ParameterMetadataFactory_Test.cs" />
     <Compile Include="Factories\ResourceMetadataFactory_Test.cs" />
     <Compile Include="Factories\EndpointMetadataFactory_Test.cs" />
