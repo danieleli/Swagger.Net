@@ -79,8 +79,14 @@ namespace Swagger.Net.Factories
 
             foreach (var desc in filteredDescs)
             {
-                var api = CreateApi(desc);
-                rtnApis.Add(api);
+                if (desc.Route.Defaults.ContainsKey(SwaggerConstants.SWAGGER))
+                {
+                    //skip
+                }else
+                {
+                    var api = CreateApi(desc);
+                    rtnApis.Add(api);    
+                }
             }
 
             return rtnApis;

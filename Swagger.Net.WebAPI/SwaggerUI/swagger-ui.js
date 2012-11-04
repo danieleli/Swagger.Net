@@ -1,4 +1,4 @@
-$(function() {
+    $(function() {
 
 	// Helper function for vertically aligning DOM elements
 	// http://www.seodenver.com/simple-vertical-align-plugin-for-jquery/
@@ -976,12 +976,20 @@ templates['resource'] = template(function (Handlebars,depth0,helpers,partials,da
     HeaderView.prototype.events = {
       'click #show-pet-store-icon': 'showPetStore',
       'click #show-wordnik-dev-icon': 'showWordnikDev',
+      'click .show-custom-icon': 'showCustomUrl',
       'click #explore': 'showCustom',
       'keyup #input_baseUrl': 'showCustomOnKeyup',
       'keyup #input_apiKey': 'showCustomOnKeyup'
     };
 
     HeaderView.prototype.initialize = function() {};
+
+    HeaderView.prototype.showCustomUrl = function(e) {
+      return this.trigger('update-swagger-ui', {
+        discoveryUrl: e.srcElement.attributes['data-url'].value,
+        apiKey: ""
+      });
+    };
 
     HeaderView.prototype.showPetStore = function(e) {
       return this.trigger('update-swagger-ui', {
