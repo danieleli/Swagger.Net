@@ -21,15 +21,15 @@ namespace Swagger.Net
         #region --- fields & ctors ---
         
         private readonly IEnumerable<ApiDescription> _apiDescriptions;
-        private readonly IResourceDescriptionFactory _factory;
+        private readonly IResourceMetadataFactory _factory;
 
         public SwaggerActionFilterAttribute()
         {
-            _factory = new ResourceDescriptionFactory();
+            _factory = new ResourceMetadataFactory();
             _apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
         }
 
-        public SwaggerActionFilterAttribute(IEnumerable<ApiDescription> apiDescriptions, IResourceDescriptionFactory factory)
+        public SwaggerActionFilterAttribute(IEnumerable<ApiDescription> apiDescriptions, IResourceMetadataFactory factory)
         {
             _apiDescriptions = apiDescriptions;
             _factory = factory;
@@ -68,7 +68,7 @@ namespace Swagger.Net
             var uri = actionContext.Request.RequestUri;
             var ctlrName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
 
-            var docs = _factory.CreateResourceDescription(uri, ctlrName);
+            var docs = _factory.CreateResourceMetadata(uri, ctlrName);
             var apis = _factory.CreateApiElements(ctlrName, _apiDescriptions);
 
             foreach (var api in apis)

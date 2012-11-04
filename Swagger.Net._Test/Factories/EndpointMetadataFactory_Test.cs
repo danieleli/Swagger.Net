@@ -7,15 +7,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Swagger.Net.Factories;
 
-namespace Swagger.Net._Test
+namespace Swagger.Net._Test.Factories
 {
     [TestClass]
-    public class EndpointDescriptionFactory_Test
+    public class EndpointMetadataFactory_Test
     {
 
         const string ROOT = "http://www.google.com";
         const string VIRTUAL_DIR = "/the/vdir/of/app";
-        const string CONTROLLER_NAME = "myXXController";
 
         [TestMethod]
         public void GetResourceListing_NoApis()
@@ -23,14 +22,13 @@ namespace Swagger.Net._Test
             var uri = new Uri(ROOT + "/this/is?field=3&test=mytest");
             var apiDescs = new List<ApiDescription>();
 
-            var factory = new EndpointDescriptionFactory(VIRTUAL_DIR, apiDescs);
+            var factory = new EndpointMetadataFactory(VIRTUAL_DIR, apiDescs);
 
             var listing = factory.CreateResourceListing(uri);
 
             Assert.AreEqual(0, listing.apis.Count, "api count");
             Assert.AreEqual("1.2.3.4", listing.apiVersion, "api version");
             Assert.AreEqual(ROOT+VIRTUAL_DIR, listing.basePath, "basePath");
-            Assert.AreEqual(null, listing.resourcePath, "resourcePath");
             Assert.AreEqual("2.0", listing.swaggerVersion, "swaggerVersion");
 
             Debug.WriteLine(JsonConvert.SerializeObject(listing));
@@ -51,14 +49,13 @@ namespace Swagger.Net._Test
                         Documentation = "somedocs"
                     },
             };
-            var factory = new EndpointDescriptionFactory(VIRTUAL_DIR, apiDescs);
+            var factory = new EndpointMetadataFactory(VIRTUAL_DIR, apiDescs);
 
             var listing = factory.CreateResourceListing(uri);
 
             Assert.AreEqual(1, listing.apis.Count, "api count");
             Assert.AreEqual("1.2.3.4", listing.apiVersion, "api version");
             Assert.AreEqual(ROOT + VIRTUAL_DIR, listing.basePath, "basePath");
-            Assert.AreEqual(null, listing.resourcePath, "resourcePath");
             Assert.AreEqual("2.0", listing.swaggerVersion, "swaggerVersion");
 
             Debug.WriteLine(JsonConvert.SerializeObject(listing));

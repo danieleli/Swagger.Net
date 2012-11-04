@@ -14,7 +14,7 @@ namespace Swagger.Net.Models
         public string type { get; set; }
         public string description { get; set; }
 
-        public IList<Properties> Members { get; private set; }
+        public List<Properties> Members { get; private set; }
     }
 
     public class Properties

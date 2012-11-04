@@ -25,8 +25,8 @@ namespace Swagger.Net.Models
         public string swaggerVersion { get; set; }
         public string basePath { get; set; }
         public string resourcePath { get; set; }
-        public IList<Api> apis { get; private set; }
-        public IList<Model> models { get; private set; }
+        public List<Api> apis { get; private set; }
+        public List<Model> models { get; private set; }
     }
 
 
@@ -46,7 +46,7 @@ namespace Swagger.Net.Models
         }
         public string path { get; set; }
         public string description { get; set; }
-        public IList<Operation> operations { get; private set; }
+        public List<Operation> operations { get; private set; }
     }
 
 
@@ -73,8 +73,8 @@ namespace Swagger.Net.Models
         public string responseClass { get; set; }
         public string summary { get; set; }
         public string notes { get; set; }
-        public IList<Parameter> parameters { get; private set; }
-        public IList<ErrorResponse> errorResponses { get; private set; }
+        public List<Parameter> parameters { get; private set; }
+        public List<ErrorResponse> errorResponses { get; private set; }
     }
 
 

@@ -8,23 +8,26 @@ using System.Web.Http.Description;
 
 namespace Swagger.Net.Factories
 {
-    public interface IEndpointDescriptionFactory
+    public interface IEndpointMetadataFactory
     {
         ResourceListing CreateResourceListing(Uri uri);
         IList<ResourceSummary> CreateApiElements(IEnumerable<ApiDescription> apiDescs);
     }
 
-    public class EndpointDescriptionFactory : IEndpointDescriptionFactory
+    public class EndpointMetadataFactory : IEndpointMetadataFactory
     {
+
+        #region --- fields & ctors ---
+
         private string _appVirtualPath;
         private IEnumerable<ApiDescription> _apiDescriptions;
 
-        public EndpointDescriptionFactory()
+        public EndpointMetadataFactory()
         {
             Init(HttpRuntime.AppDomainAppVirtualPath, GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions);
         }
 
-        public EndpointDescriptionFactory(string appVirtualPath, IEnumerable<ApiDescription> apiDescs)
+        public EndpointMetadataFactory(string appVirtualPath, IEnumerable<ApiDescription> apiDescs)
         {
             Init(appVirtualPath, apiDescs);
         }
@@ -35,7 +38,7 @@ namespace Swagger.Net.Factories
             _apiDescriptions = apiDescs;
         }
 
-
+        #endregion --- fields & ctors ---
 
         public ResourceListing CreateResourceListing(Uri uri)
         {
@@ -46,7 +49,6 @@ namespace Swagger.Net.Factories
                 apiVersion = apiVersion,
                 swaggerVersion = SwaggerConstants.SWAGGER_VERSION,
                 basePath = uri.GetLeftPart(UriPartial.Authority) + _appVirtualPath,
-                resourcePath = null
             };
 
             var apis = CreateApiElements(_apiDescriptions);
@@ -57,7 +59,6 @@ namespace Swagger.Net.Factories
 
             return rtnListing;
         }
-
 
         public IList<ResourceSummary> CreateApiElements(IEnumerable<ApiDescription> apiDescs)
         {
