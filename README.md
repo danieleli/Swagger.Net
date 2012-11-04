@@ -55,13 +55,11 @@ Configuration
 Data Models
 -----------
 
-![test](Swagger.Net/blob/master/Swagger.Net/doc/images/ApiExplorerModels.png "some test")
-
-![test](https://github.com/danieleli/Swagger.Net/blob/master/Swagger.Net/doc/images/ApiExplorerModels.png "fdjksf")
+### Source - .net [ApiExplorer](http://msdn.microsoft.com/en-us/library/hh944855.aspx) object model
 
 ![Source Model](https://raw.github.com/danieleli/Swagger.Net/master/Swagger.Net/doc/images/ApiExplorerModels.png "ApiExplorer Model")
     
-
+### Target - [SwaggerUI](https://github.com/wordnik/swagger-ui) JSON model
 ![Target Model](https://raw.github.com/danieleli/Swagger.Net/master/Swagger.Net/doc/images/SwaggerModels.png "Swagger UI Model")
    
 
