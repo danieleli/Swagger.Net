@@ -54,11 +54,50 @@ Configuration
 
 High Level Object Mappings
 --------------------------
-||.net||swagger||
-|Endpoint|ResourceListing|
-|Model or Controller or Route|Resource|
-|Controller Methods|Operations|
-|Parameters|Parameters|
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    .net
+                </th>
+                <th>
+                    swagger
+                </th>
+            </tr>
+        </thead>
+        <tr>
+            <td>
+                Endpoint
+            </td>
+            <td>
+                ResourceListing
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Model or Controller or Route
+            </td>
+            <td>
+                Resource
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Controller Methods
+            </td>
+            <td>
+                Operations
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Method Parameters
+            </td>
+            <td>
+                Parameters
+            </td>
+        </tr>
+    </table>
 
 
 Data Models
