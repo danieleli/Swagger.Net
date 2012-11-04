@@ -58,6 +58,9 @@ High Level Object Mappings
     <thead>
         <tr>
             <th>
+                Example
+            </th>
+            <th>
                 .net
             </th>
             <th>
@@ -67,7 +70,10 @@ High Level Object Mappings
     </thead>
     <tr>
         <td>
-            Endpoint
+            http://www.mydomain.com/
+        </td>
+        <td>
+            Endpoint 
         </td>
         <td>
             ResourceListing
@@ -75,7 +81,10 @@ High Level Object Mappings
     </tr>
     <tr>
         <td>
-            Model or Controller or Route
+            BlogPosts
+        </td>
+        <td>
+            Model or Controller
         </td>
         <td>
             Resource
@@ -83,13 +92,30 @@ High Level Object Mappings
     </tr>
     <tr>
         <td>
-            Controller Methods
+            /api/blogposts/{id}
         </td>
         <td>
-            Operations
+            Route (no verb)
+        </td>
+        <td>
+            Api
         </td>
     </tr>
     <tr>
+        <td>
+            GET /api/blogposts/{id}  
+        </td>
+        <td>
+            Controller Method 
+        </td>
+        <td>
+            Operation
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {id}
+        </td>
         <td>
             Method Parameters
         </td>
