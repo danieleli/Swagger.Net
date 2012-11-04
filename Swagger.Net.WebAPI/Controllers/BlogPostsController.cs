@@ -22,15 +22,20 @@ namespace Swagger.Net.WebApi.Controllers
             return new List<BlogPost> { new BlogPost(), new BlogPost() };
         }
 
+
         /// <summary>
         /// BlogPostsController.Get(id) Summary
         /// </summary>
+        /// <remarks>Here are some remarks about the Get by id</remarks>
+        /// <param name="id">this is id of post you are looking for</param>
         /// <returns>
         /// <see cref="BlogPost"/>
+        /// some comments about returned blogpost
         /// </returns>
-        public string Get(int id)
+        
+        public BlogPost Get(int id)
         {
-            return "value";
+            return new BlogPost();
         }
 
         /// <summary>
@@ -38,18 +43,10 @@ namespace Swagger.Net.WebApi.Controllers
         /// </summary>
         /// <remarks>This shows up as notes</remarks>
         /// <param name="blogPost"><see cref="BlogPost"/>        
-        /// <example>  
-        /// This sample shows how to call the post method.
-        /// <code>  
-        /// { 
-        ///     Title: 'some title',
-        ///     Author: 'Philip Roth' 
-        /// } 
-        /// </code> 
-        /// </example>
+        /// This is a description of blogpost param.
         /// </param>
         /// <returns><see cref="HttpResponseMessage"/>Status code 200 for ok</returns>
-        public HttpResponseMessage Post(BlogPost blogPost)
+        public HttpResponseMessage Post(BlogPost value)
         {
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
@@ -63,7 +60,13 @@ namespace Swagger.Net.WebApi.Controllers
         {
         }
 
-        // DELETE api/blogposts/5
+        /// <summary>
+        /// Deletes a blogpost
+        /// </summary>
+        /// <remarks>
+        /// This function deletes a blog post if user has permission
+        /// </remarks>
+        /// <param name="id"><see cref="Int32"/>The integer id of the post</param>
         public void Delete(int id)
         {
         }

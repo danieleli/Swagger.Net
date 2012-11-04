@@ -45,7 +45,7 @@ namespace Swagger.Net._Test.Factories
             var expectedVersion = "1.2.3.4";
 
             Assert.AreEqual(expectedVersion, result.apiVersion, "api version");
-            Assert.AreEqual(SwaggerConstants.SWAGGER_VERSION, result.swaggerVersion, "SwaggerVersion");
+            Assert.AreEqual(G.SWAGGER_VERSION, result.swaggerVersion, "SwaggerVersion");
             Assert.AreEqual(TestHelper.ROOT + TestHelper.VIRTUAL_DIR, result.basePath, "BasePath");
             Assert.AreEqual(TestHelper.CONTROLLER_NAME, result.resourcePath, "resourcePath");
             Assert.AreEqual(0, result.apis.Count, "Api count");

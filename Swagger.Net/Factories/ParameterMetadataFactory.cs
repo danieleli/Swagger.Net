@@ -51,16 +51,16 @@ namespace Swagger.Net.Factories
 
         private static string GetParamType(ApiParameterDescription parameterDescription, string relativePath)
         {
-            var paramType = SwaggerConstants.BODY;
+            var paramType = G.BODY;
             if (parameterDescription.Source == ApiParameterSource.FromUri)
             {
                 if (relativePath.IndexOf("{" + parameterDescription.Name + "}") > -1)
                 {
-                    paramType = SwaggerConstants.PATH;
+                    paramType = G.PATH;
                 }
                 else
                 {
-                    paramType = SwaggerConstants.QUERY;
+                    paramType = G.QUERY;
                 }
             }
             return paramType;

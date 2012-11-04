@@ -55,7 +55,7 @@ namespace Swagger.Net.Factories
             var rtnResource = new ResourceDescription()
             {
                 apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString(),
-                swaggerVersion = SwaggerConstants.SWAGGER_VERSION,
+                swaggerVersion = G.SWAGGER_VERSION,
                 basePath = uri.GetLeftPart(UriPartial.Authority) + _appVirtualPath,
                 resourcePath = controllerName
             };
@@ -67,7 +67,7 @@ namespace Swagger.Net.Factories
         {
             var filteredDescs = apiDescs
                 .Where(d => d.ActionDescriptor.ControllerDescriptor.ControllerName == controllerName)           // current controller
-                .Where(d => !(d.Route.Defaults.ContainsKey(SwaggerConstants.SWAGGER)));                         // and not swagger doc meta route '/api/docs/...'
+                .Where(d => !(d.Route.Defaults.ContainsKey(G.SWAGGER)));                         // and not swagger doc meta route '/api/docs/...'
             
             var apis = filteredDescs.Select(apiDesc => GetApiMetadata(apiDesc));
 

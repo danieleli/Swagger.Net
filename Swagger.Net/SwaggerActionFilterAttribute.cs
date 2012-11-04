@@ -52,7 +52,7 @@ namespace Swagger.Net
 
         private bool IsDocRequest(HttpActionContext actionContext)
         {
-            var containsKey = actionContext.ControllerContext.RouteData.Values.ContainsKey(SwaggerConstants.SWAGGER);
+            var containsKey = actionContext.ControllerContext.RouteData.Values.ContainsKey(G.SWAGGER);
 
             if (!containsKey)
             {

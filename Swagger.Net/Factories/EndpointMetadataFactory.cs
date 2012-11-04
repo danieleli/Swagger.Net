@@ -47,7 +47,7 @@ namespace Swagger.Net.Factories
             var rtnListing = new ResourceListing()
             {
                 apiVersion = apiVersion,
-                swaggerVersion = SwaggerConstants.SWAGGER_VERSION,
+                swaggerVersion = G.SWAGGER_VERSION,
                 basePath = uri.GetLeftPart(UriPartial.Authority) + _appVirtualPath,
             };
 
@@ -89,7 +89,7 @@ namespace Swagger.Net.Factories
 
         private static bool IsSwaggerController(string ctlrName)
         {
-            return ctlrName.ToUpper() == SwaggerConstants.SWAGGER.ToUpper();
+            return ctlrName.ToUpper() == G.SWAGGER.ToUpper();
         }
     }
 }
