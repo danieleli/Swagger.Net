@@ -67,7 +67,10 @@ namespace Swagger.Net.Factories
         {
             var rtnApis = new List<Api>();
 
-            if (controllerName.ToUpper() == SwaggerConstants.SWAGGER.ToUpper()) return rtnApis;
+            if (controllerName.ToUpper() == SwaggerConstants.SWAGGER.ToUpper())
+            {
+                return rtnApis;
+            }
 
             // apis for current controller
             var filteredDescs = descriptions.Where(d =>

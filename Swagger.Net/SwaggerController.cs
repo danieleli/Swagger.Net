@@ -67,9 +67,8 @@ namespace Swagger.Net
         private ResourceListing GetResourceListing()
         {
             var uri = base.ControllerContext.Request.RequestUri;
-            var controllerName = base.ControllerContext.ControllerDescriptor.ControllerName;
 
-            var resourceListing = _resourceFactory.CreateResourceListing(uri, controllerName);
+            var resourceListing = _resourceFactory.CreateResourceListing(uri);
             return resourceListing;
         }
     }

@@ -4,9 +4,7 @@ using System.Reflection;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
-using System.Web.Http.Dispatcher;
 using System.Web.Routing;
-using System.Xml.XPath;
 using Swagger.Net;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(Swagger.Net.WebApi.App_Start.SwaggerNet), "PreStart")]

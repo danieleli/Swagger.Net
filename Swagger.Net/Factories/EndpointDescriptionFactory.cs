@@ -10,7 +10,7 @@ namespace Swagger.Net.Factories
 {
     public interface IEndpointDescriptionFactory
     {
-        ResourceListing CreateResourceListing(Uri uri, string controllerName);
+        ResourceListing CreateResourceListing(Uri uri);
         IList<ResourceSummary> CreateApiElements(IEnumerable<ApiDescription> apiDescs);
     }
 
@@ -35,18 +35,18 @@ namespace Swagger.Net.Factories
             _apiDescriptions = apiDescs;
         }
 
-        
 
-        public ResourceListing CreateResourceListing(Uri uri, string controllerName)
+
+        public ResourceListing CreateResourceListing(Uri uri)
         {
             var apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString();
-            
+
             var rtnListing = new ResourceListing()
             {
                 apiVersion = apiVersion,
                 swaggerVersion = SwaggerConstants.SWAGGER_VERSION,
                 basePath = uri.GetLeftPart(UriPartial.Authority) + _appVirtualPath,
-                resourcePath = controllerName,
+                resourcePath = null
             };
 
             var apis = CreateApiElements(_apiDescriptions);
@@ -67,18 +67,28 @@ namespace Swagger.Net.Factories
             {
                 var ctlrName = desc.ActionDescriptor.ControllerDescriptor.ControllerName;
 
-                if(!rtnApis.ContainsKey(ctlrName))
+                // skip swagger controller and items already in dictionary.
+                if (IsSwaggerController(ctlrName) || rtnApis.ContainsKey(ctlrName))
+                {
+                    // do nothing
+                }
+                else
                 {
                     var res = new ResourceSummary
                     {
                         path = "/" + desc.RelativePath,
                         description = desc.Documentation
                     };
-                    rtnApis.Add(ctlrName, res);    
+                    rtnApis.Add(ctlrName, res);
                 }
             }
 
             return rtnApis.Values.ToList();
+        }
+
+        private static bool IsSwaggerController(string ctlrName)
+        {
+            return ctlrName.ToUpper() == SwaggerConstants.SWAGGER.ToUpper();
         }
     }
 }

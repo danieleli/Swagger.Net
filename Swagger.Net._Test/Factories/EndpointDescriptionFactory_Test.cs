@@ -25,12 +25,12 @@ namespace Swagger.Net._Test
 
             var factory = new EndpointDescriptionFactory(VIRTUAL_DIR, apiDescs);
 
-            var listing = factory.CreateResourceListing(uri, CONTROLLER_NAME);
+            var listing = factory.CreateResourceListing(uri);
 
             Assert.AreEqual(0, listing.apis.Count, "api count");
             Assert.AreEqual("1.2.3.4", listing.apiVersion, "api version");
             Assert.AreEqual(ROOT+VIRTUAL_DIR, listing.basePath, "basePath");
-            Assert.AreEqual(CONTROLLER_NAME, listing.resourcePath, "resourcePath");
+            Assert.AreEqual(null, listing.resourcePath, "resourcePath");
             Assert.AreEqual("2.0", listing.swaggerVersion, "swaggerVersion");
 
             Debug.WriteLine(JsonConvert.SerializeObject(listing));
@@ -53,12 +53,12 @@ namespace Swagger.Net._Test
             };
             var factory = new EndpointDescriptionFactory(VIRTUAL_DIR, apiDescs);
 
-            var listing = factory.CreateResourceListing(uri, CONTROLLER_NAME);
+            var listing = factory.CreateResourceListing(uri);
 
             Assert.AreEqual(1, listing.apis.Count, "api count");
             Assert.AreEqual("1.2.3.4", listing.apiVersion, "api version");
             Assert.AreEqual(ROOT + VIRTUAL_DIR, listing.basePath, "basePath");
-            Assert.AreEqual(CONTROLLER_NAME, listing.resourcePath, "resourcePath");
+            Assert.AreEqual(null, listing.resourcePath, "resourcePath");
             Assert.AreEqual("2.0", listing.swaggerVersion, "swaggerVersion");
 
             Debug.WriteLine(JsonConvert.SerializeObject(listing));

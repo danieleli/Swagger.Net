@@ -3,17 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net.Http;
-using System.Reflection;
-using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Web.Http.Routing;
-using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Rhino.Mocks;
 using Swagger.Net.Factories;
-using Swagger.Net.Models;
 using Swagger.Net.WebApi.Models;
 
 namespace Swagger.Net._Test.Factories

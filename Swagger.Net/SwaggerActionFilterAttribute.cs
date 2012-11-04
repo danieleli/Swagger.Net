@@ -40,31 +40,31 @@ namespace Swagger.Net
         // Intercept all request and handle swagger requests or pass through
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
-            if (IsDocRequest(actionContext)) return;
+            if (!IsDocRequest(actionContext)) return;
 
             var docs = GetDocs(actionContext);
             var formatter = actionContext.ControllerContext.Configuration.Formatters.JsonFormatter;
             var response = WrapResponse(formatter, docs);
             actionContext.Response = response;
-            response.Dispose();
         }
 
         #region --- helpers ---
 
         private bool IsDocRequest(HttpActionContext actionContext)
         {
-            var isDocRequest = actionContext.ControllerContext.RouteData.Values.ContainsKey(SwaggerConstants.SWAGGER);
+            var containsKey = actionContext.ControllerContext.RouteData.Values.ContainsKey(SwaggerConstants.SWAGGER);
 
-            if (!isDocRequest)
+            if (!containsKey)
             {
                 base.OnActionExecuting(actionContext);
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
 
         private ResourceDescription GetDocs(HttpActionContext actionContext)
         {
+
             var uri = actionContext.Request.RequestUri;
             var ctlrName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
 
