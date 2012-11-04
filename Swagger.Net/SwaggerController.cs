@@ -16,7 +16,7 @@ namespace Swagger.Net
     {
         #region --- fields & ctors ---
 
-        private readonly IEndpointMetadataFactory _resourceFactory;
+        private readonly EndpointMetadataFactory _resourceFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerController"/> class.
@@ -29,7 +29,7 @@ namespace Swagger.Net
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerController"/> class.
         /// </summary>
-        public SwaggerController(IEndpointMetadataFactory resourceFactory)
+        public SwaggerController(EndpointMetadataFactory resourceFactory)
         {
             _resourceFactory = resourceFactory;
         }

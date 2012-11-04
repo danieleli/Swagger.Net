@@ -21,7 +21,7 @@ namespace Swagger.Net
         #region --- fields & ctors ---
         
         private readonly IEnumerable<ApiDescription> _apiDescriptions;
-        private readonly IResourceMetadataFactory _factory;
+        private readonly ResourceMetadataFactory _factory;
 
         public SwaggerActionFilterAttribute()
         {
@@ -29,7 +29,7 @@ namespace Swagger.Net
             _apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
         }
 
-        public SwaggerActionFilterAttribute(IEnumerable<ApiDescription> apiDescriptions, IResourceMetadataFactory factory)
+        public SwaggerActionFilterAttribute(IEnumerable<ApiDescription> apiDescriptions, ResourceMetadataFactory factory)
         {
             _apiDescriptions = apiDescriptions;
             _factory = factory;

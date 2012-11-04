@@ -11,14 +11,7 @@ using Swagger.Net.Models;
 
 namespace Swagger.Net.Factories
 {
-    public interface IResourceMetadataFactory
-    {
-        ResourceDescription CreateResourceMetadata(Uri uri, string controllerName);
-        IList<Api> CreateApiElements(string controllerName, IEnumerable<ApiDescription> apiDescs);
-        Api CreateApiRoot(ApiDescription apiDesc);
-    }
-
-    public class ResourceMetadataFactory : IResourceMetadataFactory
+    public class ResourceMetadataFactory 
     {
 
         #region --- fields & ctors ---

@@ -8,13 +8,7 @@ using System.Web.Http.Description;
 
 namespace Swagger.Net.Factories
 {
-    public interface IEndpointMetadataFactory
-    {
-        ResourceListing CreateResourceListing(Uri uri);
-        IList<ResourceSummary> CreateApiElements(IEnumerable<ApiDescription> apiDescs);
-    }
-
-    public class EndpointMetadataFactory : IEndpointMetadataFactory
+    public class EndpointMetadataFactory 
     {
 
         #region --- fields & ctors ---

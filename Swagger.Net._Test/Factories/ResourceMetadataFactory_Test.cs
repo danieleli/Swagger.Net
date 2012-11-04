@@ -18,7 +18,7 @@ namespace Swagger.Net._Test.Factories
     {
         private readonly Uri _uri = new Uri(TestHelper.ROOT + "/this/is?field=3&test=mytest");
 
-        private IResourceMetadataFactory _factory;
+        private ResourceMetadataFactory _factory;
 
 
         public void Setup()
