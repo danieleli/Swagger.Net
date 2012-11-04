@@ -3,7 +3,8 @@ Swagger.Net
 
 Library to document the ASP.NET Web API using the Swagger specification
 
-Latest version: Pre-release 0.5.5
+Latest version: Pre-release 0.6
+
 
 Introduction
 ------------
@@ -31,10 +32,10 @@ Requirements
 + [ASP.NET MVC 4.0](http://www.asp.net/mvc/mvc4)
 + .NET 4.0
 
-Upgrading from v0.5.1 & v0.5.2
+Upgrading from < v0.6
 ------------------------------
+Never attempted.  Let us know how it works.
 
-0.5.1 and 0.5.2 were both built on the RC, as such, no upgrade path is supported.
 
 Setup
 -----
@@ -54,9 +55,7 @@ Configuration
 
 Data Models
 -----------
-
 ### Source - .net [ApiExplorer](http://msdn.microsoft.com/en-us/library/hh944855.aspx) object model
-
 ![Source Model](https://raw.github.com/danieleli/Swagger.Net/master/Swagger.Net/doc/images/ApiExplorerModels.png "ApiExplorer Model")
     
 ### Target - [SwaggerUI](https://github.com/wordnik/swagger-ui) JSON model
@@ -70,7 +69,7 @@ Known Issues
 I'm hoping you will help me find and/or fix these.
 
 + The version of Swagger UI I have built in the /docs folder DOES NOT WORK in Internet Explorer.  :-(
-+ Models according to the swagger spec are not yet supported
++ Models according to the swagger spec are not yet supported - in process
 
 
 Other Thoughts
@@ -96,6 +95,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 Change Log
 ----------
+
+0.6.0 Complete refactor using TDD.  Added a test project.  Removed unused references.  Ensure compatibility with VS 2010 with .net 4.0.
 
 0.5.5 Require only .NET 4.0. Fix for duplicate controllers in action filter
 
