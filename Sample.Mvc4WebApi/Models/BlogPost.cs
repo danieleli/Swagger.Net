@@ -1,7 +1,7 @@
 ﻿using System;
 using Sample.Mvc4WebApi.Models;
 
-namespace Swagger.Net.WebApi.Models
+namespace Sample.Mvc4WebApi.Models
 {
     /// <summary>
     /// Blog Post Class Summary

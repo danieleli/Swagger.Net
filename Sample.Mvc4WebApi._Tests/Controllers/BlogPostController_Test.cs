@@ -12,7 +12,7 @@ using Sample.Mvc4WebApi;
 using Sample.Mvc4WebApi.Controllers;
 using Sample.Mvc4WebApi.Models;
 using Swagger.Net.WebApi.Controllers;
-using Swagger.Net.WebApi.Models;
+
 
 namespace Sample.Mvc4WebApi._Tests.Controllers
 {

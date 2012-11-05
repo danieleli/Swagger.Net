@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Sample.Mvc4WebApi.Models;
-using Swagger.Net.WebApi.Models;
+
 
 namespace Swagger.Net.WebApi.Controllers
 {

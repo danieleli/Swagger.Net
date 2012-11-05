@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Web.Http.Description;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using Sample.Mvc4WebApi.Models;
 using Swagger.Net.Factories;
-using Swagger.Net.WebApi.Models;
 
 namespace Swagger.Net._Test.Factories
 {
@@ -18,8 +14,7 @@ namespace Swagger.Net._Test.Factories
 
         public void Setup()
         {
-            var path = @"C:\Users\danieleli\Documents\_projects\Swagger.Net\Swagger.Net.WebApi\bin\Swagger.Net.WebApi.XML";
-            var docProvider = new XmlCommentDocumentationProvider(path);
+            var docProvider = new XmlCommentDocumentationProvider(TestHelper.XML_DOC_PATH);
             _factory = new ParameterMetadataFactory(docProvider);
 
         }

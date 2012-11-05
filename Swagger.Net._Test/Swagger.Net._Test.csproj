@@ -70,10 +70,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Swagger.Net.WebApi\Swagger.Net.WebApi.csproj">
-      <Project>{9598BE25-C0E5-4C40-9926-B11BB757211F}</Project>
-      <Name>Swagger.Net.WebApi</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Swagger.Net\Swagger.Net.csproj">
       <Project>{23f318e4-d42f-484e-9c5a-41b652145cf0}</Project>
       <Name>Swagger.Net</Name>
@@ -84,6 +80,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="NewFolder1\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
