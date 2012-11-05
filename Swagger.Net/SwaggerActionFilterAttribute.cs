@@ -24,9 +24,7 @@ namespace Swagger.Net
 
         public SwaggerActionFilterAttribute()
         {
-            var apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
-            _factory = new ResourceMetadataFactory(apiDescriptions);
-            
+            _factory = new ResourceMetadataFactory();   
         }
 
         public SwaggerActionFilterAttribute(ResourceMetadataFactory factory)
@@ -39,35 +37,35 @@ namespace Swagger.Net
         // Intercept all request and handle swagger requests or pass through
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
-            if (!IsDocRequest(actionContext)) return;
+            if (IsDocRequest(actionContext))
+            {
 
-            var rootUrl = actionContext.Request.RequestUri.GetLeftPart(UriPartial.Authority);
-            var ctlrName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
-            var docs = _factory.GetDocs(rootUrl,ctlrName);
-            var formatter = actionContext.ControllerContext.Configuration.Formatters.JsonFormatter;
-            var response = WrapResponse(formatter, docs);
-            actionContext.Response = response;
+                // Arrange
+                var rootUrl = actionContext.Request.RequestUri.GetLeftPart(UriPartial.Authority);
+                var ctlrName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
+
+                // Act
+                var docs = _factory.GetDocs(rootUrl, ctlrName);
+
+                // Answer
+                var formatter = actionContext.ControllerContext.Configuration.Formatters.JsonFormatter;
+                var response = WrapResponse(formatter, docs);
+
+                actionContext.Response = response;
+            }
+            else
+            {
+                base.OnActionExecuting(actionContext);
+            }
         }
 
         #region --- helpers ---
 
         private bool IsDocRequest(HttpActionContext actionContext)
         {
-            var containsKey = actionContext.ControllerContext.RouteData.Values.ContainsKey(G.SWAGGER);
-
-            if (!containsKey)
-            {
-                base.OnActionExecuting(actionContext);
-                return false;
-            }
-            return true;
+            var containsSwaggerKey = actionContext.ControllerContext.RouteData.Values.ContainsKey(G.SWAGGER);
+            return containsSwaggerKey;
         }
-
-        
-
-        
- 
-
 
         private static HttpResponseMessage WrapResponse(JsonMediaTypeFormatter formatter, ResourceDescription docs)
         {

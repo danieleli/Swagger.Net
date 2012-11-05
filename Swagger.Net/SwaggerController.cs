@@ -44,7 +44,13 @@ namespace Swagger.Net
         /// <returns>JSON document representing structure of API</returns>
         public HttpResponseMessage Get()
         {
-            var resourceListing = GetResourceListing();
+            // Arrange
+            var uri = base.ControllerContext.Request.RequestUri;
+
+            // Act
+            var resourceListing = _resourceFactory.CreateResourceListing(uri);
+            
+            //Answer
             var resp = WrapResponse(resourceListing);
             return resp;
         }
@@ -62,14 +68,6 @@ namespace Swagger.Net
             var formatter = ControllerContext.Configuration.Formatters.JsonFormatter;
             var content = new ObjectContent<ResourceListing>(resourceListing, formatter);
             return content;
-        }
-
-        private ResourceListing GetResourceListing()
-        {
-            var uri = base.ControllerContext.Request.RequestUri;
-
-            var resourceListing = _resourceFactory.CreateResourceListing(uri);
-            return resourceListing;
         }
     }
 }

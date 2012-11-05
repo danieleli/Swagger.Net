@@ -12,6 +12,11 @@ using Swagger.Net.Models;
 
 namespace Swagger.Net.Factories
 {
+    /// <summary>
+    /// | .net              | swagger           |
+    /// -----------------------------------------
+    /// | ApiDescription    | Resource          |
+    /// </summary>
     public class ResourceMetadataFactory
     {
 
@@ -23,18 +28,20 @@ namespace Swagger.Net.Factories
         private readonly ICollection<ApiDescription> _apiDescriptions;
         private readonly ModelMetadataFactory _modelFactory;
 
-        public ResourceMetadataFactory(Collection<ApiDescription> apiDescriptions)
+        public ResourceMetadataFactory()
         {
-            _apiDescriptions = apiDescriptions;
             _appVirtualPath = HttpRuntime.AppDomainAppVirtualPath.TrimEnd('/'); ;
-            _docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
+            _apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
             _parameterFactory = new ParameterMetadataFactory();
-            _modelFactory = new ModelMetadataFactory(_docProvider);
 
+            _docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
+            _modelFactory = new ModelMetadataFactory(_docProvider);
         }
 
-        public ResourceMetadataFactory(string virtualPath, XmlCommentDocumentationProvider docProvider, ParameterMetadataFactory parameterFactory)
+        public ResourceMetadataFactory(string virtualPath, XmlCommentDocumentationProvider docProvider, ParameterMetadataFactory parameterFactory, ModelMetadataFactory modelFactory,  ICollection<ApiDescription> apiDescriptions)
         {
+            _apiDescriptions = apiDescriptions;
+            _modelFactory = modelFactory;
             _parameterFactory = parameterFactory;
             _appVirtualPath = virtualPath.TrimEnd('/');
             _docProvider = docProvider;

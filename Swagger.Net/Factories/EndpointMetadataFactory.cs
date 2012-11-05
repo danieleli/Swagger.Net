@@ -8,7 +8,12 @@ using System.Web.Http.Description;
 
 namespace Swagger.Net.Factories
 {
-    public class EndpointMetadataFactory 
+    /// <summary>
+    /// | .net              | swagger           |
+    /// -----------------------------------------
+    /// | EndpointMetadata  | Resource Listing  |
+    /// </summary>
+    public class EndpointMetadataFactory
     {
 
         #region --- fields & ctors ---
@@ -18,17 +23,13 @@ namespace Swagger.Net.Factories
 
         public EndpointMetadataFactory()
         {
-            Init(HttpRuntime.AppDomainAppVirtualPath, GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions);
+            _appVirtualPath = HttpRuntime.AppDomainAppVirtualPath.TrimEnd('/');
+            _apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
         }
 
         public EndpointMetadataFactory(string appVirtualPath, IEnumerable<ApiDescription> apiDescs)
         {
-            Init(appVirtualPath, apiDescs);
-        }
-
-        private void Init(string appVirtualPath, IEnumerable<ApiDescription> apiDescs)
-        {
-            _appVirtualPath = appVirtualPath.TrimEnd('/');
+            _appVirtualPath = appVirtualPath.TrimEnd('/'); 
             _apiDescriptions = apiDescs;
         }
 

@@ -9,6 +9,8 @@ namespace Swagger.Net.Factories
 {
     public class ModelMetadataFactory
     {
+        #region --- fields & ctors ---
+
         private readonly XmlCommentDocumentationProvider _docProvider;
 
         public ModelMetadataFactory()
@@ -21,14 +23,22 @@ namespace Swagger.Net.Factories
             _docProvider = documentationProvider;
         }
 
-        public IEnumerable<Model> GetResourceModels(IEnumerable<Type> paramTypes)
-        {
-            return paramTypes.Select(GetResourceModel);   // Function pointer
-        }
+        #endregion --- fields & ctors ---
 
-        public Model GetResourceModel(Type type)
+        public IEnumerable<Model> GetModels(IEnumerable<ApiDescription> apiDescs)
         {
-            return _docProvider.GetApiModel(type);
+            var rtnModels = new Dictionary<Type, Model>();
+            foreach (var apiDesc in apiDescs)
+            {
+                AddIfValid(apiDesc.ActionDescriptor.ReturnType, rtnModels);
+
+                foreach (var param in apiDesc.ParameterDescriptions)
+                {
+                    AddIfValid(param.ParameterDescriptor.ParameterType, rtnModels);
+                }
+            }
+
+            return rtnModels.Values;
         }
 
         private void AddIfValid(Type myType, Dictionary<Type, Model> rtnModels)
@@ -41,7 +51,7 @@ namespace Swagger.Net.Factories
                 }
                 if (!rtnModels.ContainsKey(myType))
                 {
-                    var model = this.GetResourceModel(myType);
+                    var model = _docProvider.GetApiModel(myType);
                     rtnModels.Add(myType, model);
                 }
             }
@@ -61,22 +71,6 @@ namespace Swagger.Net.Factories
                 return false;
             }
             return true;
-        }
-
-        public IEnumerable<Model> GetModels(IEnumerable<ApiDescription> apiDescs)
-        {
-            var rtnModels = new Dictionary<Type, Model>();
-            foreach (var apiDesc in apiDescs)
-            {
-                AddIfValid(apiDesc.ActionDescriptor.ReturnType, rtnModels);
-
-                foreach (var param in apiDesc.ParameterDescriptions)
-                {
-                    AddIfValid(param.ParameterDescriptor.ParameterType, rtnModels);
-                }
-            }
-
-            return rtnModels.Values;
         }
    
     }

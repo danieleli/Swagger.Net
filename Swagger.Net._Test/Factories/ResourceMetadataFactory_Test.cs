@@ -23,7 +23,7 @@ namespace Swagger.Net._Test.Factories
         {
             
             var docProvider = new XmlCommentDocumentationProvider(TestHelper.XML_DOC_PATH);
-            _factory = new ResourceMetadataFactory(TestHelper.VIRTUAL_DIR, docProvider, new ParameterMetadataFactory());
+            _factory = new ResourceMetadataFactory(TestHelper.VIRTUAL_DIR, docProvider, new ParameterMetadataFactory(), null, null);
 
         }
 
