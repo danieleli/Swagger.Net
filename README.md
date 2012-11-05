@@ -142,7 +142,6 @@ Known Issues
 I'm hoping you will help me find and/or fix these.
 
 + The version of Swagger UI I have built in the /docs folder DOES NOT WORK in Internet Explorer.  :-(
-+ Models according to the swagger spec are not yet supported - in process
 
 
 Other Thoughts
@@ -168,6 +167,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 Change Log
 ----------
+0.6.1 Return model metadata with api metadata.
 
 0.6.0 Complete refactor using TDD.  Added a test project.  Removed unused references.  Ensure compatibility with VS 2010 with .net 4.0.
 
