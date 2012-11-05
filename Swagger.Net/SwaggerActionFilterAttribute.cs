@@ -68,19 +68,50 @@ namespace Swagger.Net
             var ctlrName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
 
             var docs = _factory.CreateResourceMetadata(uri, ctlrName);
-            _factory.PopulateApiAndModelElements(ctlrName, _apiDescriptions, docs);
-            //var apis = _factory.CreateApiElements(ctlrName, _apiDescriptions);
-            //docs.apis.AddRange(apis);
-            
-            //var returnType = actionContext.ActionDescriptor.ReturnType;
-            //var returnModel = _factory.GetResourceModel(returnType);
-            //docs.models.Add(returnModel);
+            var filteredApiDescs = FilterApis(ctlrName);
+            var apis = _factory.CreateApiElements(filteredApiDescs);
+            docs.apis.AddRange(apis);
 
-            //var paramTypes = actionContext.ActionDescriptor.GetParameters().Select(p => p.ParameterType);
-            //var parameterModels = _factory.GetResourceModels(paramTypes);
-            //docs.models.AddRange(parameterModels);
+            var models = GetModels(filteredApiDescs);
 
+            docs.models.AddRange(models);
             return docs;
+        }
+
+        
+        private IEnumerable<ApiDescription> FilterApis(string controllerName)
+        {
+            var filteredDescs = _apiDescriptions
+                .Where(d => d.ActionDescriptor.ControllerDescriptor.ControllerName == controllerName)           // current controller
+                .Where(d => !(d.Route.Defaults.ContainsKey(G.SWAGGER)));                                        // and not swagger doc meta route '/api/docs/...'
+
+            return filteredDescs;
+        }
+
+        private IEnumerable<Model> GetModels(IEnumerable<ApiDescription> apiDescs)
+        {
+            var rtnModels = new Dictionary<Type,Model>();
+            foreach (var apiDesc in apiDescs)
+            {
+                var returnType = apiDesc.ActionDescriptor.ReturnType;
+                if (returnType !=null && !rtnModels.ContainsKey(returnType))
+                {
+                    var returnModel = _factory.GetResourceModel(returnType);
+                    rtnModels.Add(returnType, returnModel);    
+                }
+                
+                foreach (var param in apiDesc.ParameterDescriptions)
+                {
+                    var paramType = param.ParameterDescriptor.ParameterType;
+                    if (!rtnModels.ContainsKey(paramType))
+                    {
+                        var paramModel = _factory.GetResourceModel(paramType);
+                        rtnModels.Add(paramType, paramModel);
+                    }
+                }
+            }
+            
+            return rtnModels.Values;
         }
 
         private static HttpResponseMessage WrapResponse(JsonMediaTypeFormatter formatter, ResourceDescription docs)

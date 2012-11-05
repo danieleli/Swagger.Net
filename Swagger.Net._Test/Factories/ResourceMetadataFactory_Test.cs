@@ -63,7 +63,7 @@ namespace Swagger.Net._Test.Factories
             var descriptions = new List<ApiDescription> { apiDesc };
 
             // Act
-            var apis = _factory.CreateApiElements(TestHelper.CONTROLLER_NAME, descriptions);
+            var apis = _factory.CreateApiElements(descriptions);
 
             // Asset
             Assert.AreEqual(1, apis.Count, "api count");
@@ -80,7 +80,7 @@ namespace Swagger.Net._Test.Factories
             var descriptions = new List<ApiDescription> { apiDesc };
 
             // Act
-            var apis = _factory.CreateApiElements(TestHelper.CONTROLLER_NAME, descriptions);
+            var apis = _factory.CreateApiElements(descriptions);
 
             // Asset
             Assert.AreEqual(0, apis.Count, "api count");

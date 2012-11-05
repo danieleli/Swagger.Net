@@ -56,50 +56,10 @@ namespace Swagger.Net.Factories
             return rtnResource;
         }
 
-        public IList<Api> CreateApiElements(string controllerName, IEnumerable<ApiDescription> apiDescs)
+        public IList<Api> CreateApiElements(IEnumerable<ApiDescription> apiDescs)
         {
-            var filteredDescs = apiDescs
-                .Where(d => d.ActionDescriptor.ControllerDescriptor.ControllerName == controllerName)           // current controller
-                .Where(d => !(d.Route.Defaults.ContainsKey(G.SWAGGER)));                         // and not swagger doc meta route '/api/docs/...'
-
-            var apis = filteredDescs.Select(apiDesc => GetApiMetadata(apiDesc));
-
+            var apis = apiDescs.Select(apiDesc => GetApiMetadata(apiDesc));
             return apis.ToList();
-        }
-
-        public void PopulateApiAndModelElements(string controllerName, IEnumerable<ApiDescription> apiDescriptions, ResourceDescription docs)
-        {
-            var filteredDescs = apiDescriptions
-                .Where(d => d.ActionDescriptor.ControllerDescriptor.ControllerName == controllerName)           // current controller
-                .Where(d => !(d.Route.Defaults.ContainsKey(G.SWAGGER)));                         // and not swagger doc meta route '/api/docs/...'
-
-            filteredDescs.ToList().ForEach(apiDesc => PopulateDocs(apiDesc, docs));
-        }
-
-        private void PopulateDocs(ApiDescription apiDesc, ResourceDescription docs)
-        {
-            var api = CreateApiRoot(apiDesc);
-            var myModels = new Dictionary<Type, Model>();
-
-            var operations = CreateOperationRoot(apiDesc);
-            foreach (var op in operations)
-            {
-                var parameters = _parameterFactory.CreateParameters(apiDesc.ParameterDescriptions, apiDesc.RelativePath);
-                op.parameters.AddRange(parameters);
-                foreach (var apiParameterDescription in apiDesc.ParameterDescriptions)
-                {
-                    var type = apiParameterDescription.ParameterDescriptor.ParameterType;
-                    var m = GetResourceModel(type);
-                    if (docs.models.All(x => x.Name != m.Name))
-                    {
-                        docs.models.Add(m);
-                    }
-                }
-            }
-
-            api.operations.AddRange(operations);
-            docs.apis.Add(api);
-
         }
 
         /// <summary>
@@ -156,6 +116,7 @@ namespace Swagger.Net.Factories
             return returnType == null ? "void" : returnType.Name;
         }
 
+
         public Model GetResourceModel(Type type)
         {
             return _docProvider.GetApiModel(type);
@@ -163,10 +124,8 @@ namespace Swagger.Net.Factories
 
         public IEnumerable<Model> GetResourceModels(IEnumerable<Type> paramTypes)
         {
-            return paramTypes.Select(type => GetResourceModel(type));
+            return paramTypes.Select(GetResourceModel);   // Function pointer
         }
-
 
     }
 }
-
