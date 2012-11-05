@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Factories\ModelMetadataFactory.cs" />
     <Compile Include="Factories\ParameterMetadataFactory.cs" />
     <Compile Include="Factories\ResourceMetadataFactory.cs" />
     <Compile Include="Models\Model.cs" />

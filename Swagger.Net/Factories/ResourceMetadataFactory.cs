@@ -17,82 +17,31 @@ namespace Swagger.Net.Factories
 
         #region --- fields & ctors ---
 
-        private string _appVirtualPath;
-        private XmlCommentDocumentationProvider _docProvider;
+        private readonly string _appVirtualPath;
+        private readonly XmlCommentDocumentationProvider _docProvider;
         private readonly ParameterMetadataFactory _parameterFactory;
         private readonly ICollection<ApiDescription> _apiDescriptions;
+        private readonly ModelMetadataFactory _modelFactory;
 
         public ResourceMetadataFactory(Collection<ApiDescription> apiDescriptions)
         {
             _apiDescriptions = apiDescriptions;
-            var path = HttpRuntime.AppDomainAppVirtualPath;
-            var docProvider = (IDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
+            _appVirtualPath = HttpRuntime.AppDomainAppVirtualPath.TrimEnd('/'); ;
+            _docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
             _parameterFactory = new ParameterMetadataFactory();
-            initialize(path, docProvider);
+            _modelFactory = new ModelMetadataFactory(_docProvider);
+
         }
 
         public ResourceMetadataFactory(string virtualPath, XmlCommentDocumentationProvider docProvider, ParameterMetadataFactory parameterFactory)
         {
             _parameterFactory = parameterFactory;
-            initialize(virtualPath, docProvider);
-        }
-
-        public void initialize(string appVirtualPath, IDocumentationProvider docProvider)
-        {
-            _appVirtualPath = appVirtualPath.TrimEnd('/');
-            _docProvider = (XmlCommentDocumentationProvider)docProvider;
+            _appVirtualPath = virtualPath.TrimEnd('/');
+            _docProvider = docProvider;
         }
 
         #endregion --- fields & ctors ---
 
-        private void AddIfValid(Type myType, Dictionary<Type, Model> rtnModels)
-        {
-            if (IsOfInterest(myType))
-            {
-                if (myType.IsGenericType)
-                {
-                    myType = myType.GetGenericArguments()[0];
-                }
-                if (!rtnModels.ContainsKey(myType))
-                {
-                    var model = this.GetResourceModel(myType);
-                    rtnModels.Add(myType, model);
-                }
-            }
-        }
-
-        private bool IsOfInterest(Type returnType)
-        {
-            if (returnType == null) return false;
-
-            if (returnType.IsGenericType)
-            {
-                returnType = returnType.GetGenericArguments()[0];
-            }
-
-            if (returnType.IsPrimitive || returnType == typeof(string))
-            {
-                return false;
-            }
-            return true;
-        }
-
-
-        public IEnumerable<Model> GetModels(IEnumerable<ApiDescription> apiDescs)
-        {
-            var rtnModels = new Dictionary<Type, Model>();
-            foreach (var apiDesc in apiDescs)
-            {
-                AddIfValid(apiDesc.ActionDescriptor.ReturnType, rtnModels);
-
-                foreach (var param in apiDesc.ParameterDescriptions)
-                {
-                    AddIfValid(param.ParameterDescriptor.ParameterType, rtnModels);
-                }
-            }
-
-            return rtnModels.Values;
-        }
         private IEnumerable<ApiDescription> FilterApis(string controllerName)
         {
             var filteredDescs = _apiDescriptions
@@ -110,7 +59,7 @@ namespace Swagger.Net.Factories
             var apis = this.CreateApiElements(filteredApiDescs);
             docs.apis.AddRange(apis);
 
-            var models = GetModels(filteredApiDescs);
+            var models = _modelFactory.GetModels(filteredApiDescs);
 
             docs.models.AddRange(models);
             return docs;
@@ -132,7 +81,7 @@ namespace Swagger.Net.Factories
 
         public IList<Api> CreateApiElements(IEnumerable<ApiDescription> apiDescs)
         {
-            var apis = apiDescs.Select(apiDesc => GetApiMetadata(apiDesc));
+            var apis = apiDescs.Select(GetApiMetadata);
             return apis.ToList();
         }
 
@@ -189,17 +138,6 @@ namespace Swagger.Net.Factories
         {
             return returnType == null ? "void" : returnType.Name;
         }
-
-
-        public Model GetResourceModel(Type type)
-        {
-            return _docProvider.GetApiModel(type);
-        }
-
-        public IEnumerable<Model> GetResourceModels(IEnumerable<Type> paramTypes)
-        {
-            return paramTypes.Select(GetResourceModel);   // Function pointer
-        }
-
+        
     }
 }
