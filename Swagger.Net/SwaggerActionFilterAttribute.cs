@@ -93,25 +93,47 @@ namespace Swagger.Net
             var rtnModels = new Dictionary<Type,Model>();
             foreach (var apiDesc in apiDescs)
             {
-                var returnType = apiDesc.ActionDescriptor.ReturnType;
-                if (returnType !=null && !rtnModels.ContainsKey(returnType))
-                {
-                    var returnModel = _factory.GetResourceModel(returnType);
-                    rtnModels.Add(returnType, returnModel);    
-                }
-                
+                AddIfValid(apiDesc.ActionDescriptor.ReturnType, rtnModels);
+
                 foreach (var param in apiDesc.ParameterDescriptions)
                 {
-                    var paramType = param.ParameterDescriptor.ParameterType;
-                    if (!rtnModels.ContainsKey(paramType))
-                    {
-                        var paramModel = _factory.GetResourceModel(paramType);
-                        rtnModels.Add(paramType, paramModel);
-                    }
+                    AddIfValid(param.ParameterDescriptor.ParameterType, rtnModels);
                 }
             }
             
             return rtnModels.Values;
+        }
+
+        private void AddIfValid(Type myType, Dictionary<Type, Model> rtnModels)
+        {
+            if (IsOfInterest(myType))
+            {
+                if (myType.IsGenericType)
+                {
+                    myType = myType.GetGenericArguments()[0];
+                }
+                if (!rtnModels.ContainsKey(myType))
+                {
+                    var model = _factory.GetResourceModel(myType);
+                    rtnModels.Add(myType, model);    
+                }
+            }
+        }
+
+        private bool IsOfInterest(Type returnType)
+        {
+            if (returnType == null) return false;
+
+            if (returnType.IsGenericType)
+            {
+                returnType = returnType.GetGenericArguments()[0];
+            }
+
+            if (returnType.IsPrimitive || returnType == typeof (string))
+            {
+                return false;
+            }
+            return true;
         }
 
         private static HttpResponseMessage WrapResponse(JsonMediaTypeFormatter formatter, ResourceDescription docs)
