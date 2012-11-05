@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using Sample.Mvc4WebApi.Models;
 
 namespace Swagger.Net.WebApi.Models
 {
@@ -37,13 +35,12 @@ namespace Swagger.Net.WebApi.Models
         /// </remarks>
         public DateTime PublishDate { get; set; }
 
-
         /// <summary>
-        /// BlogPost.Author Summary
+        /// BlogPost.Author (Person) Summary
         /// </summary>
         /// <remarks>
-        /// BlogPost.Author Remarks
+        /// BlogPost.Author (Person) Remarks
         /// </remarks>
-        public string Author { get; set; }
+        public Person Author { get; set; }
     }
 }

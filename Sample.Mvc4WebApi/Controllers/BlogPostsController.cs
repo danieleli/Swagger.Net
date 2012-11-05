@@ -4,12 +4,19 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Sample.Mvc4WebApi.Models;
 using Swagger.Net.WebApi.Models;
 
 namespace Swagger.Net.WebApi.Controllers
 {
     public class BlogPostsController : ApiController
     {
+
+        private IEnumerable<BlogPost> _posts = new List<BlogPost>()
+                                                   {
+                                                       new BlogPost() { Id = 1, PublishDate = DateTime.Now, Title = "title1", Author = new Person() { First = "Jon", Last = "doe", Id = 10 } },
+                                                       new BlogPost() { Id = 2, PublishDate = DateTime.Now, Title = "title2", Author = new Person() { First = "Steve", Last = "Smit", Id = 11 } }
+                                                   };
         /// <summary>
         /// BlogPostsController.Get Summary
         /// </summary>
@@ -19,7 +26,7 @@ namespace Swagger.Net.WebApi.Controllers
         /// </returns>
         public IEnumerable<BlogPost> Get()
         {
-            return new List<BlogPost> { new BlogPost(), new BlogPost() };
+            return _posts;
         }
 
 
@@ -32,10 +39,10 @@ namespace Swagger.Net.WebApi.Controllers
         /// <see cref="BlogPost"/>
         /// some comments about returned blogpost
         /// </returns>
-        
+
         public BlogPost Get(int id)
         {
-            return new BlogPost();
+            return _posts.First(x=>x.Id==id);
         }
 
         /// <summary>

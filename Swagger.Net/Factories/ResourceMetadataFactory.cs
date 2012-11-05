@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -19,9 +20,11 @@ namespace Swagger.Net.Factories
         private string _appVirtualPath;
         private XmlCommentDocumentationProvider _docProvider;
         private readonly ParameterMetadataFactory _parameterFactory;
+        private readonly ICollection<ApiDescription> _apiDescriptions;
 
-        public ResourceMetadataFactory()
+        public ResourceMetadataFactory(Collection<ApiDescription> apiDescriptions)
         {
+            _apiDescriptions = apiDescriptions;
             var path = HttpRuntime.AppDomainAppVirtualPath;
             var docProvider = (IDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
             _parameterFactory = new ParameterMetadataFactory();
@@ -42,14 +45,85 @@ namespace Swagger.Net.Factories
 
         #endregion --- fields & ctors ---
 
-        public ResourceDescription CreateResourceMetadata(Uri uri, string controllerName)
+        private void AddIfValid(Type myType, Dictionary<Type, Model> rtnModels)
+        {
+            if (IsOfInterest(myType))
+            {
+                if (myType.IsGenericType)
+                {
+                    myType = myType.GetGenericArguments()[0];
+                }
+                if (!rtnModels.ContainsKey(myType))
+                {
+                    var model = this.GetResourceModel(myType);
+                    rtnModels.Add(myType, model);
+                }
+            }
+        }
+
+        private bool IsOfInterest(Type returnType)
+        {
+            if (returnType == null) return false;
+
+            if (returnType.IsGenericType)
+            {
+                returnType = returnType.GetGenericArguments()[0];
+            }
+
+            if (returnType.IsPrimitive || returnType == typeof(string))
+            {
+                return false;
+            }
+            return true;
+        }
+
+
+        public IEnumerable<Model> GetModels(IEnumerable<ApiDescription> apiDescs)
+        {
+            var rtnModels = new Dictionary<Type, Model>();
+            foreach (var apiDesc in apiDescs)
+            {
+                AddIfValid(apiDesc.ActionDescriptor.ReturnType, rtnModels);
+
+                foreach (var param in apiDesc.ParameterDescriptions)
+                {
+                    AddIfValid(param.ParameterDescriptor.ParameterType, rtnModels);
+                }
+            }
+
+            return rtnModels.Values;
+        }
+        private IEnumerable<ApiDescription> FilterApis(string controllerName)
+        {
+            var filteredDescs = _apiDescriptions
+                .Where(d => d.ActionDescriptor.ControllerDescriptor.ControllerName == controllerName)           // current controller
+                .Where(d => !(d.Route.Defaults.ContainsKey(G.SWAGGER)));                                        // and not swagger doc meta route '/api/docs/...'
+
+            return filteredDescs;
+        }
+
+        public ResourceDescription GetDocs(string root, string controllerName)
+        {
+
+            var docs = this.CreateResourceMetadata(root, controllerName);
+            var filteredApiDescs = FilterApis(controllerName);
+            var apis = this.CreateApiElements(filteredApiDescs);
+            docs.apis.AddRange(apis);
+
+            var models = GetModels(filteredApiDescs);
+
+            docs.models.AddRange(models);
+            return docs;
+        }
+
+        public ResourceDescription CreateResourceMetadata(string rootUrl, string controllerName)
         {
 
             var rtnResource = new ResourceDescription()
             {
                 apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString(),
                 swaggerVersion = G.SWAGGER_VERSION,
-                basePath = uri.GetLeftPart(UriPartial.Authority) + _appVirtualPath,
+                basePath = rootUrl + _appVirtualPath,
                 resourcePath = controllerName
             };
 

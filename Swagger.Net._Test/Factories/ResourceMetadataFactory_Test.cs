@@ -39,7 +39,7 @@ namespace Swagger.Net._Test.Factories
             var descriptions = new List<ApiDescription> { apiDesc };
 
             // Act
-            var result = _factory.CreateResourceMetadata(_uri, TestHelper.CONTROLLER_NAME);
+            var result = _factory.CreateResourceMetadata(TestHelper.ROOT, TestHelper.CONTROLLER_NAME);
 
             // Asset
             var expectedVersion = "1.2.3.4";
@@ -83,7 +83,7 @@ namespace Swagger.Net._Test.Factories
             var apis = _factory.CreateApiElements(descriptions);
 
             // Asset
-            Assert.AreEqual(0, apis.Count, "api count");
+            Assert.AreEqual(1, apis.Count, "api count");
 
             Debug.WriteLine(JsonConvert.SerializeObject(apis));
         }

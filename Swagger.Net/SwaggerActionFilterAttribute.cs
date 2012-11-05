@@ -20,18 +20,17 @@ namespace Swagger.Net
     {
         #region --- fields & ctors ---
         
-        private readonly IEnumerable<ApiDescription> _apiDescriptions;
         private readonly ResourceMetadataFactory _factory;
 
         public SwaggerActionFilterAttribute()
         {
-            _factory = new ResourceMetadataFactory();
-            _apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
+            var apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
+            _factory = new ResourceMetadataFactory(apiDescriptions);
+            
         }
 
-        public SwaggerActionFilterAttribute(IEnumerable<ApiDescription> apiDescriptions, ResourceMetadataFactory factory)
+        public SwaggerActionFilterAttribute(ResourceMetadataFactory factory)
         {
-            _apiDescriptions = apiDescriptions;
             _factory = factory;
         }
 
@@ -42,7 +41,9 @@ namespace Swagger.Net
         {
             if (!IsDocRequest(actionContext)) return;
 
-            var docs = GetDocs(actionContext);
+            var rootUrl = actionContext.Request.RequestUri.GetLeftPart(UriPartial.Authority);
+            var ctlrName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
+            var docs = _factory.GetDocs(rootUrl,ctlrName);
             var formatter = actionContext.ControllerContext.Configuration.Formatters.JsonFormatter;
             var response = WrapResponse(formatter, docs);
             actionContext.Response = response;
@@ -62,79 +63,11 @@ namespace Swagger.Net
             return true;
         }
 
-        private ResourceDescription GetDocs(HttpActionContext actionContext)
-        {
-            var uri = actionContext.Request.RequestUri;
-            var ctlrName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
-
-            var docs = _factory.CreateResourceMetadata(uri, ctlrName);
-            var filteredApiDescs = FilterApis(ctlrName);
-            var apis = _factory.CreateApiElements(filteredApiDescs);
-            docs.apis.AddRange(apis);
-
-            var models = GetModels(filteredApiDescs);
-
-            docs.models.AddRange(models);
-            return docs;
-        }
+        
 
         
-        private IEnumerable<ApiDescription> FilterApis(string controllerName)
-        {
-            var filteredDescs = _apiDescriptions
-                .Where(d => d.ActionDescriptor.ControllerDescriptor.ControllerName == controllerName)           // current controller
-                .Where(d => !(d.Route.Defaults.ContainsKey(G.SWAGGER)));                                        // and not swagger doc meta route '/api/docs/...'
+ 
 
-            return filteredDescs;
-        }
-
-        private IEnumerable<Model> GetModels(IEnumerable<ApiDescription> apiDescs)
-        {
-            var rtnModels = new Dictionary<Type,Model>();
-            foreach (var apiDesc in apiDescs)
-            {
-                AddIfValid(apiDesc.ActionDescriptor.ReturnType, rtnModels);
-
-                foreach (var param in apiDesc.ParameterDescriptions)
-                {
-                    AddIfValid(param.ParameterDescriptor.ParameterType, rtnModels);
-                }
-            }
-            
-            return rtnModels.Values;
-        }
-
-        private void AddIfValid(Type myType, Dictionary<Type, Model> rtnModels)
-        {
-            if (IsOfInterest(myType))
-            {
-                if (myType.IsGenericType)
-                {
-                    myType = myType.GetGenericArguments()[0];
-                }
-                if (!rtnModels.ContainsKey(myType))
-                {
-                    var model = _factory.GetResourceModel(myType);
-                    rtnModels.Add(myType, model);    
-                }
-            }
-        }
-
-        private bool IsOfInterest(Type returnType)
-        {
-            if (returnType == null) return false;
-
-            if (returnType.IsGenericType)
-            {
-                returnType = returnType.GetGenericArguments()[0];
-            }
-
-            if (returnType.IsPrimitive || returnType == typeof (string))
-            {
-                return false;
-            }
-            return true;
-        }
 
         private static HttpResponseMessage WrapResponse(JsonMediaTypeFormatter formatter, ResourceDescription docs)
         {
