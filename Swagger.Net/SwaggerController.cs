@@ -11,7 +11,7 @@ using Swagger.Net.Models;
 
 namespace Swagger.Net
 {
-
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class SwaggerController : ApiController
     {
         #region --- fields & ctors ---
