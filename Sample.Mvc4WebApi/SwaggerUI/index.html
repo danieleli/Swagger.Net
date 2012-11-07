@@ -1,8 +1,9 @@
 <html>
 <head>
     <title>Swagger UI</title>
-    <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'/>
-    <link href='css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'
+        type='text/css' />
+    <link href='css/screen.css' media='screen' rel='stylesheet' type='text/css' />
     <script src='lib/jquery.min.js' type='text/javascript'></script>
     <script src='lib/jquery.slideto.min.js' type='text/javascript'></script>
     <script src='lib/jquery.wiggle.min.js' type='text/javascript'></script>
@@ -12,39 +13,43 @@
     <script src='lib/backbone-min.js' type='text/javascript'></script>
     <script src='lib/swagger.js' type='text/javascript'></script>
     <script src='swagger-ui.js' type='text/javascript'></script>
-
     <style type="text/css">
-        .swagger-ui-wrap {
+        .swagger-ui-wrap
+        {
             max-width: 960px;
             margin-left: auto;
             margin-right: auto;
         }
-
-        .icon-btn {
+        .icon-btn
+        {
             cursor: pointer;
         }
-
-        #message-bar {
+        #message-bar
+        {
             min-height: 30px;
             text-align: center;
             padding-top: 10px;
         }
-
-        .message-success {
+        .message-success
+        {
             color: #89BF04;
         }
-
-        .message-fail {
+        .message-fail
+        {
             color: #cc0000;
         }
+        #data-links li
+        {
+            margin-top: 4px !important;
+            
+        }
     </style>
-
     <script type="text/javascript">
         $(function () {
             window.swaggerUi = new SwaggerUi({
-                discoveryUrl:"/api/swagger",
-                apiKey:"",
-                dom_id:"swagger-ui-container",
+                discoveryUrl: "/api/swagger",
+                apiKey: "",
+                dom_id: "swagger-ui-container",
                 supportHeaderParams: false,
                 supportedSubmitMethods: ['get', 'post', 'put']
             });
@@ -54,35 +59,40 @@
 
     </script>
 </head>
-
 <body>
-<div id='header'>
-    <div class="swagger-ui-wrap">
-        <a id="logo" href="http://swagger.wordnik.com">swagger</a>
-
-        <form id='api_selector'>
+    <div id='header'>
+        <div class="swagger-ui-wrap">
+            <a id="logo" href="http://swagger.wordnik.com">swagger</a>
+            <form id='api_selector'>
             <div class='input icon-btn'>
                 <img id="show-pet-store-icon" src="images/pet_store_api.png" title="Show Swagger Petstore Example Apis">
             </div>
             <div class='input icon-btn'>
                 <img id="show-wordnik-dev-icon" src="images/wordnik_api.png" title="Show Wordnik Developer Apis">
             </div>
-            <div class='input'><input placeholder="http://example.com/api" id="input_baseUrl" name="baseUrl"
-                                      type="text"/></div>
-            <div class='input'><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"/></div>
-            <div class='input'><a id="explore" href="#">Explore</a></div>
-        </form>
+            <div class='input'>
+                <input placeholder="http://example.com/api" id="input_baseUrl" name="baseUrl" type="text" /></div>
+            <div class='input'>
+                <input placeholder="api_key" id="input_apiKey" name="apiKey" type="text" /></div>
+            <div class='input'>
+                <a id="explore" href="#">Explore</a></div>
+            </form>
+            <div>
+                <ul id="data-links">
+                    <li><a href="/api/docs/QueryStringBug?count={count}" target="_blank">/api/docs/QueryStringBug?count={count}</a>
+                    </li>
+                    <li><a href="/api/docs/QueryStringBug" target="_blank">/api/docs/QueryStringBug</a>
+                    </li>
+                    <li><a href="/api/docs/Values" target="_blank">/api/docs/Values</a> </li>
+                    <li><a href="/api/docs/BlogPosts" target="_blank">/api/docs/BlogPosts</a> </li>
+                </ul>
+            </div>
+        </div>
     </div>
-</div>
-
-<div id="message-bar" class="swagger-ui-wrap">
-    &nbsp;
-</div>
-
-<div id="swagger-ui-container" class="swagger-ui-wrap">
-
-</div>
-
+    <div id="message-bar" class="swagger-ui-wrap">
+        &nbsp;
+    </div>
+    <div id="swagger-ui-container" class="swagger-ui-wrap">
+    </div>
 </body>
-
 </html>
