@@ -75,7 +75,7 @@ namespace Swagger.Net.Factories
                     var res = new ResourceSummary
                     {
                         // todo: this is returning url with query string parameters only if first method has param(s)
-                        path = desc.RelativePath,
+                        path = "/" + desc.RelativePath,
                         description = desc.Documentation
                     };
                     rtnApis.Add(ctlrName, res);
