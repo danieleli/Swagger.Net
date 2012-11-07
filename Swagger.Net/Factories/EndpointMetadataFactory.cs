@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using System.Web.Http.Routing;
 
 namespace Swagger.Net.Factories
 {
@@ -46,7 +47,9 @@ namespace Swagger.Net.Factories
                 basePath = uri.GetLeftPart(UriPartial.Authority) + _appVirtualPath,
             };
 
+            
             var apis = CreateApiElements(_apiDescriptions);
+            
             foreach (var resourceSummary in apis)
             {
                 rtnListing.apis.Add(resourceSummary);
@@ -63,8 +66,7 @@ namespace Swagger.Net.Factories
             {
                 var ctlrName = desc.ActionDescriptor.ControllerDescriptor.ControllerName;
 
-                // skip swagger controller and items already in dictionary.
-                if (IsSwaggerController(ctlrName) || rtnApis.ContainsKey(ctlrName))
+                if (IsSwaggerRoute(desc.Route) || rtnApis.ContainsKey(ctlrName))
                 {
                     // do nothing
                 }
@@ -72,7 +74,8 @@ namespace Swagger.Net.Factories
                 {
                     var res = new ResourceSummary
                     {
-                        path = "/" + desc.RelativePath,
+                        // todo: this is returning url with query string parameters only if first method has param(s)
+                        path = desc.RelativePath,
                         description = desc.Documentation
                     };
                     rtnApis.Add(ctlrName, res);
@@ -82,9 +85,10 @@ namespace Swagger.Net.Factories
             return rtnApis.Values.ToList();
         }
 
-        private static bool IsSwaggerController(string ctlrName)
+        private bool IsSwaggerRoute(IHttpRoute route)
         {
-            return ctlrName.ToUpper() == G.SWAGGER.ToUpper();
+            return route.Defaults.ContainsKey(G.SWAGGER);
         }
+
     }
 }
