@@ -26,7 +26,7 @@ namespace Sample.Mvc4WebApi.App_Start
         public static void PostStart()
         {
             var config = GlobalConfiguration.Configuration;
-
+            
             try
             {
                 var baseType = HttpContext.Current.ApplicationInstance.GetType().BaseType;
@@ -34,16 +34,35 @@ namespace Sample.Mvc4WebApi.App_Start
                 {
                     var assemblyname = Assembly.GetAssembly(baseType).GetName().Name;
                     var path = HttpContext.Current.Server.MapPath("~/bin/" + assemblyname + ".xml");
-                    var docProvider = new XmlCommentDocumentationProvider(path);
-                    config.Services.Replace(typeof(IDocumentationProvider), docProvider);
+                    ConfigureDocumentationProvider(path, config);
                 }
-
-                config.Filters.Add(new SwaggerActionFilterAttribute());
+                else
+                {
+                    throw new ApplicationException("ApplicationInstance.GetType().BaseType not found.");
+                }
             }
             catch (FileNotFoundException)
             {
                 throw new Exception("Please enable \"XML documentation file\" in project properties with default (bin\\Sample.Mvc4WebApi.XML) value or edit value in App_Start\\SwaggerNet.cs");
             }
+
+            config.Filters.Add(new SwaggerActionFilterAttribute());
+        }
+
+        public static void ConfigureDocumentationProvider(string absoluteDocPath, HttpConfiguration config)
+        {
+
+            try
+            {
+                var docProvider = new XmlCommentDocumentationProvider(absoluteDocPath);
+                config.Services.Replace(typeof(IDocumentationProvider), docProvider);
+            }
+            catch (FileNotFoundException)
+            {
+                throw new Exception("Please enable \"XML documentation file\" in project properties with default (bin\\Sample.Mvc4WebApi.XML) value or edit value in App_Start\\SwaggerNet.cs");
+            }
+
+
         }
     }
 }
