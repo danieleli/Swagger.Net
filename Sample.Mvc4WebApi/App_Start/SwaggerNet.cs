@@ -26,24 +26,17 @@ namespace Sample.Mvc4WebApi.App_Start
         public static void PostStart()
         {
             var config = GlobalConfiguration.Configuration;
-            
-            try
+
+            var baseType = HttpContext.Current.ApplicationInstance.GetType().BaseType;
+            if (baseType != null)
             {
-                var baseType = HttpContext.Current.ApplicationInstance.GetType().BaseType;
-                if (baseType != null)
-                {
-                    var assemblyname = Assembly.GetAssembly(baseType).GetName().Name;
-                    var path = HttpContext.Current.Server.MapPath("~/bin/" + assemblyname + ".xml");
-                    ConfigureDocumentationProvider(path, config);
-                }
-                else
-                {
-                    throw new ApplicationException("ApplicationInstance.GetType().BaseType not found.");
-                }
+                var assemblyname = Assembly.GetAssembly(baseType).GetName().Name;
+                var path = HttpContext.Current.Server.MapPath("~/bin/" + assemblyname + ".xml");
+                ConfigureDocumentationProvider(path, config);
             }
-            catch (FileNotFoundException)
+            else
             {
-                throw new Exception("Please enable \"XML documentation file\" in project properties with default (bin\\Sample.Mvc4WebApi.XML) value or edit value in App_Start\\SwaggerNet.cs");
+                throw new ApplicationException("ApplicationInstance.GetType().BaseType not found.");
             }
 
             config.Filters.Add(new SwaggerActionFilterAttribute());
