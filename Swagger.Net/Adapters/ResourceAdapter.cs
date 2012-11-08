@@ -98,10 +98,5 @@ namespace Swagger.Net.Factories
             //return path;
         }
 
-        private bool IsSwaggerRoute(IHttpRoute route)
-        {
-            return route.Defaults.ContainsKey(G.SWAGGER);
-        }
-
     }
 }
