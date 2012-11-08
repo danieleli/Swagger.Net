@@ -52,7 +52,7 @@ namespace Swagger.Net.Factories
         private IEnumerable<ApiDescription> FilterApis(string controllerName)
         {
             var filteredDescs = _apiDescriptions
-                .Where(d => d.ActionDescriptor.ControllerDescriptor.ControllerName == controllerName)           // current controller
+                .Where(d => d.ActionDescriptor.ControllerDescriptor.ControllerName.ToUpper() == controllerName.ToUpper())           // current controller
                 .Where(d => !(d.Route.Defaults.ContainsKey(G.SWAGGER)));                                        // and not swagger doc meta route '/api/docs/...'
 
             return filteredDescs;
