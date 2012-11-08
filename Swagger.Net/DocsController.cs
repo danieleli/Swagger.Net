@@ -13,60 +13,41 @@ using Swagger.Net.Models;
 namespace Swagger.Net
 {
     [ApiExplorerSettings(IgnoreApi = true)]
-    public class SwaggerController : ApiController
+    public class DocsController : ApiController
     {
         #region --- fields & ctors ---
 
-        private readonly EndpointMetadataFactory _endpointFactory;
+        private readonly ResourceMetadataFactory _factory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerController"/> class.
         /// </summary>
-        public SwaggerController()
+        public DocsController()
         {
-            _endpointFactory = new EndpointMetadataFactory();
+            _factory = new ResourceMetadataFactory();  
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerController"/> class.
         /// </summary>
-        public SwaggerController(EndpointMetadataFactory endpointFactory)
+        public DocsController(ResourceMetadataFactory resourceFactory)
         {
-            _endpointFactory = endpointFactory;
+            _factory = resourceFactory;  
         }
 
         #endregion --- fields & ctors ---
 
-        /// <summary>
-        /// Get the resource description of the api for swagger documentation
-        /// </summary>
-        /// <remarks>It is very convenient to have this information available for generating clients. This is the entry point for the swagger UI
-        /// </remarks>
-        /// <returns>JSON document representing structure of API</returns>
-        public HttpResponseMessage Get()
+      
+
+        public HttpResponseMessage Get(string id)
         {
             // Arrange
-            var uri = base.ControllerContext.Request.RequestUri;
-
-            // Act
-            var resourceListing = _endpointFactory.CreateResourceListing(uri);
-            
-            //Answer
-            var resp = WrapResponse(resourceListing);
-            return resp;
-        }
-
-        public HttpResponseMessage Get(string controllerName)
-        {
-            // Arrange
-            var _factory = new ResourceMetadataFactory();   
             var rootUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
 
             // Act
-            var docs = _factory.GetDocs(rootUrl, controllerName);
+            var docs = _factory.GetDocs(rootUrl, id);
 
             //Answer
-           // var resp = WrapResponse(docs);
             return WrapResponse(docs);
         }
 

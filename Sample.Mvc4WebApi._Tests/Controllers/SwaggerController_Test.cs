@@ -19,7 +19,7 @@ namespace Swagger.Net._Test
         public void TestMethod1()
         {
             // Arrange
-            SwaggerNet.PreStart();
+            //SwaggerNet.PreStart();
             SwaggerNet.ConfigureDocumentationProvider(@"C:\Users\danieleli\Documents\_projects\Swagger.Net\Sample.Mvc4WebApi\bin\Sample.Mvc4WebApi.xml", GlobalConfiguration.Configuration.Services);
             var apiDescs = new []
                                    {

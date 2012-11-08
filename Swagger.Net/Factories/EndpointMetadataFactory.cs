@@ -69,10 +69,20 @@ namespace Swagger.Net.Factories
 
                 if (IsSwaggerRoute(desc.Route) && !rtnApis.ContainsKey(ctlrName))
                 {
+                    string path;
+                    var questionIndex = desc.RelativePath.IndexOf("?");
+                    if (questionIndex < 1)
+                    {
+                        path = desc.RelativePath;
+                    }
+                    else
+                    {
+                        path = desc.RelativePath.Substring(0, questionIndex);
+                    }
                     var res = new Api
                     {
                         // todo: this is returning url with query string parameters only if first method has param(s)
-                        path = "/" + desc.RelativePath,
+                        path = "/" + path,
                         description = desc.Documentation
                     };
                     rtnApis.Add(ctlrName, res);

@@ -9,20 +9,11 @@ using System.Web.Http.Dispatcher;
 using System.Web.Routing;
 using Swagger.Net;
 
-[assembly: WebActivator.PreApplicationStartMethod(typeof(Sample.Mvc4WebApi.App_Start.SwaggerNet), "PreStart")]
 [assembly: WebActivator.PostApplicationStartMethod(typeof(Sample.Mvc4WebApi.App_Start.SwaggerNet), "PostStart")]
 namespace Sample.Mvc4WebApi.App_Start
 {
     public static class SwaggerNet
     {
-        public static void PreStart()
-        {
-            RouteTable.Routes.MapHttpRoute(
-                name: "SwaggerApi",
-                routeTemplate: "api/docs/{controller}",
-                defaults: new { swagger = true }
-            );
-        }
 
         public static void PostStart()
         {
@@ -40,7 +31,6 @@ namespace Sample.Mvc4WebApi.App_Start
                 throw new ApplicationException("ApplicationInstance.GetType().BaseType not found.");
             }
 
-            config.Filters.Add(new SwaggerActionFilterAttribute());
         }
 
         public static void ConfigureDocumentationProvider(string absoluteDocPath, ServicesContainer services)
