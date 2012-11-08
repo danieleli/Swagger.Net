@@ -10,12 +10,12 @@ namespace Swagger.Net._Test.Factories
     [TestClass]
     public class ParameterMetadataFactory_Test
     {
-        private ParameterMetadataFactory _factory;
+        private ParameterAdapter _factory;
 
         public void Setup()
         {
             var docProvider = new XmlCommentDocumentationProvider(TestHelper.XML_DOC_PATH);
-            _factory = new ParameterMetadataFactory(docProvider);
+            _factory = new ParameterAdapter(docProvider);
 
         }
 

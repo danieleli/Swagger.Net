@@ -20,14 +20,14 @@ namespace Swagger.Net
     {
         #region --- fields & ctors ---
         
-        private readonly ResourceMetadataFactory _factory;
+        private readonly ApiAdapter _factory;
 
         public SwaggerActionFilterAttribute()
         {
-            _factory = new ResourceMetadataFactory();   
+            _factory = new ApiAdapter();   
         }
 
-        public SwaggerActionFilterAttribute(ResourceMetadataFactory factory)
+        public SwaggerActionFilterAttribute(ApiAdapter factory)
         {
             _factory = factory;
         }

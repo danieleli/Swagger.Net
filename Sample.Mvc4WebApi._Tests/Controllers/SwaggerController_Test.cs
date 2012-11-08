@@ -26,7 +26,7 @@ namespace Swagger.Net._Test
                                        TestHelper.GetApiDescription("FooController"),
                                        TestHelper.GetApiDescription("BarController")
                                    };
-            var resourceFactory = new EndpointMetadataFactory("//app/virtual/path", apiDescs);
+            var resourceFactory = new ResourceAdapter("//app/virtual/path", apiDescs);
             var ctlr = new SwaggerController(resourceFactory);
 
 

@@ -15,21 +15,21 @@ namespace Swagger.Net.Factories
     /// -----------------------------------------
     /// | EndpointMetadata  | Resource Listing  |
     /// </summary>
-    public class EndpointMetadataFactory
+    public class ResourceAdapter
     {
 
         #region --- fields & ctors ---
 
-        private string _appVirtualPath;
-        private IEnumerable<ApiDescription> _apiDescriptions;
+        private readonly string _appVirtualPath;
+        private readonly IEnumerable<ApiDescription> _apiDescriptions;
 
-        public EndpointMetadataFactory()
+        public ResourceAdapter()
         {
             _appVirtualPath = HttpRuntime.AppDomainAppVirtualPath.TrimEnd('/');
             _apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
         }
 
-        public EndpointMetadataFactory(string appVirtualPath, IEnumerable<ApiDescription> apiDescs)
+        public ResourceAdapter(string appVirtualPath, IEnumerable<ApiDescription> apiDescs)
         {
             _appVirtualPath = appVirtualPath.TrimEnd('/'); 
             _apiDescriptions = apiDescs;
@@ -49,7 +49,7 @@ namespace Swagger.Net.Factories
             };
 
             
-            var apis = CreateApiElements(_apiDescriptions);
+            var apis = CreateResourceElements(_apiDescriptions);
             
             foreach (var resourceSummary in apis)
             {
@@ -59,9 +59,9 @@ namespace Swagger.Net.Factories
             return rtnListing;
         }
 
-        public IList<Api> CreateApiElements(IEnumerable<ApiDescription> apiDescs)
+        public IList<Resource> CreateResourceElements(IEnumerable<ApiDescription> apiDescs)
         {
-            var rtnApis = new Dictionary<String, Api>();
+            var rtnApis = new Dictionary<String, Resource>();
 
             foreach (var desc in apiDescs)
             {
@@ -69,7 +69,7 @@ namespace Swagger.Net.Factories
 
                 if (IsSwaggerRoute(desc.Route) && !rtnApis.ContainsKey(ctlrName))
                 {
-                    var res = new Api
+                    var res = new Resource
                     {
                         // todo: this is returning url with query string parameters only if first method has param(s)
                         path = "/" + desc.RelativePath,

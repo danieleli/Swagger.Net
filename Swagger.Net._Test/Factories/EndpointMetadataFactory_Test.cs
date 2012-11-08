@@ -22,7 +22,7 @@ namespace Swagger.Net._Test.Factories
             var uri = new Uri(ROOT + "/this/is?field=3&test=mytest");
             var apiDescs = new List<ApiDescription>();
 
-            var factory = new EndpointMetadataFactory(VIRTUAL_DIR, apiDescs);
+            var factory = new ResourceAdapter(VIRTUAL_DIR, apiDescs);
 
             var listing = factory.CreateResourceListing(uri);
 
@@ -50,7 +50,7 @@ namespace Swagger.Net._Test.Factories
             //            Documentation = "somedocs"
             //        },
             //};
-            var factory = new EndpointMetadataFactory(VIRTUAL_DIR, apiDescs);
+            var factory = new ResourceAdapter(VIRTUAL_DIR, apiDescs);
 
             var listing = factory.CreateResourceListing(uri);
 
