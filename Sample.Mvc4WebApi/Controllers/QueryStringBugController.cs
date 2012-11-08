@@ -29,11 +29,5 @@ namespace Swagger.Net.WebApi.Controllers
         {
             
         }
-
-        [HttpGet]
-        public HttpResponseMessage Docs()
-        {
-            return new HttpResponseMessage(HttpStatusCode.OK);
-        }
     }
 }
