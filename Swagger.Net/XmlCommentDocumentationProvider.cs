@@ -76,7 +76,7 @@ namespace Swagger.Net
 
             var elements = new List<string>() { "summary", "example", "remarks", "returns", "ready", "datatype" };
             elements.ForEach(e => MapElement(e, node, documentation));
-            
+
             return documentation.ToString();
         }
 
@@ -90,13 +90,22 @@ namespace Swagger.Net
             {
                 apiModel.description = GetDocumentation(modelNode);
 
-                var propertyNodes = GetTypeMemberNodes(modelType.FullName);
-                foreach (XPathNavigator propertyNode in propertyNodes)
-                    apiModel.Members.Add(new Properties()
-                    {
-                        Name = propertyNode.GetAttribute("name", "").Replace("P:" + modelType.FullName + ".", ""),
-                        description = GetDocumentation(propertyNode),
-                    });
+                var propInfos = modelType.GetProperties();
+                // var propertyNodes = GetTypeMemberNodes(modelType.FullName);
+              
+                foreach (var propertyInfo in propInfos)
+                {
+                    //var propNode = propertyNodes.ToList();
+                    
+                    apiModel.properties.Add(
+                        new Properties()
+                            {
+                                Name = propertyInfo.Name,
+                                description = "fixeme", //GetDocumentation(propNode),
+                                type = propertyInfo.PropertyType.Name
+                            });
+
+                }
             }
             else
             {
