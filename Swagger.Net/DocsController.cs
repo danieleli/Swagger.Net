@@ -17,20 +17,20 @@ namespace Swagger.Net
     {
         #region --- fields & ctors ---
 
-        private readonly ResourceMetadataFactory _factory;
+        private readonly ApiAdapter _factory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerController"/> class.
         /// </summary>
         public DocsController()
         {
-            _factory = new ResourceMetadataFactory();  
+            _factory = new ApiAdapter();  
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerController"/> class.
         /// </summary>
-        public DocsController(ResourceMetadataFactory resourceFactory)
+        public DocsController(ApiAdapter resourceFactory)
         {
             _factory = resourceFactory;  
         }

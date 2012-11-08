@@ -17,13 +17,13 @@ namespace Swagger.Net._Test.Factories
     public class ResourceMetadataFactory_Test
     {
         private readonly Uri _uri = new Uri(TestHelper.ROOT + "/this/is?field=3&test=mytest");
-        private ResourceMetadataFactory _factory;
+        private ApiAdapter _factory;
 
         public void Setup()
         {
             
             var docProvider = new XmlCommentDocumentationProvider(TestHelper.XML_DOC_PATH);
-            _factory = new ResourceMetadataFactory(TestHelper.VIRTUAL_DIR, docProvider, new ParameterMetadataFactory(), null, null);
+            _factory = new ApiAdapter(TestHelper.VIRTUAL_DIR, docProvider, new ParameterAdapter(), null, null);
 
         }
 

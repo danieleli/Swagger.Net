@@ -28,7 +28,7 @@ namespace Swagger.Net
     {
         public ResourceListing()
         {
-            this.apis = new List<Api>();
+            this.apis = new List<Resource>();
         }
 
         /// <summary>
@@ -55,8 +55,13 @@ namespace Swagger.Net
         /// <summary>
         /// Source:  GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions
         /// </summary>
-        public List<Api> apis { get; private set; }
+        public List<Resource> apis { get; private set; }
     }
 
+    public class Resource
+    {
+        public string path { get; set; }
+        public string description { get; set; }
+    }
 
 }

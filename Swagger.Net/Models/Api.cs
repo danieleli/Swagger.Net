@@ -52,6 +52,7 @@ namespace Swagger.Net.Models
 
 
 
+
     //      Operation: {
     //        httpMethod        :"GET",
     //        nickname          :"getPetById",

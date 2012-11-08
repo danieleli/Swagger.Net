@@ -17,22 +17,22 @@ namespace Swagger.Net
     {
         #region --- fields & ctors ---
 
-        private readonly EndpointMetadataFactory _endpointFactory;
+        private readonly ResourceAdapter _resourceFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerController"/> class.
         /// </summary>
         public SwaggerController()
         {
-            _endpointFactory = new EndpointMetadataFactory();
+            _resourceFactory = new ResourceAdapter();
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerController"/> class.
         /// </summary>
-        public SwaggerController(EndpointMetadataFactory endpointFactory)
+        public SwaggerController(ResourceAdapter resourceFactory)
         {
-            _endpointFactory = endpointFactory;
+            _resourceFactory = resourceFactory;
         }
 
         #endregion --- fields & ctors ---
@@ -49,7 +49,7 @@ namespace Swagger.Net
             var uri = base.ControllerContext.Request.RequestUri;
 
             // Act
-            var resourceListing = _endpointFactory.CreateResourceListing(uri);
+            var resourceListing = _resourceFactory.CreateResourceListing(uri);
             
             //Answer
             var resp = WrapResponse(resourceListing);
@@ -59,7 +59,7 @@ namespace Swagger.Net
         public HttpResponseMessage Get(string controllerName)
         {
             // Arrange
-            var _factory = new ResourceMetadataFactory();   
+            var _factory = new ApiAdapter();   
             var rootUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
 
             // Act

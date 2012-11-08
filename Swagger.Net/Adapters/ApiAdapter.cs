@@ -17,28 +17,28 @@ namespace Swagger.Net.Factories
     /// -----------------------------------------
     /// | ApiDescription    | Resource          |
     /// </summary>
-    public class ResourceMetadataFactory
+    public class ApiAdapter
     {
 
         #region --- fields & ctors ---
 
         private readonly string _appVirtualPath;
         private readonly XmlCommentDocumentationProvider _docProvider;
-        private readonly ParameterMetadataFactory _parameterFactory;
+        private readonly ParameterAdapter _parameterFactory;
         private readonly ICollection<ApiDescription> _apiDescriptions;
-        private readonly ModelMetadataFactory _modelFactory;
+        private readonly ModelAdapter _modelFactory;
 
-        public ResourceMetadataFactory()
+        public ApiAdapter()
         {
             _appVirtualPath = HttpRuntime.AppDomainAppVirtualPath.TrimEnd('/'); ;
             _apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
-            _parameterFactory = new ParameterMetadataFactory();
+            _parameterFactory = new ParameterAdapter();
 
             _docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
-            _modelFactory = new ModelMetadataFactory(_docProvider);
+            _modelFactory = new ModelAdapter(_docProvider);
         }
 
-        public ResourceMetadataFactory(string virtualPath, XmlCommentDocumentationProvider docProvider, ParameterMetadataFactory parameterFactory, ModelMetadataFactory modelFactory,  ICollection<ApiDescription> apiDescriptions)
+        public ApiAdapter(string virtualPath, XmlCommentDocumentationProvider docProvider, ParameterAdapter parameterFactory, ModelAdapter modelFactory,  ICollection<ApiDescription> apiDescriptions)
         {
             _apiDescriptions = apiDescriptions;
             _modelFactory = modelFactory;
