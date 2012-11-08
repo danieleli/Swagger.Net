@@ -11,7 +11,7 @@ Latest version: Pre-release 0.6
 Introduction
 ------------
 
-Swagger.Net will expose any apis the inherit from the ApiController in the new [ASP.NET Web API](http://www.asp.net/web-api).
+Swagger.Net will expose any apis the inherit from the ApiController in the new [ASP.NET Web API](http://www.asp.net/web-api), unless they are flagged with that ApiExplorerSettings(IgnoreApi = true) attribute.
 
 Swagger UI is included in the solution.  However, when using the NuGet package you will need to roll your own somewhere and just point your instance of [Swagger UI](https://github.com/wordnik/swagger-ui) at http://YOUR-URL:PORT/api/swagger to expose all of the APIs that you have built.  
 
