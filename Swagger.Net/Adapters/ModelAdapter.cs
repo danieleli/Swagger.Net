@@ -45,8 +45,7 @@ namespace Swagger.Net.Factories
                 dynamic props = new Dictionary<string, object>();
                 foreach (var p in m.Value.properties)
                 {
-                    var type = new {p.type};
-                    props[p.Name] = new { id=p.Name, type};
+                    props[p.Name] = new { id=p.Name, p.type};
                 }
                 rtn.Add(m.Key.Name, new {
                                      id = m.Key.Name,
