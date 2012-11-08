@@ -40,15 +40,16 @@ namespace Swagger.Net._Test.Factories
         {
             
             var uri = new Uri(ROOT + "/this/is?field=3&test=mytest");
-         
-            var apiDescs = new List<ApiDescription>(){ 
-                new ApiDescription()
-                    {
-                        ActionDescriptor = new ReflectedHttpActionDescriptor(){ControllerDescriptor = new HttpControllerDescriptor(){ControllerName = "somecontrolerName"}},
-                        RelativePath = "relativePathHere",
-                        Documentation = "somedocs"
-                    },
-            };
+
+            var apiDescs = new List<ApiDescription>() {TestHelper.GetApiDescription("yada")};
+            //var apiDescs = new List<ApiDescription>(){ 
+            //    new ApiDescription()
+            //        {
+            //            ActionDescriptor = new ReflectedHttpActionDescriptor(){ControllerDescriptor = new HttpControllerDescriptor(){ControllerName = "somecontrolerName"}},
+            //            RelativePath = "relativePathHere",
+            //            Documentation = "somedocs"
+            //        },
+            //};
             var factory = new EndpointMetadataFactory(VIRTUAL_DIR, apiDescs);
 
             var listing = factory.CreateResourceListing(uri);

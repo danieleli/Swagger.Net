@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 using System.Web.Http.Routing;
+using Swagger.Net.Models;
 
 namespace Swagger.Net.Factories
 {
@@ -58,21 +59,17 @@ namespace Swagger.Net.Factories
             return rtnListing;
         }
 
-        public IList<ResourceSummary> CreateApiElements(IEnumerable<ApiDescription> apiDescs)
+        public IList<Api> CreateApiElements(IEnumerable<ApiDescription> apiDescs)
         {
-            var rtnApis = new Dictionary<String, ResourceSummary>();
+            var rtnApis = new Dictionary<String, Api>();
 
             foreach (var desc in apiDescs)
             {
                 var ctlrName = desc.ActionDescriptor.ControllerDescriptor.ControllerName;
 
-                if (IsSwaggerRoute(desc.Route) || rtnApis.ContainsKey(ctlrName))
+                if (IsSwaggerRoute(desc.Route) && !rtnApis.ContainsKey(ctlrName))
                 {
-                    // do nothing
-                }
-                else
-                {
-                    var res = new ResourceSummary
+                    var res = new Api
                     {
                         // todo: this is returning url with query string parameters only if first method has param(s)
                         path = "/" + desc.RelativePath,
