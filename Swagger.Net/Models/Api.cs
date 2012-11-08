@@ -18,7 +18,7 @@ namespace Swagger.Net.Models
         public ResourceDescription()
         {
             this.apis = new List<Api>();
-            this.models = new List<Model>();
+            this.models = new Dictionary<string, object>();
         }
 
         public string apiVersion { get; set; }
@@ -26,7 +26,7 @@ namespace Swagger.Net.Models
         public string basePath { get; set; }
         public string resourcePath { get; set; }
         public List<Api> apis { get; private set; }
-        public List<Model> models { get; private set; }
+        public Dictionary<string, object> models { get; private set; }
     }
 
 

@@ -68,7 +68,8 @@ namespace Swagger.Net.Factories
 
             var models = _modelFactory.GetModels(filteredApiDescs);
 
-            docs.models.AddRange(models);
+            models.ToList().ForEach(m=>docs.models.Add(m.Key, m.Value));
+            
             return docs;
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -25,7 +26,7 @@ namespace Swagger.Net.Factories
 
         #endregion --- fields & ctors ---
 
-        public IEnumerable<Model> GetModels(IEnumerable<ApiDescription> apiDescs)
+        public Dictionary<string,object> GetModels(IEnumerable<ApiDescription> apiDescs)
         {
             var rtnModels = new Dictionary<Type, Model>();
             foreach (var apiDesc in apiDescs)
@@ -38,7 +39,21 @@ namespace Swagger.Net.Factories
                 }
             }
 
-            return rtnModels.Values;
+            var rtn = new Dictionary<string,object>();
+            foreach (var m in rtnModels)
+            {
+                dynamic props = new Dictionary<string, object>();
+                foreach (var p in m.Value.properties)
+                {
+                    var type = new {p.type};
+                    props[p.Name] = new { id=p.Name, type};
+                }
+                rtn.Add(m.Key.Name, new {
+                                     id = m.Key.Name,
+                                     properties = props
+                                 });
+            }
+            return rtn;
         }
 
         private void AddIfValid(Type myType, Dictionary<Type, Model> rtnModels)
@@ -75,3 +90,5 @@ namespace Swagger.Net.Factories
    
     }
 }
+
+

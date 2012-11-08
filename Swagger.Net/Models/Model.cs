@@ -7,14 +7,15 @@ namespace Swagger.Net.Models
     {
         public Model()
         {
-            this.Members = new List<Properties>();
+            this.properties = new List<Properties>();
         }
 
         public string Name { get; set; }
+        public string id { get; set; }
         public string type { get; set; }
         public string description { get; set; }
 
-        public List<Properties> Members { get; private set; }
+        public List<Properties> properties { get; private set; }
     }
 
     public class Properties

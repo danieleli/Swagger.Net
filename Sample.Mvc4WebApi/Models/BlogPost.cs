@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using Sample.Mvc4WebApi.Models;
 
 namespace Sample.Mvc4WebApi.Models
