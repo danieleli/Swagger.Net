@@ -4,11 +4,16 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Mvc;
 using Sample.Mvc4WebApi.Models;
 
 
 namespace Swagger.Net.WebApi.Controllers
 {
+    /// <summary>
+    /// Summary for BlogPostsController
+    /// </summary>
+    /// <remarks><see cref="BlogPost"/>This is remarks for Blogposts controller</remarks>
     public class BlogPostsController : ApiController
     {
 
@@ -49,9 +54,10 @@ namespace Swagger.Net.WebApi.Controllers
         /// Post summary
         /// </summary>
         /// <remarks>This shows up as notes</remarks>
-        /// <param name="blogPost"><see cref="BlogPost"/>        
+        /// <param name="value">       
         /// This is a description of blogpost param.
         /// </param>
+        /// <example>Here is an example</example>
         /// <returns><see cref="HttpResponseMessage"/>Status code 200 for ok</returns>
         public HttpResponseMessage Post(BlogPost value)
         {
