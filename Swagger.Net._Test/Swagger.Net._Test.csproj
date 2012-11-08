@@ -62,11 +62,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Adapters\ModelAdapter.cs" />
     <Compile Include="DocumentationProvider_Test.cs" />
-    <Compile Include="Factories\ParameterMetadataFactory_Test.cs" />
-    <Compile Include="Factories\ResourceMetadataFactory_Test.cs" />
-    <Compile Include="Factories\EndpointMetadataFactory_Test.cs" />
-    <Compile Include="Factories\TestHelper.cs" />
+    <Compile Include="Adapters\ParameterMetadataFactory_Test.cs" />
+    <Compile Include="Adapters\ResourceMetadataFactory_Test.cs" />
+    <Compile Include="Adapters\EndpointMetadataFactory_Test.cs" />
+    <Compile Include="Adapters\TestHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

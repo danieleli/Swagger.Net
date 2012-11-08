@@ -20,7 +20,7 @@ namespace Swagger.Net.Models
 
     public class Properties
     {
-        public string Name { get; set; }
+        public string id { get; set; }
         public string type { get; set; }
         public string description { get; set; }
     }

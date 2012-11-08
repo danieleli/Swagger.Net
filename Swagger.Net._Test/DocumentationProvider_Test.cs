@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Sample.Mvc4WebApi.Models;
-using Swagger.Net._Test.Factories;
+using Swagger.Net._Test.Adapters;
 
 namespace Swagger.Net._Test
 {

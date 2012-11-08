@@ -100,7 +100,7 @@ namespace Swagger.Net
                     apiModel.properties.Add(
                         new Properties()
                             {
-                                Name = propertyInfo.Name,
+                                id = propertyInfo.Name,
                                 description = "fixeme", //GetDocumentation(propNode),
                                 type = propertyInfo.PropertyType.Name
                             });

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Swagger.Net.Models;
@@ -26,68 +27,106 @@ namespace Swagger.Net.Factories
 
         #endregion --- fields & ctors ---
 
-        public Dictionary<string,object> GetModels(IEnumerable<ApiDescription> apiDescs)
+        public Dictionary<string, object> GetModels(IEnumerable<ApiDescription> apiDescs)
         {
-            var rtnModels = new Dictionary<Type, Model>();
-            foreach (var apiDesc in apiDescs)
-            {
-                AddIfValid(apiDesc.ActionDescriptor.ReturnType, rtnModels);
+            var tempDict = new Dictionary<String, object>();
+            var types = apiDescs.Select(a => a.ActionDescriptor.ReturnType).ToList();
 
-                foreach (var param in apiDesc.ParameterDescriptions)
-                {
-                    AddIfValid(param.ParameterDescriptor.ParameterType, rtnModels);
-                }
+            var paramTypes = apiDescs.SelectMany(
+                a => a.ParameterDescriptions.Select(
+                    p => p.ParameterDescriptor.ParameterType));
+
+            types.AddRange(paramTypes);
+
+            var uniqueNonPrimatives = types.Distinct().Where(t => t!=null && !t.IsPrimitive);
+
+            foreach (var uniqueType in uniqueNonPrimatives)
+            {
+                var adaptation = Adapt(uniqueType.Name, uniqueType.GetProperties());
+                tempDict.Add(uniqueType.Name, new { id = uniqueType.Name, properties = adaptation });
             }
 
-            var rtn = new Dictionary<string,object>();
-            foreach (var m in rtnModels)
+
+            return tempDict;
+        }
+
+        public object Adapt(String typeName, PropertyInfo[] props)
+        {
+
+
+            var rtn = new Dictionary<string, object>();
+            foreach (var p in props)
             {
-                dynamic props = new Dictionary<string, object>();
-                foreach (var p in m.Value.properties)
-                {
-                    props[p.Name] = new { id=p.Name, p.type};
-                }
-                rtn.Add(m.Key.Name, new {
-                                     id = m.Key.Name,
-                                     properties = props
-                                 });
+                rtn[p.Name] = new { type = p.PropertyType.Name };
             }
             return rtn;
+
         }
 
-        private void AddIfValid(Type myType, Dictionary<Type, Model> rtnModels)
-        {
-            if (IsOfInterest(myType))
-            {
-                if (myType.IsGenericType)
-                {
-                    myType = myType.GetGenericArguments()[0];
-                }
-                if (!rtnModels.ContainsKey(myType))
-                {
-                    var model = _docProvider.GetApiModel(myType);
-                    rtnModels.Add(myType, model);
-                }
-            }
-        }
 
-        private bool IsOfInterest(Type returnType)
-        {
-            if (returnType == null) return false;
-
-            if (returnType.IsGenericType)
-            {
-                returnType = returnType.GetGenericArguments()[0];
-            }
-
-            if (returnType.IsPrimitive || returnType == typeof(string))
-            {
-                return false;
-            }
-            return true;
-        }
-   
     }
 }
 
 
+   ////"models":{
+   ////   "Category":{
+   ////      "id":"Category",
+   ////      "properties":{
+   ////         "id":{
+   ////            "type":"long"
+   ////         },
+   ////         "name":{
+   ////            "type":"string"
+   ////         }
+   ////      }
+   ////   },
+   ////   "Pet":{
+   ////      "id":"Pet",
+   ////      "properties":{
+   ////         "tags":{
+   ////            "items":{
+   ////               "$ref":"Tag"
+   ////            },
+   ////            "type":"Array"
+   ////         },
+   ////         "id":{
+   ////            "type":"long"
+   ////         },
+   ////         "category":{
+   ////            "type":"Category"
+   ////         },
+   ////         "status":{
+   ////            "allowableValues":{
+   ////               "valueType":"LIST",
+   ////               "values":[
+   ////                  "available",
+   ////                  "pending",
+   ////                  "sold"
+   ////               ],
+   ////               "valueType":"LIST"
+   ////            },
+   ////            "description":"pet status in the store",
+   ////            "type":"string"
+   ////         },
+   ////         "name":{
+   ////            "type":"string"
+   ////         },
+   ////         "photoUrls":{
+   ////            "items":{
+   ////               "type":"string"
+   ////            },
+   ////            "type":"Array"
+   ////         }
+   ////      }
+   ////   },
+   ////   "Tag":{
+   ////      "id":"Tag",
+   ////      "properties":{
+   ////         "id":{
+   ////            "type":"long"
+   ////         },
+   ////         "name":{
+   ////            "type":"string"
+   ////         }
+   ////      }
+   ////   }

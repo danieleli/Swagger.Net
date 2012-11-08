@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Swagger.Net.Factories;
 
-namespace Swagger.Net._Test.Factories
+namespace Swagger.Net._Test.Adapters
 {
     [TestClass]
     public class EndpointMetadataFactory_Test

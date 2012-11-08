@@ -6,8 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Swagger.Net.Factories;
 
-
-namespace Swagger.Net._Test.Factories
+namespace Swagger.Net._Test.Adapters
 {
     // todo: parameter: allowableValues and allowMultiple
     // todo: errorResponse
