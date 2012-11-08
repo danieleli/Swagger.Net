@@ -91,7 +91,6 @@
     <Compile Include="Models\BlogPost.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="SwaggerUI\draft.js" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -168,7 +167,7 @@
     <Content Include="SwaggerUI\css\screen.css" />
     <Content Include="SwaggerUI\images\pet_store_api.png" />
     <Content Include="SwaggerUI\images\wordnik_api.png" />
-    <Content Include="SwaggerUI\index.html" />
+    <Content Include="SwaggerUI\default.html" />
     <Content Include="SwaggerUI\lib\backbone-min.js" />
     <Content Include="SwaggerUI\lib\handlebars.runtime-1.0.0.beta.6.js" />
     <Content Include="SwaggerUI\lib\jquery.ba-bbq.min.js" />
