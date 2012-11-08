@@ -11,9 +11,13 @@ Latest version: Pre-release 0.6
 Introduction
 ------------
 
-Swagger.Net will expose any apis the inherit from the ApiController in the new [ASP.NET Web API](http://www.asp.net/web-api).
+Swagger.Net will expose any apis the inherit from the ApiController in the new [ASP.NET Web API](http://www.asp.net/web-api), unless they are flagged with that ApiExplorerSettings(IgnoreApi = true) attribute.
 
-Swagger UI is included in the solution.  However, when using the NuGet package you will need to roll your own somewhere and just point your instance of [Swagger UI](https://github.com/wordnik/swagger-ui) at http://YOUR-URL:PORT/api/swagger to expose all of the APIs that you have built.  
+Metadata for the swagger spec is provided by the included DocsController which gives you two new routes.  
+  * root/api/docs - this returns a list of "apis" or "resources" or "controllers" and a path to each to get detailed metadata for that specific controller.  
+  * root/api/docs/{id} where id = controller_name  - Detailed metadata for a controller (referenced above).  
+
+A Sample.Mvc4WebApi project is included in the [repo](https://github.com/danieleli/Swagger.Net).  The home/index view contains a link to the swaggerui page that uses webpages.  (This reduces friction when syncing with the swagger-ui project).
 
 Optionally, you may get the [Swagger UI for .NET NuGet package](https://nuget.org/packages/Swagger.Net.UI).
 
