@@ -22,5 +22,9 @@ namespace Swagger.Net.WebApi.Controllers
             return new int[] { count, count };
         }
 
+        public void Post(int count)
+        {
+            
+        }
     }
 }
