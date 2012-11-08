@@ -17,27 +17,48 @@ namespace Swagger.Net
     {
         #region --- fields & ctors ---
 
-        private readonly ApiAdapter _factory;
+        private readonly ApiAdapter _apiAdapter;
+        private readonly ResourceAdapter _resourceAdapter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SwaggerController"/> class.
+        /// Initializes a new instance of the <see cref="DocsController"/> class.
         /// </summary>
         public DocsController()
         {
-            _factory = new ApiAdapter();  
+            _resourceAdapter = new ResourceAdapter();
+            _apiAdapter = new ApiAdapter();
+            
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SwaggerController"/> class.
+        /// Initializes a new instance of the <see cref="DocsController"/> class.
         /// </summary>
-        public DocsController(ApiAdapter resourceFactory)
+        public DocsController(ResourceAdapter resourceAdapter, ApiAdapter apiAdapter)
         {
-            _factory = resourceFactory;  
+            _resourceAdapter = resourceAdapter;
+            _apiAdapter = apiAdapter;  
         }
 
         #endregion --- fields & ctors ---
 
-      
+        /// <summary>
+        /// Get the resource description of the api for swagger documentation
+        /// </summary>
+        /// <remarks>It is very convenient to have this information available for generating clients. This is the entry point for the swagger UI
+        /// </remarks>
+        /// <returns>JSON document representing structure of API</returns>
+        public HttpResponseMessage Get()
+        {
+            // Arrange
+            var uri = base.ControllerContext.Request.RequestUri;
+
+            // Act
+            var resourceListing = _resourceAdapter.CreateResourceListing(uri);
+
+            //Answer
+            var resp = WrapResponse(resourceListing);
+            return resp;
+        }
 
         public HttpResponseMessage Get(string id)
         {
@@ -45,7 +66,7 @@ namespace Swagger.Net
             var rootUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
 
             // Act
-            var docs = _factory.GetDocs(rootUrl, id);
+            var docs = _apiAdapter.GetDocs(rootUrl, id);
 
             //Answer
             return WrapResponse(docs);
