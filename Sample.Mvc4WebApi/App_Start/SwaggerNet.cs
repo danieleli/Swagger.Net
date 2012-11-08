@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Web.Http.Dispatcher;
 using System.Web.Routing;
@@ -32,7 +33,7 @@ namespace Sample.Mvc4WebApi.App_Start
             {
                 var assemblyname = Assembly.GetAssembly(baseType).GetName().Name;
                 var path = HttpContext.Current.Server.MapPath("~/bin/" + assemblyname + ".xml");
-                ConfigureDocumentationProvider(path, config);
+                ConfigureDocumentationProvider(path, config.Services);
             }
             else
             {
@@ -42,13 +43,13 @@ namespace Sample.Mvc4WebApi.App_Start
             config.Filters.Add(new SwaggerActionFilterAttribute());
         }
 
-        public static void ConfigureDocumentationProvider(string absoluteDocPath, HttpConfiguration config)
+        public static void ConfigureDocumentationProvider(string absoluteDocPath, ServicesContainer services)
         {
 
             try
             {
                 var docProvider = new XmlCommentDocumentationProvider(absoluteDocPath);
-                config.Services.Replace(typeof(IDocumentationProvider), docProvider);
+                services.Replace(typeof(IDocumentationProvider), docProvider);
             }
             catch (FileNotFoundException)
             {
