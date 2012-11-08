@@ -60,7 +60,6 @@
     <Compile Include="Adapters\ResourceAdapter.cs" />
     <Compile Include="G.cs" />
     <Compile Include="Models\Api.cs" />
-    <Compile Include="SwaggerActionFilterAttribute.cs" />
     <Compile Include="XmlCommentDocumentationProvider.cs" />
   </ItemGroup>
   <ItemGroup>
