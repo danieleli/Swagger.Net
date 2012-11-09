@@ -66,7 +66,7 @@ namespace Swagger.Net.Models
     {
         public Operation()
         {
-            this.parameters = new List<Parameter>();
+            this.parameters = new List<dynamic>();
             this.errorResponses = new List<ErrorResponse>();
         }
         public string httpMethod { get; set; }
@@ -74,7 +74,7 @@ namespace Swagger.Net.Models
         public string responseClass { get; set; }
         public string summary { get; set; }
         public string notes { get; set; }
-        public List<Parameter> parameters { get; private set; }
+        public List<dynamic> parameters { get; private set; }
         public List<ErrorResponse> errorResponses { get; private set; }
     }
 

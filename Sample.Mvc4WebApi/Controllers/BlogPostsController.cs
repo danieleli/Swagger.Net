@@ -44,10 +44,15 @@ namespace Swagger.Net.WebApi.Controllers
         /// <see cref="BlogPost"/>
         /// some comments about returned blogpost
         /// </returns>
-
         public BlogPost Get(int id)
         {
-            return _posts.First(x=>x.Id==id);
+            return  _posts.First(x => x.Id == 1);
+        }
+
+        [System.Web.Http.HttpPost,System.Web.Http.ActionName("test")]
+        public BlogPost CustomSearch(IEnumerable<string> ssn)
+        {
+            return _posts.First(x => x.Id == 1);
         }
 
         /// <summary>

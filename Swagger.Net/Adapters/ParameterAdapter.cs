@@ -1,5 +1,8 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Dynamic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -25,28 +28,40 @@ namespace Swagger.Net.Factories
 
         #endregion --- fields & ctors ---
 
-        public IList<Parameter> CreateParameters(Collection<ApiParameterDescription> httpParams, string relativePath)
+        public IList<dynamic> CreateParameters(Collection<ApiParameterDescription> httpParams, string relativePath)
         {
             var rtn = httpParams.Select(p => CreateParameter(p, relativePath));
             return rtn.ToList();
         }
 
-        public Parameter CreateParameter(ApiParameterDescription parameterDescription, string relativePath)
+        public dynamic CreateParameter(ApiParameterDescription parameterDescription, string relativePath)
         {
             var paramType = GetParamType(parameterDescription, relativePath);
             var isRequired = !parameterDescription.ParameterDescriptor.IsOptional;
+            var dataType = ModelAdapter.GetDataType(parameterDescription.ParameterDescriptor.ParameterType).Name;
+            var allMany = GetAllowMuliple(parameterDescription.ParameterDescriptor.ParameterType);
 
-            var rtn = new Parameter()
-                          {
-                              name = parameterDescription.Name,
-                              dataType = parameterDescription.ParameterDescriptor.ParameterType.Name,
-                              required = isRequired,
-                              description = parameterDescription.Documentation,
-                              paramType = paramType
-                              // allowMultiple = p.ParameterDescriptor.
-                              // allowableValues
-                          };
+            dynamic rtn = new ExpandoObject();
+            rtn.name = parameterDescription.Name;
+            rtn.dataType = dataType;
+            rtn.required = isRequired;
+            rtn.description = parameterDescription.Documentation;
+            rtn.paramType = paramType;
+            rtn.allowMultiple = allMany;
+            // allowableValues
+        
             return rtn;
+        }
+
+
+
+        public bool GetAllowMuliple(Type parameterType)
+        {
+            if (parameterType.IsArray || parameterType.GetInterfaces().Any(i => i.Name.Contains("IEnum")))
+            {
+                return true;
+            }
+            return false;
         }
 
         private static string GetParamType(ApiParameterDescription parameterDescription, string relativePath)

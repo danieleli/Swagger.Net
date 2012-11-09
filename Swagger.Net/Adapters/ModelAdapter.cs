@@ -38,15 +38,22 @@ namespace Swagger.Net.Factories
 
             types.AddRange(paramTypes);
 
-            var uniqueNonPrimatives = types.Distinct().Where(t => t!=null && !t.IsPrimitive);
+            var uniqueNonPrimatives = types.Where(t => t!=null && !t.IsPrimitive).Distinct();
+            var trueTypes = uniqueNonPrimatives.Select(GetDataType);
+            var refilteredTypes = trueTypes.Where(t => t != null && !t.IsPrimitive).Distinct();
 
-            foreach (var uniqueType in uniqueNonPrimatives)
+            foreach (var uniqueType in refilteredTypes)
             {
                 var adaptation = Adapt(uniqueType.Name, uniqueType.GetProperties());
-                tempDict.Add(uniqueType.Name, new { id = uniqueType.Name, properties = adaptation });
+                if (tempDict.ContainsKey(uniqueType.Name))
+                {
+                    //skip
+                }
+                else
+                {
+                    tempDict.Add(uniqueType.Name, new { id = uniqueType.Name, properties = adaptation });    
+                }   
             }
-
-
             return tempDict;
         }
 
@@ -61,6 +68,26 @@ namespace Swagger.Net.Factories
             }
             return rtn;
 
+        }
+
+        public static Type GetDataType(Type inputType)
+        {
+            if (inputType.IsPrimitive || inputType == typeof(string)) return inputType;
+
+            if (inputType.IsArray)
+            {
+                return inputType.GetElementType();
+            }
+
+            if (inputType.GetInterfaces().Any(i => i.Name.Contains("IEnum")))
+            {
+                if (inputType.IsGenericType)
+                {
+                    return inputType.GetGenericArguments().First();
+                }
+                return inputType.GetElementType();
+            }
+            return inputType;
         }
 
 

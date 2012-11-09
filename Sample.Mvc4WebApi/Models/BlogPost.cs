@@ -1,5 +1,6 @@
 ﻿    using System;
-using Sample.Mvc4WebApi.Models;
+    using System.Collections.Generic;
+    using Sample.Mvc4WebApi.Models;
 
 namespace Sample.Mvc4WebApi.Models
 {
@@ -11,6 +12,11 @@ namespace Sample.Mvc4WebApi.Models
     /// </remarks>
     public class BlogPost
     {
+        public BlogPost()
+        {
+            SomeNumbers=new List<int>();
+            Data= new List<byte>().ToArray();
+        }
         /// <summary>
         /// BlogPost.Title Summary
         /// </summary>
@@ -18,7 +24,7 @@ namespace Sample.Mvc4WebApi.Models
         /// BlogPost.Title Remarks
         /// </remarks>
         public string Title { get; set; }
-
+        public Byte[] Data { get; set; }
         /// <summary>
         /// BlogPost.Id Summary
         /// </summary>
@@ -26,7 +32,7 @@ namespace Sample.Mvc4WebApi.Models
         /// BlogPost.Id Remarks
         /// </remarks>
         public int Id { get; set; }
-
+        public List<int> SomeNumbers { get; set; }
         /// <summary>
         /// BlogPost.PublishDate Summary
         /// </summary>
@@ -42,5 +48,7 @@ namespace Sample.Mvc4WebApi.Models
         /// BlogPost.Author (Person) Remarks
         /// </remarks>
         public Person Author { get; set; }
+
+ 
     }
 }
