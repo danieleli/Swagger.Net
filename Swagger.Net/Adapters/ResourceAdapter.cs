@@ -84,7 +84,7 @@ namespace Swagger.Net.Factories
 
         private static string GetPath(ApiDescription desc)
         {
-            return "/api/docs/" + desc.ActionDescriptor.ControllerDescriptor.ControllerName;
+            return "/docs/" + desc.ActionDescriptor.ControllerDescriptor.ControllerName;
             //string path;
             //var questionIndex = desc.RelativePath.IndexOf("?");
             //if (questionIndex < 1)
