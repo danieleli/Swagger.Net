@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Sample.Mvc4WebApi.App_Start;
 
 namespace Sample.Mvc4WebApi
 {
@@ -18,10 +19,13 @@ namespace Sample.Mvc4WebApi
         {
             AreaRegistration.RegisterAllAreas();
 
+            SwaggerNet.Register(GlobalConfiguration.Configuration);
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            SwaggerNet.PostStart();
         }
     }
 }
