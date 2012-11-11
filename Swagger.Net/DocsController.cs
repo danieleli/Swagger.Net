@@ -67,7 +67,7 @@ namespace Swagger.Net
             var rootUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
 
             // Act
-            var docs = _apiAdapter.GetDocs(rootUrl, id);
+            var docs = _apiAdapter.CreateApiDeclaration(rootUrl, id);
 
             //Answer
             return WrapResponse(docs);

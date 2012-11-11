@@ -67,12 +67,12 @@ namespace Swagger.Net.Factories
                 if (prop.PropertyType.IsArray)
                 {
 
-                    continue;
-                    //item = new
-                    //{
-                    //    type = "Array",
-                    //    items = new {"$ref",prop.PropertyType.GetElementType().Name}
-                    //};
+                    
+                    item = new
+                    {
+                        type = "Array",
+                       items = new {Sref=prop.PropertyType.GetElementType().Name}
+                    };
 
                     
 

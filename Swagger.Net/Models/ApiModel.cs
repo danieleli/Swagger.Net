@@ -3,9 +3,9 @@ using System.Collections.Generic;
 namespace Swagger.Net.Models
 {
     // see https://github.com/wordnik/swagger-core/wiki/datatypes
-    public class Model
+    public class ApiModel
     {
-        public Model()
+        public ApiModel()
         {
             this.properties = new List<Properties>();
         }
@@ -16,12 +16,14 @@ namespace Swagger.Net.Models
         public string description { get; set; }
 
         public List<Properties> properties { get; private set; }
+
+        public class Properties
+        {
+            public string id { get; set; }
+            public string type { get; set; }
+            public string description { get; set; }
+        }
     }
 
-    public class Properties
-    {
-        public string id { get; set; }
-        public string type { get; set; }
-        public string description { get; set; }
-    }
+
 }

@@ -49,11 +49,11 @@ namespace Sample.WebApi.Controllers
             return  _posts.First(x => x.Id == 1);
         }
 
-        [System.Web.Http.HttpPost,System.Web.Http.ActionName("test")]
-        public BlogPost CustomSearch(IEnumerable<string> ssn)
-        {
-            return _posts.First(x => x.Id == 1);
-        }
+        //[System.Web.Http.HttpPost,System.Web.Http.ActionName("test")]
+        //public BlogPost CustomSearch(IEnumerable<string> ssn)
+        //{
+        //    return _posts.First(x => x.Id == 1);
+        //}
 
         /// <summary>
         /// Post summary

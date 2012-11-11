@@ -54,9 +54,9 @@ namespace Swagger.Net.Factories
             return rtnListing;
         }
 
-        public IList<Resource> CreateResourceElements(IEnumerable<ApiDescription> apiDescs)
+        public IList<ResourceListing.Api> CreateResourceElements(IEnumerable<ApiDescription> apiDescs)
         {
-            var rtnApis = new Dictionary<String, Resource>();
+            var rtnApis = new Dictionary<String, ResourceListing.Api>();
 
             foreach (var desc in apiDescs)
             {
@@ -64,7 +64,7 @@ namespace Swagger.Net.Factories
 
                 if (!rtnApis.ContainsKey(ctlrName))
                 {
-                    var res = new Resource
+                    var res = new ResourceListing.Api
                     {
                         // todo: this is returning url with query string parameters only if first method has param(s)
                         path = GetPath(desc),

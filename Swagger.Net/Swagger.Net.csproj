@@ -59,12 +59,15 @@
     <Compile Include="Adapters\ModelAdapter.cs" />
     <Compile Include="Adapters\ParameterAdapter.cs" />
     <Compile Include="Adapters\ApiAdapter.cs" />
-    <Compile Include="Models\Model.cs" />
+    <Compile Include="Models\ErrorResponse.cs" />
+    <Compile Include="Models\ApiModel.cs" />
+    <Compile Include="Models\Api.cs" />
+    <Compile Include="Models\ApiOperation.cs" />
     <Compile Include="Models\ResourceListing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Adapters\ResourceAdapter.cs" />
     <Compile Include="G.cs" />
-    <Compile Include="Models\Api.cs" />
+    <Compile Include="Models\AllowableValues.cs" />
     <Compile Include="XmlCommentDocumentationProvider.cs" />
   </ItemGroup>
   <ItemGroup>

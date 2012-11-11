@@ -28,11 +28,13 @@ namespace Swagger.Net.Factories
 
         #endregion --- fields & ctors ---
 
-        public IList<dynamic> CreateParameters(Collection<ApiParameterDescription> httpParams, string relativePath)
+        public List<dynamic> CreateParameters(Collection<ApiParameterDescription> httpParams, string relativePath)
         {
             var rtn = httpParams.Select(p => CreateParameter(p, relativePath));
             return rtn.ToList();
         }
+
+            
 
         public dynamic CreateParameter(ApiParameterDescription parameterDescription, string relativePath)
         {
@@ -80,6 +82,7 @@ namespace Swagger.Net.Factories
             }
             return paramType;
         }
-        
+
+ 
     }
 }

@@ -20,8 +20,8 @@ namespace Swagger.Net._Test.Adapters
         //    api.ActionDescriptor = new ReflectedHttpActionDescriptor();
         //    api.ActionDescriptor.ReturnType = 
             
-        //    rtnModels.Add(typeof(BlogPost), new Model() { id = "BlogPost" });
-        //    rtnModels.Add(typeof(BlogPost), new Model() { id = "BlogPost" });
+        //    rtnModels.Add(typeof(BlogPost), new ApiModel() { id = "BlogPost" });
+        //    rtnModels.Add(typeof(BlogPost), new ApiModel() { id = "BlogPost" });
 
         //    var rtn = ModelAdapter.CreateModel(rtnModels);
         }

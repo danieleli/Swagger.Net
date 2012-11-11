@@ -38,7 +38,7 @@ namespace Swagger.Net.Factories
             _modelFactory = new ModelAdapter(_docProvider);
         }
 
-        public ApiAdapter(string virtualPath, XmlCommentDocumentationProvider docProvider, ParameterAdapter parameterFactory, ModelAdapter modelFactory,  ICollection<ApiDescription> apiDescriptions)
+        public ApiAdapter(string virtualPath, XmlCommentDocumentationProvider docProvider, ParameterAdapter parameterFactory, ModelAdapter modelFactory, ICollection<ApiDescription> apiDescriptions)
         {
             _apiDescriptions = apiDescriptions;
             _modelFactory = modelFactory;
@@ -49,7 +49,86 @@ namespace Swagger.Net.Factories
 
         #endregion --- fields & ctors ---
 
-        private IEnumerable<ApiDescription> FilterApis(string controllerName)
+
+
+        public ApiDeclaration CreateApiDeclaration(string root, string controllerName)
+        {
+            var apiDescriptions = GetApiDescriptions(controllerName);
+
+            var apis = this.CreateApi(apiDescriptions);
+            var models = _modelFactory.GetModels(apiDescriptions);
+            var apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString();
+
+            var delcaration = new ApiDeclaration()
+            {
+                apiVersion = apiVersion,
+                swaggerVersion = G.SWAGGER_VERSION,
+                basePath = root + _appVirtualPath,
+                resourcePath = controllerName,
+                apis = apis.ToList(),
+                models = models
+            };
+
+            return delcaration;
+        }
+
+
+        public IEnumerable<Api> CreateApi(IEnumerable<ApiDescription> apiDescs)
+        {
+            var rtnApis = from apiDescription in apiDescs
+                          let operations = CreateOperation(apiDescription)
+                          select new Api()
+                                     {
+                                         path = "/" + apiDescription.RelativePath,
+                                         description = apiDescription.Documentation,
+                                         operations = operations
+                                     };
+
+            return rtnApis;
+        }
+
+
+        public IList<ApiOperation> CreateOperation(ApiDescription apiDesc)
+        {
+
+            var responseClass = CalculateResponseClass(apiDesc.ActionDescriptor.ReturnType);
+            var remarks = _docProvider.GetRemarks(apiDesc.ActionDescriptor);
+            var parameters = _parameterFactory.CreateParameters(apiDesc.ParameterDescriptions, apiDesc.RelativePath);
+
+            var rApiOperation = new ApiOperation()
+            {
+                httpMethod = apiDesc.HttpMethod.ToString(),
+                nickname = apiDesc.ActionDescriptor.ActionName,
+                responseClass = responseClass,
+                summary = apiDesc.Documentation,
+                notes = remarks,
+                parameters = parameters
+            };
+
+            return new List<ApiOperation>() { rApiOperation };
+        }
+
+        private static string CalculateResponseClass(Type type)
+        {
+            string className;
+            if (type == null)
+            {
+                className = "void";
+            }
+            else if (type.IsGenericType)
+            {
+                className = type.GetGenericArguments().First().Name;
+            }
+            else
+            {
+                className = type.Name;
+            }
+
+
+            return className;
+        }
+
+        private IEnumerable<ApiDescription> GetApiDescriptions(string controllerName)
         {
             var filteredDescs = _apiDescriptions
                 .Where(d => d.ActionDescriptor.ControllerDescriptor.ControllerName.ToUpper() == controllerName.ToUpper())           // current controller
@@ -57,95 +136,5 @@ namespace Swagger.Net.Factories
 
             return filteredDescs;
         }
-
-        public ResourceDescription GetDocs(string root, string controllerName)
-        {
-
-            var docs = this.CreateResourceMetadata(root, controllerName);
-            var filteredApiDescs = FilterApis(controllerName);
-            var apis = this.CreateApiElements(filteredApiDescs);
-            docs.apis.AddRange(apis);
-
-            var models = _modelFactory.GetModels(filteredApiDescs);
-
-            models.ToList().ForEach(m=>docs.models.Add(m.Key, m.Value));
-            
-            return docs;
-        }
-
-        public ResourceDescription CreateResourceMetadata(string rootUrl, string controllerName)
-        {
-
-            var rtnResource = new ResourceDescription()
-            {
-                apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString(),
-                swaggerVersion = G.SWAGGER_VERSION,
-                basePath = rootUrl + _appVirtualPath,
-                resourcePath = controllerName
-            };
-
-            return rtnResource;
-        }
-
-        public IList<Api> CreateApiElements(IEnumerable<ApiDescription> apiDescs)
-        {
-            var apis = apiDescs.Select(GetApiMetadata);
-            return apis.ToList();
-        }
-
-        /// <summary>
-        /// Create ApiRoot
-        ///     Add Operations
-        ///         Add Parameters
-        /// </summary>
-        private Api GetApiMetadata(ApiDescription apiDesc)
-        {
-            var api = CreateApiRoot(apiDesc);
-
-            var operations = CreateOperationRoot(apiDesc);
-            foreach (var op in operations)
-            {
-                var parameters = _parameterFactory.CreateParameters(apiDesc.ParameterDescriptions, apiDesc.RelativePath);
-                op.parameters.AddRange(parameters);
-            }
-            api.operations.AddRange(operations);
-
-            return api;
-        }
-
-        public Api CreateApiRoot(ApiDescription desc)
-        {
-            var api = new Api()
-            {
-                path = "/" + desc.RelativePath,
-                description = desc.Documentation
-            };
-
-            return api;
-        }
-
-        public IList<Operation> CreateOperationRoot(ApiDescription apiDesc)
-        {
-
-            var responseClass = CalculateResponseClass(apiDesc.ActionDescriptor.ReturnType);
-            var remarks = _docProvider.GetRemarks(apiDesc.ActionDescriptor);
-
-            var rApiOperation = new Operation()
-            {
-                httpMethod = apiDesc.HttpMethod.ToString(),
-                nickname = apiDesc.ActionDescriptor.ActionName,
-                responseClass = responseClass,
-                summary = apiDesc.Documentation,
-                notes = remarks,
-            };
-
-            return new List<Operation>() { rApiOperation };
-        }
-
-        private static string CalculateResponseClass(Type returnType)
-        {
-            return returnType == null ? "void" : returnType.Name;
-        }
-        
     }
 }
