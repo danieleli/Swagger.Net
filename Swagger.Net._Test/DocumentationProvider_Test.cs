@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Sample.Mvc4WebApi.Models;
 using Swagger.Net._Test.Adapters;
 
+
 namespace Swagger.Net._Test
 {
     [TestClass]
@@ -20,7 +21,7 @@ namespace Swagger.Net._Test
         {
             Setup();
             // Act
-            var result = _docProvider.GetApiModel(typeof(BlogPost));
+            var result = _docProvider.GetDocumentation(typeof(BlogPost));
 
             Assert.IsNotNull(result, "Result is null");
             Debug.WriteLine(JsonConvert.SerializeObject(result));

@@ -40,21 +40,16 @@ namespace Swagger.Net.Factories
         public ResourceListing CreateResourceListing(Uri uri)
         {
             var apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString();
+            var apis = CreateResourceElements(_apiDescriptions).ToArray();
+            var basePath = uri.GetLeftPart(UriPartial.Authority) + _appVirtualPath;
 
             var rtnListing = new ResourceListing()
             {
                 apiVersion = apiVersion,
                 swaggerVersion = G.SWAGGER_VERSION,
-                basePath = uri.GetLeftPart(UriPartial.Authority) + _appVirtualPath,
+                basePath = basePath,
+                apis = apis
             };
-
-            
-            var apis = CreateResourceElements(_apiDescriptions);
-            
-            foreach (var resourceSummary in apis)
-            {
-                rtnListing.apis.Add(resourceSummary);
-            }
 
             return rtnListing;
         }

@@ -14,7 +14,7 @@ namespace Sample.WebApi.Models
     {
         public BlogPost()
         {
-            SomeNumbers=new List<int>();
+            SomeNumbers=new int[0];
             Data= new List<byte>().ToArray();
         }
         /// <summary>
@@ -24,7 +24,15 @@ namespace Sample.WebApi.Models
         /// BlogPost.Title Remarks
         /// </remarks>
         public string Title { get; set; }
+
+        /// <summary>
+        /// BlogPost.Id Data 
+        /// </summary>
+        /// <remarks>
+        /// BlogPost.Id Data 
+        /// </remarks>
         public Byte[] Data { get; set; }
+
         /// <summary>
         /// BlogPost.Id Summary
         /// </summary>
@@ -32,7 +40,14 @@ namespace Sample.WebApi.Models
         /// BlogPost.Id Remarks
         /// </remarks>
         public int Id { get; set; }
-        public List<int> SomeNumbers { get; set; }
+        
+        /// <summary>
+        /// BlogPost.SomeNumbers Summary
+        /// </summary>
+        /// <remarks>
+        /// BlogPost.SomeNumbers Remarks
+        /// </remarks>
+        public int[] SomeNumbers { get; set; }
         /// <summary>
         /// BlogPost.PublishDate Summary
         /// </summary>

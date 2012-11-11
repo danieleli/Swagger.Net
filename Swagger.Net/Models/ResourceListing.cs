@@ -26,11 +26,6 @@ namespace Swagger.Net
     /// </example>
     public class ResourceListing
     {
-        public ResourceListing()
-        {
-            this.apis = new List<Resource>();
-        }
-
         /// <summary>
         /// Source: Executing assembly's assembly version (not file version)
         /// </summary>
@@ -55,7 +50,7 @@ namespace Swagger.Net
         /// <summary>
         /// Source:  GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions
         /// </summary>
-        public List<Resource> apis { get; private set; }
+        public Resource[] apis { get; set; }
     }
 
     public class Resource

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Newtonsoft.Json.Linq;
 using Swagger.Net.Models;
 
 namespace Swagger.Net.Factories
@@ -38,35 +39,83 @@ namespace Swagger.Net.Factories
 
             types.AddRange(paramTypes);
 
-            var uniqueNonPrimatives = types.Where(t => t!=null && !t.IsPrimitive).Distinct();
+            var uniqueNonPrimatives = types.Where(t => t != null && !t.IsPrimitive).Distinct();
             var trueTypes = uniqueNonPrimatives.Select(GetDataType);
             var refilteredTypes = trueTypes.Where(t => t != null && !t.IsPrimitive).Distinct();
 
             foreach (var uniqueType in refilteredTypes)
             {
-                var adaptation = Adapt(uniqueType.Name, uniqueType.GetProperties());
+                var modelItem = CreateModel(uniqueType);
                 if (tempDict.ContainsKey(uniqueType.Name))
                 {
                     //skip
                 }
                 else
                 {
-                    tempDict.Add(uniqueType.Name, new { id = uniqueType.Name, properties = adaptation });    
-                }   
+                    tempDict.Add(uniqueType.Name, modelItem);
+                }
             }
             return tempDict;
         }
 
-        public object Adapt(String typeName, PropertyInfo[] props)
+        public object CreateModel(Type type)
         {
-
-
-            var rtn = new Dictionary<string, object>();
-            foreach (var p in props)
+            var modelProperties = new Dictionary<string, object>();
+            foreach (var prop in type.GetProperties())
             {
-                rtn[p.Name] = new { type = p.PropertyType.Name };
+                object item;
+                if (prop.PropertyType.IsArray)
+                {
+
+                    continue;
+                    //item = new
+                    //{
+                    //    type = "Array",
+                    //    items = new {"$ref",prop.PropertyType.GetElementType().Name}
+                    //};
+
+                    
+
+                }
+                else if (prop.PropertyType.IsPrimitive)
+                {
+                    item = new
+                   {
+                       type = prop.PropertyType.Name
+                   };
+                }
+                else
+                {
+                    var itemDocs = _docProvider.GetDocumentation(prop.PropertyType);
+                    if (itemDocs.StartsWith("No"))
+                    {
+                        item = new
+                        {
+                            type = prop.PropertyType.Name
+                        };
+                    }
+                    else
+                    {
+                        item = new
+                        {
+                            type = prop.PropertyType.Name,
+                            description = itemDocs
+                        };
+                    }
+
+                }
+                modelProperties[prop.Name] = item;
+
+
             }
-            return rtn;
+
+            return new
+                       {
+                           id = type.Name,
+                           properties = modelProperties,
+                           description = _docProvider.GetDocumentation(type)
+                       };
+
 
         }
 
@@ -95,65 +144,65 @@ namespace Swagger.Net.Factories
 }
 
 
-   ////"models":{
-   ////   "Category":{
-   ////      "id":"Category",
-   ////      "properties":{
-   ////         "id":{
-   ////            "type":"long"
-   ////         },
-   ////         "name":{
-   ////            "type":"string"
-   ////         }
-   ////      }
-   ////   },
-   ////   "Pet":{
-   ////      "id":"Pet",
-   ////      "properties":{
-   ////         "tags":{
-   ////            "items":{
-   ////               "$ref":"Tag"
-   ////            },
-   ////            "type":"Array"
-   ////         },
-   ////         "id":{
-   ////            "type":"long"
-   ////         },
-   ////         "category":{
-   ////            "type":"Category"
-   ////         },
-   ////         "status":{
-   ////            "allowableValues":{
-   ////               "valueType":"LIST",
-   ////               "values":[
-   ////                  "available",
-   ////                  "pending",
-   ////                  "sold"
-   ////               ],
-   ////               "valueType":"LIST"
-   ////            },
-   ////            "description":"pet status in the store",
-   ////            "type":"string"
-   ////         },
-   ////         "name":{
-   ////            "type":"string"
-   ////         },
-   ////         "photoUrls":{
-   ////            "items":{
-   ////               "type":"string"
-   ////            },
-   ////            "type":"Array"
-   ////         }
-   ////      }
-   ////   },
-   ////   "Tag":{
-   ////      "id":"Tag",
-   ////      "properties":{
-   ////         "id":{
-   ////            "type":"long"
-   ////         },
-   ////         "name":{
-   ////            "type":"string"
-   ////         }
-   ////      }
-   ////   }
+////"models":{
+////   "Category":{
+////      "id":"Category",
+////      "properties":{
+////         "id":{
+////            "type":"long"
+////         },
+////         "name":{
+////            "type":"string"
+////         }
+////      }
+////   },
+////   "Pet":{
+////      "id":"Pet",
+////      "properties":{
+////         "tags":{
+////            "items":{
+////               "$ref":"Tag"
+////            },
+////            "type":"Array"
+////         },
+////         "id":{
+////            "type":"long"
+////         },
+////         "category":{
+////            "type":"Category"
+////         },
+////         "status":{
+////            "allowableValues":{
+////               "valueType":"LIST",
+////               "values":[
+////                  "available",
+////                  "pending",
+////                  "sold"
+////               ],
+////               "valueType":"LIST"
+////            },
+////            "description":"pet status in the store",
+////            "type":"string"
+////         },
+////         "name":{
+////            "type":"string"
+////         },
+////         "photoUrls":{
+////            "items":{
+////               "type":"string"
+////            },
+////            "type":"Array"
+////         }
+////      }
+////   },
+////   "Tag":{
+////      "id":"Tag",
+////      "properties":{
+////         "id":{
+////            "type":"long"
+////         },
+////         "name":{
+////            "type":"string"
+////         }
+////      }
+////   }

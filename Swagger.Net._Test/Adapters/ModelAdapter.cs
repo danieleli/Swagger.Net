@@ -23,7 +23,7 @@ namespace Swagger.Net._Test.Adapters
         //    rtnModels.Add(typeof(BlogPost), new Model() { id = "BlogPost" });
         //    rtnModels.Add(typeof(BlogPost), new Model() { id = "BlogPost" });
 
-        //    var rtn = ModelAdapter.Adapt(rtnModels);
+        //    var rtn = ModelAdapter.CreateModel(rtnModels);
         }
     }
 }

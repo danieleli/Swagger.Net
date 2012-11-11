@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Web.Http.Description;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -25,7 +26,7 @@ namespace Swagger.Net._Test.Adapters
 
             var listing = factory.CreateResourceListing(uri);
 
-            Assert.AreEqual(0, listing.apis.Count, "api count");
+            Assert.AreEqual(0, listing.apis.Count(), "api count");
             Assert.AreEqual("1.2.3.4", listing.apiVersion, "api version");
             Assert.AreEqual(ROOT+VIRTUAL_DIR, listing.basePath, "basePath");
             Assert.AreEqual("2.0", listing.swaggerVersion, "swaggerVersion");
@@ -53,7 +54,7 @@ namespace Swagger.Net._Test.Adapters
 
             var listing = factory.CreateResourceListing(uri);
 
-            Assert.AreEqual(1, listing.apis.Count, "api count");
+            Assert.AreEqual(1, listing.apis.Count(), "api count");
             Assert.AreEqual("1.2.3.4", listing.apiVersion, "api version");
             Assert.AreEqual(ROOT + VIRTUAL_DIR, listing.basePath, "basePath");
             Assert.AreEqual("2.0", listing.swaggerVersion, "swaggerVersion");

@@ -80,39 +80,20 @@ namespace Swagger.Net
             return documentation.ToString();
         }
 
-        public Model GetApiModel(Type modelType)
+        public virtual string GetDocumentation(Type type)
         {
-            var apiModel = new Model {Name = modelType.Name, type = modelType.Name};
-
-            var modelNode = this.GetTypeNode(modelType.FullName);
+            var modelNode = this.GetTypeNode(type.FullName);
 
             if (modelNode != null)
             {
-                apiModel.description = GetDocumentation(modelNode);
-
-                var propInfos = modelType.GetProperties();
-                // var propertyNodes = GetTypeMemberNodes(modelType.FullName);
-              
-                foreach (var propertyInfo in propInfos)
+                var summaryNode = modelNode.SelectSingleNode("summary");
+                if (summaryNode != null)
                 {
-                    //var propNode = propertyNodes.ToList();
-                    
-                    apiModel.properties.Add(
-                        new Properties()
-                            {
-                                id = propertyInfo.Name,
-                                description = "fixeme", //GetDocumentation(propNode),
-                                type = propertyInfo.PropertyType.Name
-                            });
-
+                    return summaryNode.Value.Trim();
                 }
             }
-            else
-            {
-                apiModel.description = "No Documentation Found.";
-            }
 
-            return apiModel;
+            return "No Documentation Found.";
         }
 
         public virtual string GetRemarks(HttpActionDescriptor actionDescriptor)
@@ -229,6 +210,5 @@ namespace Swagger.Net
             return node;
 
         }
-
     }
 }
