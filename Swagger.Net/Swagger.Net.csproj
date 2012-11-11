@@ -65,7 +65,7 @@
     <Compile Include="Models\ApiOperation.cs" />
     <Compile Include="Models\ResourceListing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Adapters\ResourceAdapter.cs" />
+    <Compile Include="Adapters\ResourceListingFactory.cs" />
     <Compile Include="G.cs" />
     <Compile Include="Models\AllowableValues.cs" />
     <Compile Include="XmlCommentDocumentationProvider.cs" />

@@ -18,14 +18,14 @@ namespace Swagger.Net
         #region --- fields & ctors ---
 
         private readonly ApiAdapter _apiAdapter;
-        private readonly ResourceAdapter _resourceAdapter;
+        private readonly ResourceListingFactory _resourceListingFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DocsController"/> class.
         /// </summary>
         public DocsController()
         {
-            _resourceAdapter = new ResourceAdapter();
+            _resourceListingFactory = new ResourceListingFactory();
             _apiAdapter = new ApiAdapter();
             
         }
@@ -33,9 +33,9 @@ namespace Swagger.Net
         /// <summary>
         /// Initializes a new instance of the <see cref="DocsController"/> class.
         /// </summary>
-        public DocsController(ResourceAdapter resourceAdapter, ApiAdapter apiAdapter)
+        public DocsController(ResourceListingFactory resourceListingFactory, ApiAdapter apiAdapter)
         {
-            _resourceAdapter = resourceAdapter;
+            _resourceListingFactory = resourceListingFactory;
             _apiAdapter = apiAdapter;  
         }
 
@@ -54,7 +54,7 @@ namespace Swagger.Net
             var uri = base.ControllerContext.Request.RequestUri;
 
             // Act
-            var resourceListing = _resourceAdapter.CreateResourceListing(uri);
+            var resourceListing = _resourceListingFactory.CreateResourceListing(uri);
 
             //Answer
             var resp = WrapResponse(resourceListing);
