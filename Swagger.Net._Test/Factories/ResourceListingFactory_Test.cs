@@ -7,10 +7,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Swagger.Net.Factories;
 
-namespace Swagger.Net._Test.Adapters
+namespace Swagger.Net._Test.Factories
 {
     [TestClass]
-    public class EndpointMetadataFactory_Test
+    public class ResourceListingFactory_Test
     {
 
         const string ROOT = "http://www.google.com";

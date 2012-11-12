@@ -7,10 +7,10 @@ using Newtonsoft.Json;
 using Sample.Mvc4WebApi.Models;
 using Swagger.Net.Factories;
 
-namespace Swagger.Net._Test.Adapters
+namespace Swagger.Net._Test.Factories
 {
     [TestClass]
-    public class ParameterMetadataFactory_Test
+    public class ParameterFactory_Test
     {
         private ParameterFactory _factory;
 

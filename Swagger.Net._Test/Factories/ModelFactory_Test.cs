@@ -1,17 +1,9 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http.Controllers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sample.Mvc4WebApi.Models;
-using Swagger.Net.Factories;
-using Swagger.Net.Models;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Swagger.Net._Test.Adapters
+namespace Swagger.Net._Test.Factories
 {
     [TestClass]
-    public class ModelAdapter_Test
+    public class ModelFactory_Test
     {
         [TestMethod]
         public void Adapt_excludes_dups()

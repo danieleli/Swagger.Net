@@ -6,7 +6,7 @@ using System.Web.Http.Description;
 using System.Web.Http.Routing;
 using Rhino.Mocks;
 
-namespace Swagger.Net._Test.Adapters
+namespace Swagger.Net._Test.Factories
 {
     public static class TestHelper
     {

@@ -5,6 +5,7 @@
 //using Microsoft.VisualStudio.TestTools.UnitTesting;
 //using Newtonsoft.Json;
 //using Swagger.Net.Factories;
+//using Swagger.Net._Test.Factories;
 
 //namespace Swagger.Net._Test.Adapters
 //{
@@ -13,7 +14,7 @@
 //    // todo: models
 
 //    [TestClass]
-//    public class ResourceMetadataFactory_Test
+//    public class ApiFactory_Test
 //    {
 //        private readonly Uri _uri = new Uri(TestHelper.ROOT + "/this/is?field=3&test=mytest");
 //        private ApiFactory _factory;
@@ -28,7 +29,7 @@
 
 //        [TestMethod]
 //        public void CreateResourceDesc_PopulatesRootDescProperties()
-//        //{
+//        {
 //        //    Setup();
 
 //        //    // Arrange
