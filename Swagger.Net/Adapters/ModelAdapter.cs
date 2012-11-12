@@ -30,7 +30,22 @@ namespace Swagger.Net.Factories
 
         public Dictionary<string, object> GetModels(IEnumerable<ApiDescription> apiDescs)
         {
-            var tempDict = new Dictionary<String, object>();
+            var types = GetUniqueTypes(apiDescs);
+
+            var d = new Dictionary<String, object>();
+            foreach (var t in types)
+            {
+                var modelItem = CreateModel(t);
+                if (!d.ContainsKey(t.Name))
+                {
+                    d.Add(t.Name, modelItem);
+                }
+            }
+            return d;
+        }
+
+        private static IEnumerable<Type> GetUniqueTypes(IEnumerable<ApiDescription> apiDescs)
+        {
             var types = apiDescs.Select(a => a.ActionDescriptor.ReturnType).ToList();
 
             var paramTypes = apiDescs.SelectMany(
@@ -43,91 +58,64 @@ namespace Swagger.Net.Factories
             var trueTypes = uniqueNonPrimatives.Select(GetDataType);
             var refilteredTypes = trueTypes.Where(t => t != null && !t.IsPrimitive).Distinct();
 
-            foreach (var uniqueType in refilteredTypes)
-            {
-                var modelItem = CreateModel(uniqueType);
-                if (tempDict.ContainsKey(uniqueType.Name))
-                {
-                    //skip
-                }
-                else
-                {
-                    tempDict.Add(uniqueType.Name, modelItem);
-                }
-            }
-            return tempDict;
+            return refilteredTypes;
         }
 
         public object CreateModel(Type type)
         {
-            var modelProperties = new Dictionary<string, object>();
+            var properties = new Dictionary<string, object>();
             foreach (var prop in type.GetProperties())
             {
-                object item;
-                if (prop.PropertyType.IsArray)
+                properties[prop.Name] = GetProperty(prop);
+            }
+
+            return new {
+                           id = type.Name,
+                           properties = properties,
+                           description = _docProvider.GetDocumentation(type)
+                       };
+        }
+
+        private object GetProperty(PropertyInfo prop)
+        {
+            
+            object item;
+            if (prop.PropertyType.IsArray)
+            {
+                // Array
+                item = new {type = "Array", items = new {Sref = prop.PropertyType.GetElementType().Name}};
+            }
+            else if (prop.PropertyType.IsPrimitive)
+            {
+                // Primative
+                item = new {type = prop.PropertyType.Name};
+            }
+            else
+            {
+                var itemDocs = _docProvider.GetDocumentation(prop.PropertyType);
+                if (itemDocs.StartsWith("No"))
                 {
-
-                    
-                    item = new
-                    {
-                        type = "Array",
-                       items = new {Sref=prop.PropertyType.GetElementType().Name}
-                    };
-
-                    
-
-                }
-                else if (prop.PropertyType.IsPrimitive)
-                {
-                    item = new
-                   {
-                       type = prop.PropertyType.Name
-                   };
+                    // No Documentation
+                    item = new {type = prop.PropertyType.Name};
                 }
                 else
                 {
-                    var itemDocs = _docProvider.GetDocumentation(prop.PropertyType);
-                    if (itemDocs.StartsWith("No"))
-                    {
-                        item = new
-                        {
-                            type = prop.PropertyType.Name
-                        };
-                    }
-                    else
-                    {
-                        item = new
-                        {
-                            type = prop.PropertyType.Name,
-                            description = itemDocs
-                        };
-                    }
-
+                    item = new {type = prop.PropertyType.Name, description = itemDocs};
                 }
-                modelProperties[prop.Name] = item;
-
-
             }
 
-            return new
-                       {
-                           id = type.Name,
-                           properties = modelProperties,
-                           description = _docProvider.GetDocumentation(type)
-                       };
-
-
+            return item;
         }
 
         public static Type GetDataType(Type inputType)
         {
+            // Primative
             if (inputType.IsPrimitive || inputType == typeof(string)) return inputType;
 
-            if (inputType.IsArray)
-            {
-                return inputType.GetElementType();
-            }
+            // Array
+            if (inputType.IsArray) { return inputType.GetElementType(); }
 
+            // IEnumerable
             if (inputType.GetInterfaces().Any(i => i.Name.Contains("IEnum")))
             {
                 if (inputType.IsGenericType)
@@ -136,6 +124,7 @@ namespace Swagger.Net.Factories
                 }
                 return inputType.GetElementType();
             }
+
             return inputType;
         }
 

@@ -49,15 +49,25 @@ namespace Swagger.Net.Factories
 
         #endregion --- fields & ctors ---
 
+        private List<ApiDescription> GetApiDescriptions(string controllerName)
+        {
+            var filteredDescs =
+                _apiDescriptions
+                    .Where(d =>
+                        d.ActionDescriptor.ControllerDescriptor.ControllerName.ToUpper() == controllerName.ToUpper()
+                     );
+
+            return filteredDescs.ToList();
+        }
 
 
         public ApiDeclaration CreateApiDeclaration(string root, string controllerName)
         {
-            var apiDescriptions = GetApiDescriptions(controllerName);
+            var apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString();
 
+            var apiDescriptions = GetApiDescriptions(controllerName);
             var apis = this.CreateApi(apiDescriptions);
             var models = _modelFactory.GetModels(apiDescriptions);
-            var apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString();
 
             var delcaration = new ApiDeclaration()
             {
@@ -78,19 +88,17 @@ namespace Swagger.Net.Factories
             var rtnApis = from apiDescription in apiDescs
                           let operations = CreateOperation(apiDescription)
                           select new Api()
-                                     {
-                                         path = "/" + apiDescription.RelativePath,
-                                         description = apiDescription.Documentation,
-                                         operations = operations
-                                     };
-
+                          {
+                              path = "/" + apiDescription.RelativePath,
+                              description = apiDescription.Documentation,
+                              operations = operations
+                          };
             return rtnApis;
         }
 
 
         public IList<ApiOperation> CreateOperation(ApiDescription apiDesc)
         {
-
             var responseClass = CalculateResponseClass(apiDesc.ActionDescriptor.ReturnType);
             var remarks = _docProvider.GetRemarks(apiDesc.ActionDescriptor);
             var parameters = _parameterFactory.CreateParameters(apiDesc.ParameterDescriptions, apiDesc.RelativePath);
@@ -110,31 +118,11 @@ namespace Swagger.Net.Factories
 
         private static string CalculateResponseClass(Type type)
         {
-            string className;
-            if (type == null)
-            {
-                className = "void";
-            }
-            else if (type.IsGenericType)
-            {
-                className = type.GetGenericArguments().First().Name;
-            }
-            else
-            {
-                className = type.Name;
-            }
+            if (type == null) return "void";
 
-
-            return className;
+            return type.IsGenericType ? type.GetGenericArguments().First().Name : type.Name;
         }
 
-        private IEnumerable<ApiDescription> GetApiDescriptions(string controllerName)
-        {
-            var filteredDescs = _apiDescriptions
-                .Where(d => d.ActionDescriptor.ControllerDescriptor.ControllerName.ToUpper() == controllerName.ToUpper())           // current controller
-                .Where(d => !(d.Route.Defaults.ContainsKey(G.SWAGGER)));                                        // and not swagger doc meta route '/api/docs/...'
 
-            return filteredDescs;
-        }
     }
 }
