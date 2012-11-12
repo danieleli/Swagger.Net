@@ -54,25 +54,19 @@ namespace Swagger.Net.Factories
             var uniqueControllers = _apiDescriptions
                 .Select(api => api.ActionDescriptor.ControllerDescriptor.ControllerName)
                 .Distinct();
-            var rtn = new List<ApiDeclaration>();
-            foreach (var controller in uniqueControllers)
-            {
-                var apiDeclare = CreateApiDeclaration(root, controller);
-                rtn.Add(apiDeclare);
-            }
-            return rtn.ToArray();
+
+            return uniqueControllers.Select(controller => CreateApiDeclaration(root, controller)).ToArray();
         }
 
         public ApiDeclaration CreateApiDeclaration(string root, string controllerName)
         {
-
             var apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString();
 
             var apiDescriptions = GetApiDescriptions(controllerName);
             var apis = this.CreateApi(apiDescriptions);
             var models = _modelFactory.GetModels(apiDescriptions);
 
-            var delcaration = new ApiDeclaration()
+            return new ApiDeclaration()
             {
                 apiVersion = apiVersion,
                 swaggerVersion = G.SWAGGER_VERSION,
@@ -81,8 +75,6 @@ namespace Swagger.Net.Factories
                 apis = apis.ToList(),
                 models = models
             };
-
-            return delcaration;
         }
 
         public IEnumerable<Models.Api> CreateApi(IEnumerable<ApiDescription> apiDescs)
@@ -98,7 +90,7 @@ namespace Swagger.Net.Factories
             return rtnApis;
         }
 
-        public IList<ApiOperation> CreateOperation(ApiDescription apiDesc)
+        public ApiOperation[] CreateOperation(ApiDescription apiDesc)
         {
             var responseClass = CalculateResponseClass(apiDesc.ActionDescriptor.ReturnType);
             var remarks = _docProvider.GetRemarks(apiDesc.ActionDescriptor);
@@ -114,7 +106,7 @@ namespace Swagger.Net.Factories
                 parameters = parameters
             };
 
-            return new List<ApiOperation>() { rApiOperation };
+            return new [] { rApiOperation };
         }
 
         private List<ApiDescription> GetApiDescriptions(string controllerName)
