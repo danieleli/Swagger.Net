@@ -34,8 +34,6 @@ namespace Swagger.Net.Factories
             return rtn.ToList();
         }
 
-            
-
         public dynamic CreateParameter(ApiParameterDescription parameterDescription, string relativePath)
         {
             var paramType = GetParamType(parameterDescription, relativePath);
@@ -55,15 +53,9 @@ namespace Swagger.Net.Factories
             return rtn;
         }
 
-
-
         public bool GetAllowMuliple(Type parameterType)
         {
-            if (parameterType.IsArray || parameterType.GetInterfaces().Any(i => i.Name.Contains("IEnum")))
-            {
-                return true;
-            }
-            return false;
+            return parameterType.IsArray || parameterType.GetInterfaces().Any(i => i.Name.Contains("IEnum"));
         }
 
         private static string GetParamType(ApiParameterDescription parameterDescription, string relativePath)
@@ -71,18 +63,9 @@ namespace Swagger.Net.Factories
             var paramType = G.BODY;
             if (parameterDescription.Source == ApiParameterSource.FromUri)
             {
-                if (relativePath.IndexOf("{" + parameterDescription.Name + "}") > -1)
-                {
-                    paramType = G.PATH;
-                }
-                else
-                {
-                    paramType = G.QUERY;
-                }
+                paramType = relativePath.IndexOf("{" + parameterDescription.Name + "}") > -1 ? G.PATH : G.QUERY;
             }
             return paramType;
         }
-
- 
     }
 }

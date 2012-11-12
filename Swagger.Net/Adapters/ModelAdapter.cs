@@ -81,21 +81,18 @@ namespace Swagger.Net.Factories
             
             object item;
             if (prop.PropertyType.IsArray)
-            {
-                // Array
+            {   // Array
                 item = new {type = "Array", items = new {Sref = prop.PropertyType.GetElementType().Name}};
             }
             else if (prop.PropertyType.IsPrimitive)
-            {
-                // Primative
+            {   // Primative
                 item = new {type = prop.PropertyType.Name};
             }
             else
             {
                 var itemDocs = _docProvider.GetDocumentation(prop.PropertyType);
                 if (itemDocs.StartsWith("No"))
-                {
-                    // No Documentation
+                {   // No Documentation
                     item = new {type = prop.PropertyType.Name};
                 }
                 else
@@ -108,8 +105,7 @@ namespace Swagger.Net.Factories
         }
 
         public static Type GetDataType(Type inputType)
-        {
-            // Primative
+        {   // Primative
             if (inputType.IsPrimitive || inputType == typeof(string)) return inputType;
 
             // Array
@@ -127,8 +123,6 @@ namespace Swagger.Net.Factories
 
             return inputType;
         }
-
-
     }
 }
 

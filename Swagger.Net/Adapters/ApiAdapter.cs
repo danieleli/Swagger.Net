@@ -49,18 +49,6 @@ namespace Swagger.Net.Factories
 
         #endregion --- fields & ctors ---
 
-        private List<ApiDescription> GetApiDescriptions(string controllerName)
-        {
-            var filteredDescs =
-                _apiDescriptions
-                    .Where(d =>
-                        d.ActionDescriptor.ControllerDescriptor.ControllerName.ToUpper() == controllerName.ToUpper()
-                     );
-
-            return filteredDescs.ToList();
-        }
-
-
         public ApiDeclaration CreateApiDeclaration(string root, string controllerName)
         {
             var apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString();
@@ -82,7 +70,6 @@ namespace Swagger.Net.Factories
             return delcaration;
         }
 
-
         public IEnumerable<Api> CreateApi(IEnumerable<ApiDescription> apiDescs)
         {
             var rtnApis = from apiDescription in apiDescs
@@ -95,7 +82,6 @@ namespace Swagger.Net.Factories
                           };
             return rtnApis;
         }
-
 
         public IList<ApiOperation> CreateOperation(ApiDescription apiDesc)
         {
@@ -114,6 +100,17 @@ namespace Swagger.Net.Factories
             };
 
             return new List<ApiOperation>() { rApiOperation };
+        }
+
+        private List<ApiDescription> GetApiDescriptions(string controllerName)
+        {
+            var filteredDescs =
+                _apiDescriptions
+                    .Where(d =>
+                        d.ActionDescriptor.ControllerDescriptor.ControllerName.ToUpper() == controllerName.ToUpper()
+                     );
+
+            return filteredDescs.ToList();
         }
 
         private static string CalculateResponseClass(Type type)
