@@ -12,12 +12,12 @@ namespace Swagger.Net._Test.Adapters
     [TestClass]
     public class ParameterMetadataFactory_Test
     {
-        private ParameterAdapter _factory;
+        private ParameterFactory _factory;
 
         public void Setup()
         {
             var docProvider = new XmlCommentDocumentationProvider(TestHelper.XML_DOC_PATH);
-            _factory = new ParameterAdapter(docProvider);
+            _factory = new ParameterFactory(docProvider);
 
         }
         [TestMethod]
@@ -26,7 +26,7 @@ namespace Swagger.Net._Test.Adapters
             Setup();
             var type = typeof(IEnumerable<Int32>);
 
-            var rtn = ModelAdapter.GetDataType(type).Name;
+            var rtn = ModelFactory.GetDataType(type).Name;
             
             Assert.AreEqual("Int32", rtn, "returned value");
         }
@@ -37,7 +37,7 @@ namespace Swagger.Net._Test.Adapters
             Setup();
             var type = typeof(Int32[]);
 
-            var rtn = ModelAdapter.GetDataType(type).Name;
+            var rtn = ModelFactory.GetDataType(type).Name;
 
             Debug.WriteLine(rtn);
             Assert.AreEqual("Int32", rtn, "returned value");
@@ -49,7 +49,7 @@ namespace Swagger.Net._Test.Adapters
             Setup();
             var type = typeof(List<Int32>);
 
-            var rtn = ModelAdapter.GetDataType(type).Name;
+            var rtn = ModelFactory.GetDataType(type).Name;
 
             Debug.WriteLine(rtn);
             Assert.AreEqual("Int32", rtn, "returned value");

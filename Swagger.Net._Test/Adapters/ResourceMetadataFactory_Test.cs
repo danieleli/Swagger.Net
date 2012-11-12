@@ -16,13 +16,13 @@
 //    public class ResourceMetadataFactory_Test
 //    {
 //        private readonly Uri _uri = new Uri(TestHelper.ROOT + "/this/is?field=3&test=mytest");
-//        private ApiAdapter _factory;
+//        private ApiFactory _factory;
 
 //        public void Setup()
 //        {
             
 //            var docProvider = new XmlCommentDocumentationProvider(TestHelper.XML_DOC_PATH);
-//            _factory = new ApiAdapter(TestHelper.VIRTUAL_DIR, docProvider, new ParameterAdapter(), null, null);
+//            _factory = new ApiFactory(TestHelper.VIRTUAL_DIR, docProvider, new ParameterFactory(), null, null);
 
 //        }
 

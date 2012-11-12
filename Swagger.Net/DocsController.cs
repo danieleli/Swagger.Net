@@ -17,7 +17,7 @@ namespace Swagger.Net
     {
         #region --- fields & ctors ---
 
-        private readonly ApiAdapter _apiAdapter;
+        private readonly ApiFactory _apiFactory;
         private readonly ResourceListingFactory _resourceListingFactory;
 
         /// <summary>
@@ -26,17 +26,17 @@ namespace Swagger.Net
         public DocsController()
         {
             _resourceListingFactory = new ResourceListingFactory();
-            _apiAdapter = new ApiAdapter();
+            _apiFactory = new ApiFactory();
             
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DocsController"/> class.
         /// </summary>
-        public DocsController(ResourceListingFactory resourceListingFactory, ApiAdapter apiAdapter)
+        public DocsController(ResourceListingFactory resourceListingFactory, ApiFactory apiFactory)
         {
             _resourceListingFactory = resourceListingFactory;
-            _apiAdapter = apiAdapter;  
+            _apiFactory = apiFactory;  
         }
 
         #endregion --- fields & ctors ---
@@ -67,7 +67,7 @@ namespace Swagger.Net
             var rootUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
 
             // Act
-            var docs = _apiAdapter.CreateApiDeclaration(rootUrl, id);
+            var docs = _apiFactory.CreateApiDeclaration(rootUrl, id);
 
             //Answer
             return WrapResponse(docs);

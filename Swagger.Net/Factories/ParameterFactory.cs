@@ -10,18 +10,18 @@ using Swagger.Net.Models;
 
 namespace Swagger.Net.Factories
 {
-    public class ParameterAdapter
+    public class ParameterFactory
     {
         #region --- fields & ctors ---
 
         private readonly XmlCommentDocumentationProvider _docProvider;
 
-        public ParameterAdapter(XmlCommentDocumentationProvider docProvider)
+        public ParameterFactory(XmlCommentDocumentationProvider docProvider)
         {
             _docProvider = docProvider;
         }
 
-        public ParameterAdapter()
+        public ParameterFactory()
         {
             _docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
         }
@@ -38,7 +38,7 @@ namespace Swagger.Net.Factories
         {
             var paramType = GetParamType(parameterDescription, relativePath);
             var isRequired = !parameterDescription.ParameterDescriptor.IsOptional;
-            var dataType = ModelAdapter.GetDataType(parameterDescription.ParameterDescriptor.ParameterType).Name;
+            var dataType = ModelFactory.GetDataType(parameterDescription.ParameterDescriptor.ParameterType).Name;
             var allMany = GetAllowMuliple(parameterDescription.ParameterDescriptor.ParameterType);
 
             dynamic rtn = new ExpandoObject();

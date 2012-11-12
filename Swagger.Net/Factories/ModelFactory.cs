@@ -10,18 +10,18 @@ using Swagger.Net.Models;
 
 namespace Swagger.Net.Factories
 {
-    public class ModelAdapter
+    public class ModelFactory
     {
         #region --- fields & ctors ---
 
         private readonly XmlCommentDocumentationProvider _docProvider;
 
-        public ModelAdapter()
+        public ModelFactory()
         {
             _docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
         }
 
-        public ModelAdapter(XmlCommentDocumentationProvider documentationProvider)
+        public ModelFactory(XmlCommentDocumentationProvider documentationProvider)
         {
             _docProvider = documentationProvider;
         }
