@@ -10,13 +10,12 @@ namespace Swagger.Net
         public string swaggerVersion { get; set; }
         public string basePath { get; set; }
         public Api[] apis { get; set; }
+    }
 
-
-        public class Api
-        {
-            public string path { get; set; }
-            public string description { get; set; }
-        }
+    public class Api
+    {
+        public string path { get; set; }
+        public string description { get; set; }
     }
 }
 

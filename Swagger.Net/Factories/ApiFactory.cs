@@ -70,11 +70,11 @@ namespace Swagger.Net.Factories
             return delcaration;
         }
 
-        public IEnumerable<Api> CreateApi(IEnumerable<ApiDescription> apiDescs)
+        public IEnumerable<Models.Api> CreateApi(IEnumerable<ApiDescription> apiDescs)
         {
             var rtnApis = from apiDescription in apiDescs
                           let operations = CreateOperation(apiDescription)
-                          select new Api()
+                          select new Models.Api()
                           {
                               path = "/" + apiDescription.RelativePath,
                               description = apiDescription.Documentation,

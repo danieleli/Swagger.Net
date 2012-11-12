@@ -53,12 +53,12 @@ namespace Swagger.Net.Factories
             return rtnListing;
         }
 
-        private ResourceListing.Api[] CreateApis()
+        private Api[] CreateApis()
         {
             return (from api in _apiDescriptions
                     group api by api.ActionDescriptor.ControllerDescriptor.ControllerName
                     into g
-                    select new ResourceListing.Api
+                    select new Api
                                {
                                    description = g.First().Documentation,
                                    path = @"/" + g.Key

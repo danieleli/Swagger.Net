@@ -28,28 +28,30 @@ namespace Swagger.Net.Factories
 
         #endregion --- fields & ctors ---
 
-        public List<dynamic> CreateParameters(Collection<ApiParameterDescription> httpParams, string relativePath)
+        public List<ApiParameter> CreateParameters(Collection<ApiParameterDescription> httpParams, string relativePath)
         {
             var rtn = httpParams.Select(p => CreateParameter(p, relativePath));
             return rtn.ToList();
         }
 
-        public dynamic CreateParameter(ApiParameterDescription parameterDescription, string relativePath)
+        public ApiParameter CreateParameter(ApiParameterDescription parameterDescription, string relativePath)
         {
             var paramType = GetParamType(parameterDescription, relativePath);
             var isRequired = !parameterDescription.ParameterDescriptor.IsOptional;
             var dataType = ModelFactory.GetDataType(parameterDescription.ParameterDescriptor.ParameterType).Name;
-            var allMany = GetAllowMuliple(parameterDescription.ParameterDescriptor.ParameterType);
+            var allowMuliple = GetAllowMuliple(parameterDescription.ParameterDescriptor.ParameterType);
 
-            dynamic rtn = new ExpandoObject();
-            rtn.name = parameterDescription.Name;
-            rtn.dataType = dataType;
-            rtn.required = isRequired;
-            rtn.description = parameterDescription.Documentation;
-            rtn.paramType = paramType;
-            rtn.allowMultiple = allMany;
-            // allowableValues
-        
+            var rtn = new ApiParameter()
+                          {
+
+                              name = parameterDescription.Name,
+                              dataType = dataType,
+                              paramType = paramType,
+                              description = parameterDescription.Documentation,
+                              allowMultiple = allowMuliple,
+                              required = isRequired
+                              // allowableValues
+                          };
             return rtn;
         }
 

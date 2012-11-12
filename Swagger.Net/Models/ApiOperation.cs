@@ -6,7 +6,7 @@ namespace Swagger.Net.Models
     {
         public ApiOperation()
         {
-            this.parameters = new List<dynamic>();
+            this.parameters = new List<ApiParameter>();
             this.errorResponses = new List<ErrorResponse>();
         }
         public string httpMethod { get; set; }
@@ -14,23 +14,10 @@ namespace Swagger.Net.Models
         public string responseClass { get; set; }
         public string summary { get; set; }
         public string notes { get; set; }
-        public List<dynamic> parameters { get;  set; }
+        public List<ApiParameter> parameters { get;  set; }
         public List<ErrorResponse> errorResponses { get; set; }
     }
 
-    //
-    //  ---- Parameter Schema ----
-    //
-    //  public class ApiParameter
-    //  {
-    //      public string paramType { get; set; }
-    //      public string name { get; set; }
-    //      public string description { get; set; }
-    //      public string dataType { get; set; }
-    //      public bool required { get; set; }
-    //      public bool allowMultiple { get; set; }
-    //      public AllowableValues allowableValues { get; set; }
-    //  }
 }
 
 
