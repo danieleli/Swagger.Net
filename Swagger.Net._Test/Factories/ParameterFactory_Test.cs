@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Web.Http.Description;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Sample.Mvc4WebApi.Models;
 using Swagger.Net.Factories;
+using Swagger.Net.Models;
 
 namespace Swagger.Net._Test.Factories
 {
+    public enum TestEnum
+    {
+        A,B,C
+    }
+
     [TestClass]
     public class ParameterFactory_Test
     {
@@ -86,7 +93,7 @@ namespace Swagger.Net._Test.Factories
             // Arrange
             Setup();
             var paramSource = ApiParameterSource.FromUri;
-            var dataType = typeof(BlogPost);
+            var dataType = typeof(TestEnum);
             var isOptional = true;
             var paramName = "param3";
 
@@ -94,12 +101,15 @@ namespace Swagger.Net._Test.Factories
 
 
             // Act
-            dynamic rtnParam = _factory.CreateParameter(input, "");
-
-            var expected = new object();
+            var rtnParam = _factory.CreateParameter(input, "");
+        
+            
             // Assert
-            Assert.AreEqual(expected, rtnParam.allowableValues, "Allowable values");
+            Assert.IsInstanceOfType(rtnParam, typeof(ApiEnumParameter));
+            var afterCast = (ApiEnumParameter) rtnParam;
             Debug.WriteLine(JsonConvert.SerializeObject((object)rtnParam));
+            Assert.AreEqual("A,B,C", string.Join(",",afterCast.allowableValues.values), "Allowable values");
+            
         }
 
         [TestMethod]

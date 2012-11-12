@@ -36,23 +36,37 @@ namespace Swagger.Net.Factories
 
         public ApiParameter CreateParameter(ApiParameterDescription parameterDescription, string relativePath)
         {
-            var paramType = GetParamType(parameterDescription, relativePath);
+            var trueParamType = parameterDescription.ParameterDescriptor.ParameterType;
+
+            var paramTypeAsString = GetParamType(parameterDescription, relativePath);
             var isRequired = !parameterDescription.ParameterDescriptor.IsOptional;
-            var dataType = ModelFactory.GetDataType(parameterDescription.ParameterDescriptor.ParameterType).Name;
-            var allowMuliple = GetAllowMuliple(parameterDescription.ParameterDescriptor.ParameterType);
+            var dataType = ModelFactory.GetDataType(trueParamType).Name;
+            var allowMuliple = GetAllowMuliple(trueParamType);
 
-            var rtn = new ApiParameter()
+            if (parameterDescription.ParameterDescriptor.ParameterType.IsEnum)
+            {
+                var possibleValues = new AllowableValues(trueParamType);
+                return new ApiEnumParameter()
+                {
+                    name = parameterDescription.Name,
+                    dataType = dataType,
+                    paramType = paramTypeAsString,
+                    description = parameterDescription.Documentation,
+                    allowMultiple = allowMuliple,
+                    required = isRequired,
+                    allowableValues = possibleValues
+                };        
+            }
+
+            return  new ApiParameter()
                           {
-
                               name = parameterDescription.Name,
                               dataType = dataType,
-                              paramType = paramType,
+                              paramType = paramTypeAsString,
                               description = parameterDescription.Documentation,
                               allowMultiple = allowMuliple,
                               required = isRequired
-                              // allowableValues
                           };
-            return rtn;
         }
 
         public bool GetAllowMuliple(Type parameterType)
