@@ -93,11 +93,11 @@ namespace Swagger.Net.Factories
                 var itemDocs = _docProvider.GetDocumentation(prop.PropertyType);
                 if (itemDocs.StartsWith("No"))
                 {   // No Documentation
-                    item = new {type = prop.PropertyType.Name};
+                    item = new { type = prop.PropertyType.Name };
                 }
                 else
                 {
-                    item = new {type = prop.PropertyType.Name, description = itemDocs};
+                    item = new { type = prop.PropertyType.Name, description = itemDocs };
                 }
             }
 
