@@ -49,8 +49,23 @@ namespace Swagger.Net.Factories
 
         #endregion --- fields & ctors ---
 
+        public ApiDeclaration[] CreateAllApiDeclarations(string root)
+        {
+            var uniqueControllers = _apiDescriptions
+                .Select(api => api.ActionDescriptor.ControllerDescriptor.ControllerName)
+                .Distinct();
+            var rtn = new List<ApiDeclaration>();
+            foreach (var controller in uniqueControllers)
+            {
+                var apiDeclare = CreateApiDeclaration(root, controller);
+                rtn.Add(apiDeclare);
+            }
+            return rtn.ToArray();
+        }
+
         public ApiDeclaration CreateApiDeclaration(string root, string controllerName)
         {
+
             var apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString();
 
             var apiDescriptions = GetApiDescriptions(controllerName);

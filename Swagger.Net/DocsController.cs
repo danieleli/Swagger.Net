@@ -27,7 +27,7 @@ namespace Swagger.Net
         {
             _resourceListingFactory = new ResourceListingFactory();
             _apiFactory = new ApiFactory();
-            
+
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Swagger.Net
         public DocsController(ResourceListingFactory resourceListingFactory, ApiFactory apiFactory)
         {
             _resourceListingFactory = resourceListingFactory;
-            _apiFactory = apiFactory;  
+            _apiFactory = apiFactory;
         }
 
         #endregion --- fields & ctors ---
@@ -65,11 +65,16 @@ namespace Swagger.Net
         {
             // Arrange
             var rootUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
+            HttpResponseMessage rtnMessage;
 
             // Act
-            var docs = _apiFactory.CreateApiDeclaration(rootUrl, id);
+            if (id.ToLower() == "all")
+            {
+                var apis = _apiFactory.CreateAllApiDeclarations(rootUrl);
+                return WrapResponse(apis);
+            }
 
-            //Answer
+            var docs = _apiFactory.CreateApiDeclaration(rootUrl, id);
             return WrapResponse(docs);
         }
 
@@ -78,7 +83,7 @@ namespace Swagger.Net
             var formatter = ControllerContext.Configuration.Formatters.JsonFormatter;
             var content = new ObjectContent<T>(resourceListing, formatter);
 
-            var resp = new HttpResponseMessage {Content = content};
+            var resp = new HttpResponseMessage { Content = content };
             return resp;
         }
 
