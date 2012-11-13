@@ -15,6 +15,7 @@ namespace Swagger.Net._Test.Factories
 
         const string ROOT = "http://www.google.com";
         const string VIRTUAL_DIR = "/the/vdir/of/app";
+        private const string DOCS_ROUTE = "/api/docs";
 
         [TestMethod]
         public void GetResourceListing_NoApis()
@@ -28,20 +29,20 @@ namespace Swagger.Net._Test.Factories
 
             Assert.AreEqual(0, listing.apis.Count(), "api count");
             Assert.AreEqual("1.2.3.4", listing.apiVersion, "api version");
-            Assert.AreEqual(ROOT+VIRTUAL_DIR, listing.basePath, "basePath");
+            Assert.AreEqual(ROOT + VIRTUAL_DIR + DOCS_ROUTE, listing.basePath, "basePath");
             Assert.AreEqual("2.0", listing.swaggerVersion, "swaggerVersion");
 
             Debug.WriteLine(JsonConvert.SerializeObject(listing));
-            
+
         }
 
         [TestMethod]
         public void GetResourceListing_OneApis()
         {
-            
+
             var uri = new Uri(ROOT + "/this/is?field=3&test=mytest");
 
-            var apiDescs = new List<ApiDescription>() {TestHelper.GetApiDescription("yada")};
+            var apiDescs = new List<ApiDescription>() { TestHelper.GetApiDescription("yada") };
             //var apiDescs = new List<ApiDescription>(){ 
             //    new ApiDescription()
             //        {
@@ -56,7 +57,7 @@ namespace Swagger.Net._Test.Factories
 
             Assert.AreEqual(1, listing.apis.Count(), "api count");
             Assert.AreEqual("1.2.3.4", listing.apiVersion, "api version");
-            Assert.AreEqual(ROOT + VIRTUAL_DIR, listing.basePath, "basePath");
+            Assert.AreEqual(ROOT + VIRTUAL_DIR + DOCS_ROUTE, listing.basePath, "basePath");
             Assert.AreEqual("2.0", listing.swaggerVersion, "swaggerVersion");
 
             Debug.WriteLine(JsonConvert.SerializeObject(listing));
