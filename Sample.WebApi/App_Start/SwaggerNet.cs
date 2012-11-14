@@ -14,14 +14,14 @@ namespace Sample.WebApi
 {
     public static class SwaggerNet
     {
-        public static void Register(HttpConfiguration config)
-        {
-            config.Routes.MapHttpRoute(
-                name: "DocsApi",
-                routeTemplate: "api/docs/{id}",
-                defaults: new { controller = "Docs", id = RouteParameter.Optional }
-            );
-        }
+        //public static void Register(HttpConfiguration config)
+        //{
+        //    config.Routes.MapHttpRoute(
+        //        name: "DocsApi",
+        //        routeTemplate: "api/docs/{id}",
+        //        defaults: new { controller = "Docs", id = RouteParameter.Optional }
+        //    );
+        //}
 
         public static void PostStart()
         {
