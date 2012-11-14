@@ -9,7 +9,7 @@ namespace Swagger.Net.Models
     {
         public AllowableValues(Type myEnum)
         {
-            valueType = "string";
+            valueType = "LIST";
             values = Enum.GetNames(myEnum);
         }
 

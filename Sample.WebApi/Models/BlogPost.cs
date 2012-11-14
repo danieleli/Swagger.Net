@@ -4,6 +4,20 @@
 
 namespace Sample.WebApi.Models
 {
+
+    /// <summary>
+    /// Status Enum Summary
+    /// </summary>
+    public enum Status
+    {
+        /// <summary>
+        /// Published Value summary
+        /// </summary>
+        Published,
+        Retired,
+        Draft
+    }
+
     /// <summary>
     /// Blog Post Class Summary
     /// </summary>
@@ -24,6 +38,17 @@ namespace Sample.WebApi.Models
         /// BlogPost.Title Remarks
         /// </remarks>
         public string Title { get; set; }
+
+
+        /// <summary>
+        /// BlogPost.Status Summary
+        /// </summary>
+        /// <remarks>
+        /// BlogPost.Status Remarks
+        /// </remarks>
+        public Status Status { get; set; }
+
+
 
         /// <summary>
         /// BlogPost.InfoNums  Summary

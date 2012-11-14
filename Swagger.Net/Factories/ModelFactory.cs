@@ -69,7 +69,7 @@ namespace Swagger.Net.Factories
                 properties[prop.Name] = GetProperty(prop);
             }
 
-            return new
+            return new ApiModel
             {
                 id = type.Name,
                 properties = properties,
@@ -88,6 +88,26 @@ namespace Swagger.Net.Factories
             else if (prop.PropertyType.IsPrimitive)
             {   // Primative
                 item = new { type = prop.PropertyType.Name };
+            }
+            else if (prop.PropertyType.IsEnum)
+            {
+                  //"status": {
+                  //  "allowableValues": {
+                  //      "valueType": "LIST",
+                  //      "values": [
+                  //   "available",
+                  //   "pending",
+                  //   "sold"
+                  //],
+                  //      "valueType": "LIST"
+                  //  },
+                  //  "description": "pet status in the store",
+                  //  "type": "string"
+                  //}
+                // Enum
+                var allowableVals = new AllowableValues(prop.PropertyType);
+                var itemDocs = _docProvider.GetDocumentation(prop.PropertyType);
+                item = new { allowableValues = allowableVals, description = itemDocs, type="string" };
             }
             else if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
             {

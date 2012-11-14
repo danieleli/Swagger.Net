@@ -7,7 +7,7 @@ namespace Swagger.Net.Models
     {
         public ApiModel()
         {
-            this.properties = new List<ApiModelProperties>();
+            this.properties = new Dictionary<string, object>();
         }
 
         public string Name { get; set; }
@@ -15,7 +15,7 @@ namespace Swagger.Net.Models
         public string type { get; set; }
         public string description { get; set; }
 
-        public List<ApiModelProperties> properties { get; private set; }
+        public Dictionary<string, object> properties { get; set; }
     }
 
     public class ApiModelProperties
