@@ -40,7 +40,7 @@ namespace Swagger.Net.Factories
 
             var paramTypeAsString = GetParamType(parameterDescription, relativePath);
             var isRequired = !parameterDescription.ParameterDescriptor.IsOptional;
-            var dataType = ModelFactory.GetDataType(trueParamType).Name;
+            var dataType =  GetFriendlyTypeName(trueParamType);
             var allowMuliple = GetAllowMuliple(trueParamType);
 
             if (parameterDescription.ParameterDescriptor.ParameterType.IsEnum)
@@ -82,6 +82,22 @@ namespace Swagger.Net.Factories
                 paramType = relativePath.IndexOf("{" + parameterDescription.Name + "}") > -1 ? G.PATH : G.QUERY;
             }
             return paramType;
+        }
+
+        private string GetFriendlyTypeName(Type type)
+        {
+            if (type.IsArray)
+            {   // Array
+                return "Array-" + type.GetElementType().Name;
+            }
+            else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                var gType = type.GetGenericArguments().First();
+                var name = XmlCommentDocumentationProvider.GetNullableTypeName(gType.FullName);
+                name = name.Substring(name.IndexOf(".") + 1);
+                return @"Nullable-" + name;
+            }
+            return type.Name;
         }
     }
 }

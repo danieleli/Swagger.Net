@@ -74,7 +74,7 @@ namespace Sample.WebApi.Controllers
         /// </summary>
         /// <param name="id"><see cref="Int32"/></param>
         /// <param name="value"><see cref="BlogPost"/>The post to put to database</param>
-        public void Put(int id, BlogPost value)
+        public void Put(int? id, BlogPost value)
         {
         }
 
