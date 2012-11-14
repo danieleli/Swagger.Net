@@ -69,28 +69,37 @@ namespace Swagger.Net.Factories
                 properties[prop.Name] = GetProperty(prop);
             }
 
-            return new {
-                           id = type.Name,
-                           properties = properties,
-                           description = _docProvider.GetDocumentation(type)
-                       };
+            return new
+            {
+                id = type.Name,
+                properties = properties,
+                description = _docProvider.GetDocumentation(type)
+            };
         }
 
         private object GetProperty(PropertyInfo prop)
         {
-            
+
             object item;
             if (prop.PropertyType.IsArray)
             {   // Array
-                item = new {type = "Array", items = new {Sref = prop.PropertyType.GetElementType().Name}};
+                item = new { type = "Array-" + prop.PropertyType.GetElementType().Name, items = new { Sref = prop.PropertyType.GetElementType().Name } };
             }
             else if (prop.PropertyType.IsPrimitive)
             {   // Primative
-                item = new {type = prop.PropertyType.Name};
+                item = new { type = prop.PropertyType.Name };
+            }
+            else if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                var gType = prop.PropertyType.GetGenericArguments().First();
+                var name = XmlCommentDocumentationProvider.GetNullableTypeName(gType.FullName);
+                name = name.Substring(name.IndexOf(".") + 1);
+                item = new { type = @"Nullable-" + name };
             }
             else
             {
                 var itemDocs = _docProvider.GetDocumentation(prop.PropertyType);
+
                 if (itemDocs.StartsWith("No"))
                 {   // No Documentation
                     item = new { type = prop.PropertyType.Name };
@@ -120,6 +129,9 @@ namespace Swagger.Net.Factories
                 }
                 return inputType.GetElementType();
             }
+
+
+
 
             return inputType;
         }

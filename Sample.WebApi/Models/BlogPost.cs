@@ -26,6 +26,17 @@ namespace Sample.WebApi.Models
         public string Title { get; set; }
 
         /// <summary>
+        /// BlogPost.InfoNums  Summary
+        /// </summary>
+        /// <remarks>
+        /// BlogPost.InfoNums  Remarks
+        /// </remarks>
+        public int? InfoNums { get; set; }
+
+
+
+
+        /// <summary>
         /// BlogPost.Id Data 
         /// </summary>
         /// <remarks>

@@ -136,13 +136,13 @@ namespace Swagger.Net
                 if (summaryNode != null)
                 {
                     return summaryNode.Value.Trim();
-                }
+                }   
             }
 
             return "No Documentation Found.";
         }
 
-        private static string GetNullableTypeName(string typeName)
+        public static string GetNullableTypeName(string typeName)
         {
             //handle nullable
             var result = NullableTypeNameRegex.Match(typeName);
