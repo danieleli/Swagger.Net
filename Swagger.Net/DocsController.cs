@@ -17,36 +17,37 @@ namespace Swagger.Net
     {
         #region --- fields & ctors ---
 
-        private readonly ApiAdapter _apiAdapter;
-        private readonly ResourceAdapter _resourceAdapter;
+        private readonly ApiFactory _apiFactory;
+        private readonly ResourceListingFactory _resourceListingFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DocsController"/> class.
         /// </summary>
         public DocsController()
         {
-            _resourceAdapter = new ResourceAdapter();
-            _apiAdapter = new ApiAdapter();
-            
+            _resourceListingFactory = new ResourceListingFactory();
+            _apiFactory = new ApiFactory();
+
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DocsController"/> class.
         /// </summary>
-        public DocsController(ResourceAdapter resourceAdapter, ApiAdapter apiAdapter)
+        public DocsController(ResourceListingFactory resourceListingFactory, ApiFactory apiFactory)
         {
-            _resourceAdapter = resourceAdapter;
-            _apiAdapter = apiAdapter;  
+            _resourceListingFactory = resourceListingFactory;
+            _apiFactory = apiFactory;
         }
 
         #endregion --- fields & ctors ---
 
         /// <summary>
-        /// Get the resource description of the api for swagger documentation
+        /// Get the list of resource descriptions (Models.ResourceListing) of the api for swagger documentation
         /// </summary>
-        /// <remarks>It is very convenient to have this information available for generating clients. This is the entry point for the swagger UI
+        /// <remarks>
+        /// It is very convenient to have this information available for generating clients. This is the entry point for the swagger UI
         /// </remarks>
-        /// <returns>JSON document representing structure of API</returns>
+        /// <returns>JSON document that lists resource urls and descriptions </returns>
         public HttpResponseMessage Get()
         {
             // Arrange
@@ -64,7 +65,7 @@ namespace Swagger.Net
             
 
             // Act
-            var resourceListing = _resourceAdapter.CreateResourceListing(uri);
+            var resourceListing = _resourceListingFactory.CreateResourceListing(uri);
 
             //Answer
             var resp = WrapResponse(resourceListing);
@@ -80,27 +81,27 @@ namespace Swagger.Net
         {
             // Arrange
             var rootUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
+            HttpResponseMessage rtnMessage;
 
             // Act
-            var docs = _apiAdapter.GetDocs(rootUrl, id);
+            if (id.ToLower() == "all")
+            {
+                var apis = _apiFactory.CreateAllApiDeclarations(rootUrl);
+                return WrapResponse(apis);
+            }
 
-            //Answer
+            var docs = _apiFactory.CreateApiDeclaration(rootUrl, id);
             return WrapResponse(docs);
         }
 
         private HttpResponseMessage WrapResponse<T>(T resourceListing)
         {
-            var content = FormatContent<T>(resourceListing);
+            var formatter = ControllerContext.Configuration.Formatters.JsonFormatter;
+            var content = new ObjectContent<T>(resourceListing, formatter);
 
-            var resp = new HttpResponseMessage {Content = content};
+            var resp = new HttpResponseMessage { Content = content };
             return resp;
         }
 
-        private ObjectContent<T> FormatContent<T>(T resourceListing)
-        {
-            var formatter = ControllerContext.Configuration.Formatters.JsonFormatter;
-            var content = new ObjectContent<T>(resourceListing, formatter);
-            return content;
-        }
     }
 }

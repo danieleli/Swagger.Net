@@ -2,7 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Sample.Mvc4WebApi.Models;
-using Swagger.Net._Test.Adapters;
+using Swagger.Net._Test.Factories;
+
 
 namespace Swagger.Net._Test
 {
@@ -20,7 +21,7 @@ namespace Swagger.Net._Test
         {
             Setup();
             // Act
-            var result = _docProvider.GetApiModel(typeof(BlogPost));
+            var result = _docProvider.GetDocumentation(typeof(BlogPost));
 
             Assert.IsNotNull(result, "Result is null");
             Debug.WriteLine(JsonConvert.SerializeObject(result));

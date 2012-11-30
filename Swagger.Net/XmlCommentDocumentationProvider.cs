@@ -36,166 +36,113 @@ namespace Swagger.Net
 
         #endregion --- fields & ctors ---
 
-        public virtual string GetDocumentation(HttpParameterDescriptor parameterDescriptor)
-        {
-            var parameterName = parameterDescriptor.ParameterName;
-            var memberNode = GetMemberNode(parameterDescriptor.ActionDescriptor);
-            if (memberNode != null)
-            {
-                var parameterNode = memberNode.SelectSingleNode(string.Format("param[@name='{0}']", parameterName));
-                if (parameterNode != null)
-                {
-                    return parameterNode.Value.Trim();
-                }
-            }
-
-            return "No Documentation Found.";
-        }
-
-
-        public virtual string GetDocumentation(HttpActionDescriptor actionDescriptor)
-        {
-            var memberNode = GetMemberNode(actionDescriptor);
-            if (memberNode != null)
-            {
-                var summaryNode = memberNode.SelectSingleNode("summary");
-                if (summaryNode != null)
-                {
-                    return summaryNode.Value.Trim();
-                }
-            }
-
-            return "No Documentation Found.";
-        }
-
         public string GetDocumentation(XPathNavigator node)
         {
             if (node == null) return null;
-
-            var documentation = new JObject();
-
+            var jsonObj = new JObject();
             var elements = new List<string>() { "summary", "example", "remarks", "returns", "ready", "datatype" };
-            elements.ForEach(e => MapElement(e, node, documentation));
 
-            return documentation.ToString();
+            elements.ForEach(e =>
+            {
+                var selectSingleNode = node.SelectSingleNode(e);
+                if (selectSingleNode != null)
+                    jsonObj[e] = selectSingleNode.InnerXml.Trim();
+            });
+
+            return jsonObj.ToString();
         }
 
-        public Model GetApiModel(Type modelType)
+        public string GetDocumentation(Type type)
         {
-            var apiModel = new Model {Name = modelType.Name, type = modelType.Name};
+            var selector = string.Format(TYPE_EXPRESSION, type.FullName);
+            var modelNode = _documentNavigator.SelectSingleNode(selector);
 
-            var modelNode = this.GetTypeNode(modelType.FullName);
-
-            if (modelNode != null)
-            {
-                apiModel.description = GetDocumentation(modelNode);
-
-                var propInfos = modelType.GetProperties();
-                // var propertyNodes = GetTypeMemberNodes(modelType.FullName);
-              
-                foreach (var propertyInfo in propInfos)
-                {
-                    //var propNode = propertyNodes.ToList();
-                    
-                    apiModel.properties.Add(
-                        new Properties()
-                            {
-                                id = propertyInfo.Name,
-                                description = "fixeme", //GetDocumentation(propNode),
-                                type = propertyInfo.PropertyType.Name
-                            });
-
-                }
-            }
-            else
-            {
-                apiModel.description = "No Documentation Found.";
-            }
-
-            return apiModel;
+            return GetNodeText(modelNode, "summary");
         }
 
-        public virtual string GetRemarks(HttpActionDescriptor actionDescriptor)
+        public string GetDocumentation(HttpParameterDescriptor parameterDescriptor)
         {
-            var memberNode = GetMemberNode(actionDescriptor);
-            if (memberNode != null)
-            {
-                var summaryNode = memberNode.SelectSingleNode("remarks");
-                if (summaryNode != null)
-                {
-                    return summaryNode.Value.Trim();
-                }
-            }
+            var parameterName = parameterDescriptor.ParameterName;
+            var selector = string.Format("param[@name='{0}']", parameterName);
 
-            return "No Documentation Found.";
+            var rtn = GetActionDocumentation(parameterDescriptor.ActionDescriptor, selector);
+            return rtn;
         }
 
-        public virtual string GetResponseClass(HttpActionDescriptor actionDescriptor)
+        public string GetDocumentation(HttpActionDescriptor actionDescriptor)
+        {
+            var rtn = GetActionDocumentation(actionDescriptor, "summary");
+            return rtn;
+        }
+
+        public string GetRemarks(HttpActionDescriptor actionDescriptor)
+        {
+            return GetActionDocumentation(actionDescriptor, "remarks");
+        }
+
+        public string GetResponseClass(HttpActionDescriptor actionDescriptor)
         {
             var reflectedActionDescriptor = actionDescriptor as ReflectedHttpActionDescriptor;
-            if (reflectedActionDescriptor != null)
-            {
-                if (reflectedActionDescriptor.MethodInfo.ReturnType.IsGenericType)
-                {
-                    var sb = new StringBuilder(reflectedActionDescriptor.MethodInfo.ReturnParameter.ParameterType.Name);
-                    sb.Append("<");
-                    Type[] types = reflectedActionDescriptor.MethodInfo.ReturnParameter.ParameterType.GetGenericArguments();
-                    for (int i = 0; i < types.Length; i++)
-                    {
-                        sb.Append(types[i].Name);
-                        if (i != (types.Length - 1)) sb.Append(", ");
-                    }
-                    sb.Append(">");
-                    return sb.Replace("`1", "").ToString();
-                }
-                else
-                    return reflectedActionDescriptor.MethodInfo.ReturnType.Name;
-            }
+            if (reflectedActionDescriptor == null) return "void";
 
-            return "void";
+            var methodInfo = reflectedActionDescriptor.MethodInfo;
+
+            var rtnClass = methodInfo.ReturnType.IsGenericType
+                               ? GetGenericResponseClass(methodInfo)
+                               : methodInfo.ReturnType.Name;
+
+
+            return rtnClass;
         }
 
-        public virtual string GetNickname(HttpActionDescriptor actionDescriptor)
+        private string GetActionDocumentation(HttpActionDescriptor actionDescriptor, string selector)
         {
-            var reflectedActionDescriptor = actionDescriptor as ReflectedHttpActionDescriptor;
-            if (reflectedActionDescriptor != null)
-            {
-                return reflectedActionDescriptor.MethodInfo.Name;
-            }
-
-            return "NicknameNotFound";
+            var methodNode = GetMethodNode(actionDescriptor);
+            return GetNodeText(methodNode, selector);
         }
 
-        private XPathNavigator GetMemberNode(HttpActionDescriptor actionDescriptor)
+        private XPathNavigator GetMethodNode(HttpActionDescriptor actionDescriptor)
         {
-            var reflectedActionDescriptor = actionDescriptor as ReflectedHttpActionDescriptor;
-            if (reflectedActionDescriptor != null)
+            var action = actionDescriptor as ReflectedHttpActionDescriptor;
+            if (action != null)
             {
-                string selectExpression = string.Format(METHOD_EXPRESSION, GetMemberName(reflectedActionDescriptor.MethodInfo));
+                var methodSignature = GetMethodSignature(action.MethodInfo);
+                var selectExpression = string.Format(METHOD_EXPRESSION, methodSignature);
                 var node = _documentNavigator.SelectSingleNode(selectExpression);
-                if (node != null)
-                {
-                    return node;
-                }
+                return node;
             }
 
             return null;
         }
 
-        private static string GetMemberName(MethodInfo method)
+        private static string GetMethodSignature(MethodInfo method)
         {
-            string name = string.Format("{0}.{1}", method.DeclaringType.FullName, method.Name);
+            var name = string.Format("{0}.{1}", method.DeclaringType.FullName, method.Name);
             var parameters = method.GetParameters();
             if (parameters.Length != 0)
             {
-                string[] parameterTypeNames = parameters.Select(param => ProcessTypeName(param.ParameterType.FullName)).ToArray();
+                string[] parameterTypeNames = parameters.Select(param => GetNullableTypeName(param.ParameterType.FullName)).ToArray();
                 name += string.Format("({0})", string.Join(",", parameterTypeNames));
             }
 
             return name;
         }
 
-        private static string ProcessTypeName(string typeName)
+        private static string GetNodeText(XPathNavigator node, string selector)
+        {
+            if (node != null)
+            {
+                var summaryNode = node.SelectSingleNode(selector);
+                if (summaryNode != null)
+                {
+                    return summaryNode.Value.Trim();
+                }   
+            }
+
+            return "No Documentation Found.";
+        }
+
+        public static string GetNullableTypeName(string typeName)
         {
             //handle nullable
             var result = NullableTypeNameRegex.Match(typeName);
@@ -206,28 +153,16 @@ namespace Swagger.Net
             return typeName;
         }
 
-        private static void MapElement(string elementName, XPathNavigator sourceDoc, JObject targetDoc)
+        private static string GetGenericResponseClass(MethodInfo methodInfo)
         {
-            var sourceNode = sourceDoc.SelectSingleNode(elementName);
-            targetDoc[elementName] = sourceNode == null ? "" : sourceNode.InnerXml.Trim();
-        }
+            if (methodInfo.ReturnParameter == null) return methodInfo.ReturnType.Name;
+            
+            var paramType = methodInfo.ReturnParameter.ParameterType;
+            var argNames = string.Join(",", paramType.GetGenericArguments().Select(arg => arg.Name));
+            
+            var rtn = string.Format("{0}<{1}>", paramType.Name, string.Join(",", argNames));
 
-        private XPathNavigator GetTypeNode(string typeName)
-        {
-            var selectExpression = string.Format(TYPE_EXPRESSION, typeName);
-            var node = _documentNavigator.SelectSingleNode(selectExpression);
-
-            return node;
-
-        }
-
-        private XPathNodeIterator GetTypeMemberNodes(string typeName)
-        {
-            var selectExpression = string.Format(TYPE_MEMBERS_EXPRESSION, typeName);
-            var node = _documentNavigator.Select(selectExpression);
-
-            return node;
-
+            return rtn.Replace("`1", "");
         }
 
     }

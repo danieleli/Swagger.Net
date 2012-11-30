@@ -49,6 +49,7 @@
     <Reference Include="System" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -63,12 +64,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Adapters\ModelAdapter.cs" />
+    <Compile Include="Factories\ModelFactory_Test.cs" />
     <Compile Include="DocumentationProvider_Test.cs" />
-    <Compile Include="Adapters\ParameterMetadataFactory_Test.cs" />
-    <Compile Include="Adapters\ResourceMetadataFactory_Test.cs" />
-    <Compile Include="Adapters\EndpointMetadataFactory_Test.cs" />
-    <Compile Include="Adapters\TestHelper.cs" />
+    <Compile Include="Factories\ParameterFactory_Test.cs" />
+    <Compile Include="Factories\ApiFactory_Test.cs" />
+    <Compile Include="Factories\ResourceListingFactory_Test.cs" />
+    <Compile Include="Factories\TestHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
