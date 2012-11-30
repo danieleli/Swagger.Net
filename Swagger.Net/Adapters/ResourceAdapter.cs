@@ -45,7 +45,7 @@ namespace Swagger.Net.Factories
             {
                 apiVersion = apiVersion,
                 swaggerVersion = G.SWAGGER_VERSION,
-                basePath = uri.GetLeftPart(UriPartial.Authority) + _appVirtualPath,
+                basePath = uri.GetLeftPart(UriPartial.Authority) + _appVirtualPath.ToLower(),
             };
 
             

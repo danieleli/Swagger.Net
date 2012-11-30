@@ -50,7 +50,18 @@ namespace Swagger.Net
         public HttpResponseMessage Get()
         {
             // Arrange
-            var uri = base.ControllerContext.Request.RequestUri;
+            Uri uri;
+            var apiUrl = System.Configuration.ConfigurationManager.AppSettings["Settings.APIUrl"];
+
+            if (apiUrl != null)
+            {
+                uri = new Uri(apiUrl);
+            }
+            else
+            {
+                uri = base.ControllerContext.Request.RequestUri;
+            }
+            
 
             // Act
             var resourceListing = _resourceAdapter.CreateResourceListing(uri);
@@ -58,6 +69,11 @@ namespace Swagger.Net
             //Answer
             var resp = WrapResponse(resourceListing);
             return resp;
+        }
+
+        private bool configExist()
+        {
+            throw new NotImplementedException();
         }
 
         public HttpResponseMessage Get(string id)
