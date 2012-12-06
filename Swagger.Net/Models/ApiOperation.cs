@@ -16,6 +16,7 @@ namespace Swagger.Net.Models
         public string notes { get; set; }
         public List<ApiParameter> parameters { get;  set; }
         public List<ErrorResponse> errorResponses { get; set; }
+        
     }
 
 }

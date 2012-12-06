@@ -52,26 +52,34 @@ namespace Swagger.Net.Factories
         public ApiDeclaration[] CreateAllApiDeclarations(string root)
         {
             var uniqueControllers = _apiDescriptions
-                .Select(api => api.ActionDescriptor.ControllerDescriptor.ControllerName)
-                .Distinct();
-
-            return uniqueControllers.Select(controller => CreateApiDeclaration(root, controller)).ToArray();
+                .Select(api => api.ActionDescriptor.ControllerDescriptor)
+                .Distinct(new ResourceComparer()).ToList();
+            
+            return uniqueControllers.Select(controller => CreateApiDeclaration(root, controller)).OrderBy(ctrl => ctrl.resourcePath).ToArray();
         }
 
         public ApiDeclaration CreateApiDeclaration(string root, string controllerName)
         {
+            var myApi =
+                _apiDescriptions.FirstOrDefault(api => api.ActionDescriptor.ControllerDescriptor.ControllerName.ToLower() == controllerName.ToLower());
+            return CreateApiDeclaration(root, myApi.ActionDescriptor.ControllerDescriptor);
+        }
+
+        public ApiDeclaration CreateApiDeclaration(string root, HttpControllerDescriptor controller)
+        {
             var apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString();
 
-            var apiDescriptions = GetApiDescriptions(controllerName);
+            var apiDescriptions = GetApiDescriptions(controller.ControllerName);
             var apis = this.CreateApi(apiDescriptions);
             var models = _modelFactory.GetModels(apiDescriptions);
 
             return new ApiDeclaration()
             {
+                description = _docProvider.GetDocumentation(controller.ControllerType),
                 apiVersion = apiVersion,
                 swaggerVersion = G.SWAGGER_VERSION,
                 basePath = root + _appVirtualPath,
-                resourcePath = controllerName,
+                resourcePath = controller.ControllerName,
                 apis = apis.ToList(),
                 models = models
             };
@@ -95,7 +103,6 @@ namespace Swagger.Net.Factories
             var responseClass = CalculateResponseClass(apiDesc.ActionDescriptor.ReturnType);
             var remarks = _docProvider.GetRemarks(apiDesc.ActionDescriptor);
             var parameters = _parameterFactory.CreateParameters(apiDesc.ParameterDescriptions, apiDesc.RelativePath);
-
             var rApiOperation = new ApiOperation()
             {
                 httpMethod = apiDesc.HttpMethod.ToString(),
@@ -106,7 +113,7 @@ namespace Swagger.Net.Factories
                 parameters = parameters
             };
 
-            return new [] { rApiOperation };
+            return new[] { rApiOperation };
         }
 
         private List<ApiDescription> GetApiDescriptions(string controllerName)
@@ -114,10 +121,10 @@ namespace Swagger.Net.Factories
             var filteredDescs =
                 _apiDescriptions
                     .Where(d =>
-                        d.ActionDescriptor.ControllerDescriptor.ControllerName.ToUpper() == controllerName.ToUpper()
+                        d.ActionDescriptor.ControllerDescriptor.ControllerName.ToLower().StartsWith(controllerName.ToLower())
                      );
 
-            return filteredDescs.ToList();
+            return filteredDescs.OrderBy(api=>api.ActionDescriptor.ControllerDescriptor.ControllerName).ToList();
         }
 
         private static string CalculateResponseClass(Type type)

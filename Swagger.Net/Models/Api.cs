@@ -17,6 +17,7 @@ namespace Swagger.Net.Models
         public string swaggerVersion { get; set; }
         public string basePath { get; set; }
         public string resourcePath { get; set; }
+        public string description { get; set; }
         public List<Api> apis { get; set; }
         public Dictionary<string, object> models { get; set; }
     }

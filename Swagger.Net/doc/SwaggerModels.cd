@@ -25,7 +25,7 @@
   <Class Name="Swagger.Net.Models.ApiDeclaration">
     <Position X="0.5" Y="3.25" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAQAAAAAAABUAAAAAAAAAAAAAAAAAAAAAAAAAQIAAA=</HashCode>
+      <HashCode>AAAQAAAAAAABUAAAIAAAAAAAAAAAAAAAAAAAAAQIAAA=</HashCode>
       <FileName>Models\Api.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -49,15 +49,6 @@
   </Class>
   <Class Name="Swagger.Net.Models.ApiOperation">
     <Position X="5.75" Y="3.25" Width="1.5" />
-    <AssociationLine Name="errorResponses" Type="Swagger.Net.Models.ErrorResponse" FixedToPoint="true">
-      <Path>
-        <Point X="7.25" Y="3.563" />
-        <Point X="8.5" Y="3.563" />
-      </Path>
-      <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
-        <Position X="0.006" Y="0.101" Height="0.182" Width="1.141" />
-      </MemberNameLabel>
-    </AssociationLine>
     <AssociationLine Name="parameters" Type="Swagger.Net.Models.ApiParameter" FixedToPoint="true">
       <Path>
         <Point X="7.25" Y="4.812" />
@@ -67,13 +58,22 @@
         <Position X="0.235" Y="0.091" />
       </MemberNameLabel>
     </AssociationLine>
+    <AssociationLine Name="errorResponses" Type="Swagger.Net.Models.ErrorResponse" FixedToPoint="true">
+      <Path>
+        <Point X="7.25" Y="3.563" />
+        <Point X="8.5" Y="3.563" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
+        <Position X="0.006" Y="0.101" Height="0.182" Width="1.141" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAgAAAAAAAAAAAAASAoQA=</HashCode>
       <FileName>Models\ApiOperation.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
-      <Property Name="errorResponses" />
       <Property Name="parameters" />
+      <Property Name="errorResponses" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Swagger.Net.Models.ErrorResponse">
@@ -86,7 +86,7 @@
   <Class Name="Swagger.Net.Models.AllowableValues">
     <Position X="11.5" Y="6.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAEAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <HashCode>AAAAEAAAAAAQAAAAAAAAAAAAAAAAACAAAAAQAAAAAAA=</HashCode>
       <FileName>Models\AllowableValues.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -114,28 +114,13 @@
   </Class>
   <Class Name="Swagger.Net.Models.ApiModel">
     <Position X="0.5" Y="7.75" Width="1.5" />
-    <NestedTypes>
-      <Class Name="Swagger.Net.Models.ApiModel.Properties" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Models\ApiModel.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-    </NestedTypes>
-    <AssociationLine Name="properties" Type="Swagger.Net.Models.ApiModelProperties">
-      <MemberNameLabel ManuallyPlaced="true">
-        <Position X="0.44" Y="0.132" />
-      </MemberNameLabel>
-    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAIAAAAAAAAAAAAAIAAAAAQAAAABAAAAAAAAAAAAAgA=</HashCode>
       <FileName>Models\ApiModel.cs</FileName>
     </TypeIdentifier>
-    <ShowAsCollectionAssociation>
-      <Property Name="properties" />
-    </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Swagger.Net.Models.ApiModelProperties">
-    <Position X="3.5" Y="8" Width="1.5" />
+    <Position X="3.5" Y="8" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAAABAAAAAAAAAAAAAgA=</HashCode>
       <FileName>Models\ApiModel.cs</FileName>

@@ -83,7 +83,7 @@ namespace Swagger.Net._Test.Factories
             Assert.AreEqual(dataType.Name, rtnParam.dataType, "param source (body, uri, unknown");
             Assert.AreEqual(!isOptional, rtnParam.required, "is required");
             Assert.AreEqual(paramName, rtnParam.name, "param name");
-            Assert.AreEqual(G.QUERY, rtnParam.paramType, "param Type");
+            Assert.AreEqual(ParamType.query.ToString(), rtnParam.paramType, "param Type");
             Debug.WriteLine(JsonConvert.SerializeObject((object)rtnParam));
         }
 
@@ -129,7 +129,7 @@ namespace Swagger.Net._Test.Factories
             dynamic rtnParam = _factory.CreateParameter(input, TestHelper.ROUTE_TEMPLATE);
 
             // Assert
-            Assert.AreEqual(G.PATH, rtnParam.paramType, "param Type");
+            Assert.AreEqual(ParamType.path.ToString(), rtnParam.paramType, "param Type");
             Debug.WriteLine(JsonConvert.SerializeObject((object)rtnParam));
         }
 
@@ -150,7 +150,7 @@ namespace Swagger.Net._Test.Factories
             dynamic rtnParam = _factory.CreateParameter(input, TestHelper.ROUTE_TEMPLATE);
 
             // Assert
-            Assert.AreEqual(G.BODY, rtnParam.paramType, "param Type");
+            Assert.AreEqual(ParamType.body.ToString(), rtnParam.paramType, "param Type");
             Debug.WriteLine(JsonConvert.SerializeObject((object)rtnParam));
         }
 
@@ -171,7 +171,7 @@ namespace Swagger.Net._Test.Factories
             dynamic rtnParam = _factory.CreateParameter(input, TestHelper.ROUTE_TEMPLATE);
 
             // Assert
-            Assert.AreEqual(G.BODY, rtnParam.paramType, "param Type");
+            Assert.AreEqual(ParamType.body.ToString(), rtnParam.paramType, "param Type");
             Debug.WriteLine(JsonConvert.SerializeObject((object)rtnParam));
         }
 

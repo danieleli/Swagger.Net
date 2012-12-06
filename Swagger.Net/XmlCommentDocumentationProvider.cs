@@ -18,16 +18,19 @@ namespace Swagger.Net
     /// </summary>
     public class XmlCommentDocumentationProvider : IDocumentationProvider
     {
-        #region --- fields & ctors ---
-
         const string METHOD_EXPRESSION = "/doc/members/member[@name='M:{0}']";
         const string TYPE_EXPRESSION = "/doc/members/member[@name='T:{0}']";
-        const string TYPE_MEMBERS_EXPRESSION = "/doc/members/member[contains(@name,'P:{0}')]";
+        const string ENUM_ITEM_EXPRESSION = "/doc/members/member[@name='F:{0}']";
+        const string MEMBER_PARAM_EXPRESSION = "param[@name='{0}']";
+        const string PROPERTY_EXPRESSION = "/doc/members/member[contains(@name,'P:{0}')]";
+        const string NO_DOCS_FOUND = "";  //"No documentation found."
+
+
+        #region --- fields & ctors ---
+
 
         readonly XPathNavigator _documentNavigator;
-        static readonly Regex NullableTypeNameRegex = new Regex(@"(.*\.Nullable)" + Regex.Escape("`1[[") + "([^,]*),.*");
-
-
+        
         public XmlCommentDocumentationProvider(string documentPath)
         {
             var xpath = new XPathDocument(documentPath);
@@ -54,10 +57,19 @@ namespace Swagger.Net
 
         public string GetDocumentation(Type type)
         {
-            var selector = string.Format(TYPE_EXPRESSION, type.FullName);
-            var modelNode = _documentNavigator.SelectSingleNode(selector);
+            try
+            {
+                var selector = string.Format(TYPE_EXPRESSION, type.FullName);
+                var modelNode = _documentNavigator.SelectSingleNode(selector);
 
-            return GetNodeText(modelNode, "summary");
+                return GetNodeText(modelNode, "summary");
+            }
+            catch (Exception)
+            {
+
+                return NO_DOCS_FOUND;
+            }
+            
         }
 
         public string GetDocumentation(HttpParameterDescriptor parameterDescriptor)
@@ -73,6 +85,23 @@ namespace Swagger.Net
         {
             var rtn = GetActionDocumentation(actionDescriptor, "summary");
             return rtn;
+        }
+
+        public string GetDocumentation(PropertyInfo propInfo)
+        {
+            var type = propInfo.ReflectedType;
+            try
+            {
+                var selector = string.Format(PROPERTY_EXPRESSION, type.FullName + "." + propInfo.Name);
+                var modelNode = _documentNavigator.SelectSingleNode(selector);
+
+                return GetNodeText(modelNode, "summary");
+            }
+            catch (Exception)
+            {
+
+                return NO_DOCS_FOUND;
+            }
         }
 
         public string GetRemarks(HttpActionDescriptor actionDescriptor)
@@ -121,7 +150,7 @@ namespace Swagger.Net
             var parameters = method.GetParameters();
             if (parameters.Length != 0)
             {
-                string[] parameterTypeNames = parameters.Select(param => GetNullableTypeName(param.ParameterType.FullName)).ToArray();
+                string[] parameterTypeNames = parameters.Select(param => TypeUtils.GetNullableTypeName(param.ParameterType.FullName)).ToArray();
                 name += string.Format("({0})", string.Join(",", parameterTypeNames));
             }
 
@@ -139,18 +168,7 @@ namespace Swagger.Net
                 }   
             }
 
-            return "No Documentation Found.";
-        }
-
-        public static string GetNullableTypeName(string typeName)
-        {
-            //handle nullable
-            var result = NullableTypeNameRegex.Match(typeName);
-            if (result.Success)
-            {
-                return string.Format("{0}{{{1}}}", result.Groups[1].Value, result.Groups[2].Value);
-            }
-            return typeName;
+            return NO_DOCS_FOUND;
         }
 
         private static string GetGenericResponseClass(MethodInfo methodInfo)
@@ -164,6 +182,22 @@ namespace Swagger.Net
 
             return rtn.Replace("`1", "");
         }
-
     }
+
+    public static class TypeUtils
+    {
+        static readonly Regex NullableTypeNameRegex = new Regex(@"(.*\.Nullable)" + Regex.Escape("`1[[") + "([^,]*),.*");
+        public static string GetNullableTypeName(string typeName)
+        {
+            //handle nullable
+            var result = NullableTypeNameRegex.Match(typeName);
+            if (result.Success)
+            {
+                return String.Format("{0}{{{1}}}", result.Groups[1].Value, result.Groups[2].Value);
+            }
+            return typeName;
+        }
+    }
+
+
 }

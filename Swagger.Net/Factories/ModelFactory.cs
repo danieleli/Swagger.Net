@@ -46,27 +46,57 @@ namespace Swagger.Net.Factories
 
         private static IEnumerable<Type> GetUniqueTypes(IEnumerable<ApiDescription> apiDescs)
         {
+            var types = GetAllTypes(apiDescs);
+
+            var uniqueNonPrimatives = types.Where(t =>
+                    t != null &&
+                    !t.IsPrimitive &&
+                    !(t == typeof(String)) &&
+                    !(t == typeof(Guid))
+                    ).Distinct();
+            var trueTypes = uniqueNonPrimatives.Select(GetDataType);
+            var refilteredTypes = trueTypes.Where(t => t != null &&
+                    !t.IsPrimitive &&
+                    !(t == typeof(String)) &&
+                    !(t == typeof(Guid))
+                    ).Distinct();
+
+            return refilteredTypes;
+        }
+
+        private static IEnumerable<Type> GetAllTypes(IEnumerable<ApiDescription> apiDescs)
+        {
+            // return types
             var types = apiDescs.Select(a => a.ActionDescriptor.ReturnType).ToList();
 
+            // param types
             var paramTypes = apiDescs.SelectMany(
                 a => a.ParameterDescriptions.Select(
                     p => p.ParameterDescriptor.ParameterType));
 
+            // all types
             types.AddRange(paramTypes);
-
-            var uniqueNonPrimatives = types.Where(t => t != null && !t.IsPrimitive).Distinct();
-            var trueTypes = uniqueNonPrimatives.Select(GetDataType);
-            var refilteredTypes = trueTypes.Where(t => t != null && !t.IsPrimitive).Distinct();
-
-            return refilteredTypes;
+            return types;
         }
 
         public object CreateModel(Type type)
         {
             var properties = new Dictionary<string, object>();
-            foreach (var prop in type.GetProperties())
+
+
+            if (type.IsEnum)
             {
-                properties[prop.Name] = GetProperty(prop);
+                var allowableVals = new AllowableValues(type);
+                var itemDocs = _docProvider.GetDocumentation(type);
+                var item = new { allowableValues = allowableVals, description = itemDocs, type = "string" };
+                properties["PossibleValues"] = item;
+            }
+            else
+            {
+                foreach (var prop in type.GetProperties())
+                {
+                    properties[prop.Name] = GetProperty(prop);
+                }
             }
 
             return new ApiModel
@@ -81,53 +111,57 @@ namespace Swagger.Net.Factories
         {
 
             object item;
+            var docs = _docProvider.GetDocumentation(prop);
             if (prop.PropertyType.IsArray)
             {   // Array
-                item = new { type = "Array-" + prop.PropertyType.GetElementType().Name, items = new { Sref = prop.PropertyType.GetElementType().Name } };
+                item = new
+                {
+                    type = prop.PropertyType.GetElementType().Name + "[]",
+                    items = new { Sref = prop.PropertyType.GetElementType().Name },
+                    description = docs
+                };
             }
             else if (prop.PropertyType.IsPrimitive)
             {   // Primative
-                item = new { type = prop.PropertyType.Name };
+                item = new
+                {
+                    type = prop.PropertyType.Name,
+                    description = docs
+                };
             }
             else if (prop.PropertyType.IsEnum)
             {
-                  //"status": {
-                  //  "allowableValues": {
-                  //      "valueType": "LIST",
-                  //      "values": [
-                  //   "available",
-                  //   "pending",
-                  //   "sold"
-                  //],
-                  //      "valueType": "LIST"
-                  //  },
-                  //  "description": "pet status in the store",
-                  //  "type": "string"
-                  //}
+                //"status": {
+                //  "allowableValues": {
+                //      "valueType": "LIST",
+                //      "values": [
+                //   "available",
+                //   "pending",
+                //   "sold"
+                //],
+                //      "valueType": "LIST"
+                //  },
+                //  "description": "pet status in the store",
+                //  "type": "string"
+                //}
                 // Enum
                 var allowableVals = new AllowableValues(prop.PropertyType);
-                var itemDocs = _docProvider.GetDocumentation(prop.PropertyType);
-                item = new { allowableValues = allowableVals, description = itemDocs, type="string" };
+                item = new { allowableValues = allowableVals, description = docs, type = "string" };
             }
-            else if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+
+            //else if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof (Nullable<>))
+            else if (prop.PropertyType.IsGenericType)
             {
                 var gType = prop.PropertyType.GetGenericArguments().First();
-                var name = XmlCommentDocumentationProvider.GetNullableTypeName(gType.FullName);
+                var name = TypeUtils.GetNullableTypeName(gType.FullName);
                 name = name.Substring(name.IndexOf(".") + 1);
-                item = new { type = @"Nullable-" + name };
+                item = new { type = name + "?", description = docs };
             }
             else
             {
-                var itemDocs = _docProvider.GetDocumentation(prop.PropertyType);
 
-                if (itemDocs.StartsWith("No"))
-                {   // No Documentation
-                    item = new { type = prop.PropertyType.Name };
-                }
-                else
-                {
-                    item = new { type = prop.PropertyType.Name, description = itemDocs };
-                }
+                item = new { type = prop.PropertyType.Name, description = docs };
+
             }
 
             return item;
@@ -145,13 +179,15 @@ namespace Swagger.Net.Factories
             {
                 if (inputType.IsGenericType)
                 {
-                    return inputType.GetGenericArguments().First();
+                    return GetDataType(inputType.GetGenericArguments().First());
                 }
                 return inputType.GetElementType();
             }
 
-
-
+            if (inputType.IsGenericType)
+            {
+                return GetDataType(inputType.GetGenericArguments().First());
+            }
 
             return inputType;
         }

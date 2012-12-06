@@ -60,6 +60,7 @@
     <Compile Include="Factories\ModelFactory.cs" />
     <Compile Include="Factories\ParameterFactory.cs" />
     <Compile Include="Factories\ApiFactory.cs" />
+    <Compile Include="Factories\ResourceComparer.cs" />
     <Compile Include="Models\ApiParameter.cs" />
     <Compile Include="Models\ErrorResponse.cs" />
     <Compile Include="Models\ApiModel.cs" />

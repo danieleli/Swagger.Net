@@ -38,7 +38,7 @@ namespace Swagger.Net.Factories
         {
             var trueParamType = parameterDescription.ParameterDescriptor.ParameterType;
 
-            var paramTypeAsString = GetParamType(parameterDescription, relativePath);
+            var paramType = GetParamType(parameterDescription, relativePath);
             var isRequired = !parameterDescription.ParameterDescriptor.IsOptional;
             var dataType =  GetFriendlyTypeName(trueParamType);
             var allowMuliple = GetAllowMuliple(trueParamType);
@@ -50,7 +50,7 @@ namespace Swagger.Net.Factories
                 {
                     name = parameterDescription.Name,
                     dataType = dataType,
-                    paramType = paramTypeAsString,
+                    paramType = paramType.ToString(),
                     description = parameterDescription.Documentation,
                     allowMultiple = allowMuliple,
                     required = isRequired,
@@ -62,7 +62,7 @@ namespace Swagger.Net.Factories
                           {
                               name = parameterDescription.Name,
                               dataType = dataType,
-                              paramType = paramTypeAsString,
+                              paramType = paramType.ToString(),
                               description = parameterDescription.Documentation,
                               allowMultiple = allowMuliple,
                               required = isRequired
@@ -74,12 +74,12 @@ namespace Swagger.Net.Factories
             return parameterType.IsArray || parameterType.GetInterfaces().Any(i => i.Name.Contains("IEnum"));
         }
 
-        private static string GetParamType(ApiParameterDescription parameterDescription, string relativePath)
+        private static ParamType GetParamType(ApiParameterDescription parameterDescription, string relativePath)
         {
-            var paramType = G.BODY;
+            var paramType = ParamType.body;
             if (parameterDescription.Source == ApiParameterSource.FromUri)
             {
-                paramType = relativePath.IndexOf("{" + parameterDescription.Name + "}") > -1 ? G.PATH : G.QUERY;
+                paramType = relativePath.IndexOf("{" + parameterDescription.Name + "}") > -1 ? ParamType.path :  ParamType.query;
             }
             return paramType;
         }
@@ -88,14 +88,14 @@ namespace Swagger.Net.Factories
         {
             if (type.IsArray)
             {   // Array
-                return "Array-" + type.GetElementType().Name;
+                return type.GetElementType().Name + "[]";
             }
             else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 var gType = type.GetGenericArguments().First();
-                var name = XmlCommentDocumentationProvider.GetNullableTypeName(gType.FullName);
+                var name = TypeUtils.GetNullableTypeName(gType.FullName);
                 name = name.Substring(name.IndexOf(".") + 1);
-                return @"Nullable-" + name;
+                return  name + "?";
             }
             return type.Name;
         }
