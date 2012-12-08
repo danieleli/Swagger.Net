@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -72,11 +73,27 @@ namespace Swagger.Net
             {
                 var apis = _apiFactory.CreateAllApiDeclarations(rootUrl);
                 return WrapResponse(apis);
+            } else if (id.ToLower() == "custom")
+            {
+                return GetCustomMeta();
             }
 
             var docs = _apiFactory.CreateApiDeclaration(rootUrl, id);
             return WrapResponse(docs);
         }
+
+   
+        public HttpResponseMessage GetCustomMeta()
+        {
+            var apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
+            var docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
+            var factory = new MetadataFactory(apiDescriptions, docProvider);
+            var rtn = factory.CreateMetadata();
+
+            return WrapResponse(rtn);
+        }
+
+       
 
         private HttpResponseMessage WrapResponse<T>(T resourceListing)
         {

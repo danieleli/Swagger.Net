@@ -46,25 +46,31 @@ namespace Swagger.Net
         public TypeMetadata ReturnType { get; set; }
         public string RelativePath { get; set; }
         public string AlternatePath { get; set; }
+        public string HttpMethod { get; set; }
         public IEnumerable<ErrorMetadata> ErrorResponses { get; set; }
         public IEnumerable<ParamMetadata> Params { get; set; }
     }
 
     public class ControllerMetadata : Metadata
     {
-        public HttpControllerDescriptor Controller { get; set; }
+        public string ParentController { get; set; }
+        public string Controller { get; set; }
         public IEnumerable<OperationMetadata> Operations { get; set; }
         public IEnumerable<ControllerMetadata> Children { get; set; }
+
+        
     }
 
     public class MetadataFactory
     {
         private readonly IList<ApiDescription> _apis;
+        private readonly XmlCommentDocumentationProvider _docProvider;
         private List<string> _distinctControllerNames;
 
-        public MetadataFactory(IList<ApiDescription> apis)
+        public MetadataFactory(IList<ApiDescription> apis, XmlCommentDocumentationProvider docProvider)
         {
             _apis = apis;
+            _docProvider = docProvider;
             _distinctControllerNames = apis
                 .Select(a => a.ActionDescriptor.ControllerDescriptor.ControllerName)
                 .Distinct()
@@ -91,19 +97,20 @@ namespace Swagger.Net
         {
 
             var currentApiDescs = _apis
-                .Where(a => a.ActionDescriptor.ControllerDescriptor.ControllerName == controllerName);
+                .Where(a => a.ActionDescriptor.ControllerDescriptor.ControllerName == controllerName).ToArray();
 
             var operations = GetOperations(currentApiDescs, parentControllerName);
             var children = GetChildren(controllerName);
-
+            
             var controlMeta = new ControllerMetadata()
             {
                 Name = controllerName,
-                Summary = "Summary",
-                Remarks = "Remarks",
+                Summary = _docProvider.GetDocumentation(currentApiDescs.First().ActionDescriptor.ControllerDescriptor.ControllerType),
+                Remarks = "TBD",
                 Operations = operations,
                 Children = children,
-                Controller = null
+                Controller = controllerName,
+                ParentController = parentControllerName
             };
 
             return controlMeta;
@@ -117,7 +124,7 @@ namespace Swagger.Net
             return children;
         }
 
-        private static IEnumerable<OperationMetadata> GetOperations(IEnumerable<ApiDescription> currentApiDescs, string parentControllerName)
+        private IEnumerable<OperationMetadata> GetOperations(IEnumerable<ApiDescription> currentApiDescs, string parentControllerName)
         {
             var rtn = new List<OperationMetadata>();
             foreach (var apiDescription in currentApiDescs)
@@ -128,8 +135,8 @@ namespace Swagger.Net
                 var returnMeta = new TypeMetadata()
                 {
                     Name = rType.Name,
-                    Summary = "Summary",
-                    Remarks = "Remarks",
+                    Summary =  _docProvider.GetDocumentation(rType),
+                    Remarks = "TBD",
                     Properties = null
                 };
 
@@ -140,16 +147,17 @@ namespace Swagger.Net
                                                 apiDescription.ActionDescriptor.ControllerDescriptor.ControllerName,
                                                 apiDescription.RelativePath);    
                 }
-                
+          
                 var op = new OperationMetadata()
                 {
                     Name = apiDescription.ActionDescriptor.ActionName,
+                    HttpMethod = apiDescription.HttpMethod.ToString(),
                     RelativePath = apiDescription.RelativePath,
                     AlternatePath = path,
-                    Summary = "Summary",
-                    Remarks = "Remarks",
+                    Summary = _docProvider.GetDocumentation(apiDescription.ActionDescriptor),
+                    Remarks = _docProvider.GetRemarks(apiDescription.ActionDescriptor),
                     ReturnType = returnMeta,
-                    ReturnsComment = "ReturnsComment",
+                    ReturnsComment = _docProvider.GetResponseClass(apiDescription.ActionDescriptor),
                     Params = paramz,
                     ErrorResponses = null
 
@@ -189,7 +197,7 @@ namespace Swagger.Net
             }
             return path;
         }
-        private static IEnumerable<ParamMetadata> GetParams(HttpActionDescriptor actionDescriptor)
+        private IEnumerable<ParamMetadata> GetParams(HttpActionDescriptor actionDescriptor)
         {
             var rtn = new List<ParamMetadata>();
             foreach (var parmDescriptor in actionDescriptor.GetParameters())
@@ -197,7 +205,7 @@ namespace Swagger.Net
                 var p = new ParamMetadata()
                 {
                     Name = parmDescriptor.ParameterName,
-                    Comment = "Comment",
+                    Comment = _docProvider.GetDocumentation(parmDescriptor),
                     Type = new TypeMetadata()
                     {
                         Name = parmDescriptor.ParameterType.Name,
@@ -261,120 +269,120 @@ namespace Swagger.Net
     public static class PpsUtil
     {
 
-        public static IEnumerable<ControllerMetadata> CreateMetadata(IList<ApiDescription> allApiDescriptions)
-        {
-            var distinctControllers = allApiDescriptions
-                .Select(a => a.ActionDescriptor.ControllerDescriptor.ControllerName)
-                .Distinct()
-                .OrderBy(s => s)
-                .ToList();
+        //public static IEnumerable<ControllerMetadata> CreateMetadata(IList<ApiDescription> allApiDescriptions)
+        //{
+        //    var distinctControllers = allApiDescriptions
+        //        .Select(a => a.ActionDescriptor.ControllerDescriptor.ControllerName)
+        //        .Distinct()
+        //        .OrderBy(s => s)
+        //        .ToList();
             
-            var rootControllers = GetRootControllers(distinctControllers);
+        //    var rootControllers = GetRootControllers(distinctControllers);
 
-            var rtn = new List<ControllerMetadata>();
+        //    var rtn = new List<ControllerMetadata>();
             
-            foreach (var currentController in rootControllers)
-            {
-                var controlMeta = GetControllerMetadata(allApiDescriptions, currentController);
-                rtn.Add(controlMeta);
-            }
-            return rtn;
-        }
+        //    foreach (var currentController in rootControllers)
+        //    {
+        //        var controlMeta = GetControllerMetadata(allApiDescriptions, currentController);
+        //        rtn.Add(controlMeta);
+        //    }
+        //    return rtn;
+        //}
 
-        private static ControllerMetadata GetControllerMetadata(IEnumerable<ApiDescription> allApiDescriptions, string controllerName)
-        {
+        //private static ControllerMetadata GetControllerMetadata(IEnumerable<ApiDescription> allApiDescriptions, string controllerName)
+        //{
 
-            var currentApiDescs = allApiDescriptions
-                .Where(a => a.ActionDescriptor.ControllerDescriptor.ControllerName == controllerName);
+        //    var currentApiDescs = allApiDescriptions
+        //        .Where(a => a.ActionDescriptor.ControllerDescriptor.ControllerName == controllerName);
 
-            var operations = GetOperations(currentApiDescs);
+        //    var operations = GetOperations(currentApiDescs);
   
-            var controlMeta = new ControllerMetadata()
-                {
-                    Name = controllerName,
-                    Summary = "Summary",
-                    Remarks = "Remarks",
-                    Children = null,
-                    Operations = operations,
-                    Controller = null
-                };
-            return controlMeta;
-        }
+        //    var controlMeta = new ControllerMetadata()
+        //        {
+        //            Name = controllerName,
+        //            Summary = "Summary",
+        //            Remarks = "Remarks",
+        //            Children = null,
+        //            Operations = operations,
+        //            Controller = null
+        //        };
+        //    return controlMeta;
+        //}
 
-        private static IEnumerable<OperationMetadata> GetOperations(IEnumerable<ApiDescription> currentApiDescs)
-        {
-            var rtn = new List<OperationMetadata>();
-            foreach (var apiDescription in currentApiDescs)
-            {
-                var paramz = GetParams(apiDescription.ActionDescriptor);
-                var rType = apiDescription.ActionDescriptor.ReturnType;
+        //private static IEnumerable<OperationMetadata> GetOperations(IEnumerable<ApiDescription> currentApiDescs)
+        //{
+        //    var rtn = new List<OperationMetadata>();
+        //    foreach (var apiDescription in currentApiDescs)
+        //    {
+        //        var paramz = GetParams(apiDescription.ActionDescriptor);
+        //        var rType = apiDescription.ActionDescriptor.ReturnType;
 
-                var returnMeta = new TypeMetadata()
-                    {
-                        Name = rType.Name,
-                        Summary = "Summary",
-                        Remarks = "Remarks",
-                        Properties = null
-                    };
+        //        var returnMeta = new TypeMetadata()
+        //            {
+        //                Name = rType.Name,
+        //                Summary = "Summary",
+        //                Remarks = "Remarks",
+        //                Properties = null
+        //            };
                 
-                var op = new OperationMetadata()
-                    {
-                        Name = apiDescription.ActionDescriptor.ActionName,
-                        Summary = "Summary",
-                        Remarks = "Remarks",
-                        RelativePath = apiDescription.RelativePath,
-                        ReturnType = returnMeta,
-                        ReturnsComment = "ReturnsComment",
-                        Params = paramz,
-                        ErrorResponses = null
+        //        var op = new OperationMetadata()
+        //            {
+        //                Name = apiDescription.ActionDescriptor.ActionName,
+        //                Summary = "Summary",
+        //                Remarks = "Remarks",
+        //                RelativePath = apiDescription.RelativePath,
+        //                ReturnType = returnMeta,
+        //                ReturnsComment = "ReturnsComment",
+        //                Params = paramz,
+        //                ErrorResponses = null
 
-                    };
-                rtn.Add(op);
-            }
-            return rtn;
-        }
+        //            };
+        //        rtn.Add(op);
+        //    }
+        //    return rtn;
+        //}
 
-        private static IEnumerable<ParamMetadata> GetParams(HttpActionDescriptor actionDescriptor)
-        {
-            var rtn = new List<ParamMetadata>();
-            foreach (var parmDescriptor in actionDescriptor.GetParameters())
-            {
-                var p = new ParamMetadata()
-                    {
-                        Name = parmDescriptor.ParameterName,
-                        Comment = "Comment",
-                        Type = new TypeMetadata()
-                            {
-                                Name = parmDescriptor.ParameterType.Name,
-                                Properties = null
-                            }
-                    };
+        //private static IEnumerable<ParamMetadata> GetParams(HttpActionDescriptor actionDescriptor)
+        //{
+        //    var rtn = new List<ParamMetadata>();
+        //    foreach (var parmDescriptor in actionDescriptor.GetParameters())
+        //    {
+        //        var p = new ParamMetadata()
+        //            {
+        //                Name = parmDescriptor.ParameterName,
+        //                Comment = "Comment",
+        //                Type = new TypeMetadata()
+        //                    {
+        //                        Name = parmDescriptor.ParameterType.Name,
+        //                        Properties = null
+        //                    }
+        //            };
 
-                rtn.Add(p);
-            }
-            return rtn;
-        }
+        //        rtn.Add(p);
+        //    }
+        //    return rtn;
+        //}
 
-        public static IEnumerable<dynamic> CreateMetadata(IEnumerable<ApiDescription> apiDescs, string rootControllerName)
-        {
-            var rtnApis = new List<Models.Api>();
-            foreach (var apiDescription in apiDescs)
-            {
-                var operations = new ApiOperation[]{};// CreateOperation(apiDescription);
-                var currentControllerName = apiDescription.ActionDescriptor.ControllerDescriptor.ControllerName;
-                var alternatePath = PpsUtil.GetAlternatePath(rootControllerName, currentControllerName, apiDescription.RelativePath);
+        //public static IEnumerable<dynamic> CreateMetadata(IEnumerable<ApiDescription> apiDescs, string rootControllerName)
+        //{
+        //    var rtnApis = new List<Models.Api>();
+        //    foreach (var apiDescription in apiDescs)
+        //    {
+        //        var operations = new ApiOperation[]{};// CreateOperation(apiDescription);
+        //        var currentControllerName = apiDescription.ActionDescriptor.ControllerDescriptor.ControllerName;
+        //        var alternatePath = PpsUtil.GetAlternatePath(rootControllerName, currentControllerName, apiDescription.RelativePath);
 
-                Debug.WriteLine(currentControllerName + ":" + apiDescription.HttpMethod + ":" + alternatePath.ToLower() + ":" + apiDescription.RelativePath.ToLower());
+        //        Debug.WriteLine(currentControllerName + ":" + apiDescription.HttpMethod + ":" + alternatePath.ToLower() + ":" + apiDescription.RelativePath.ToLower());
 
-                rtnApis.Add(new Models.Api()
-                {
-                    path = alternatePath,
-                    description = apiDescription.Documentation,
-                    operations = operations,
-                });
-            }
-            return rtnApis;
-        }
+        //        rtnApis.Add(new Models.Api()
+        //        {
+        //            path = alternatePath,
+        //            description = apiDescription.Documentation,
+        //            operations = operations,
+        //        });
+        //    }
+        //    return rtnApis;
+        //}
 
 
         public static List<string> GetRootControllers(List<string> allControllerNames)
@@ -421,11 +429,6 @@ namespace Swagger.Net
         private static IEnumerable<string> GetNamesWithOneUpper(List<string> controllerNames)
         {
             return controllerNames.Where(name => name.ToCharArray().Count(c => Char.IsUpper(c)) < 2);
-        }
-
-        public static object GetApiMetadata()
-        {
-            return null;
         }
 
 
