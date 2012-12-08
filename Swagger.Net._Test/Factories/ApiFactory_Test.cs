@@ -61,7 +61,7 @@
 //            var descriptions = new List<ApiDescription> { apiDesc };
 
 //            // Act
-//            var apis = _factory.CreateApi(descriptions);
+//            var apis = _factory.CreateApis(descriptions);
 
 //            // Asset
 //            Assert.AreEqual(1, apis.Count, "api count");
@@ -78,7 +78,7 @@
 //            var descriptions = new List<ApiDescription> { apiDesc };
 
 //            // Act
-//            var apis = _factory.CreateApi(descriptions);
+//            var apis = _factory.CreateApis(descriptions);
 
 //            // Asset
 //            Assert.AreEqual(1, apis.Count, "api count");
@@ -95,7 +95,7 @@
 //            var descriptions = new List<ApiDescription> { apiDesc };
 
 //            // Act
-//            //var api = _factory.CreateApi(apiDesc);
+//            //var api = _factory.CreateApis(apiDesc);
 
 //            // Asset
 //            //Assert.AreEqual(0, apis.Count, "api count");

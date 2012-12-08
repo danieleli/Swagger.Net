@@ -57,15 +57,16 @@ namespace Swagger.Net.Factories
         private Api[] CreateApis()
         {
 
-            var uniqueControllers = _apiDescriptions
+            var uniqueApis = _apiDescriptions
                 .Select(api => api)
                 .Distinct().ToList();
 
-            var controllerNames = GetUniqueNames(uniqueControllers);
-            var rootControllers = GetRootControllers(controllerNames);
+            var uniqueControllerNames = uniqueApis.Select(a => a.ActionDescriptor.ControllerDescriptor.ControllerName).ToList();
+            var rootControllers = PpsUtil.GetRootControllers(uniqueControllerNames);
 
 
-            return (from api in uniqueControllers
+
+            return (from api in uniqueApis
                     where rootControllers.Contains(api.ActionDescriptor.ControllerDescriptor.ControllerName)
                     group api by api.ActionDescriptor.ControllerDescriptor.ControllerName
                     into g
@@ -77,87 +78,7 @@ namespace Swagger.Net.Factories
                    ).OrderBy(a=>a.path).ToArray();
         }
 
-        private static List<string> GetRootControllers(List<string> controllerNames)
-        {
-            var rootControllers = GetNamesWithOneUpper(controllerNames).ToList();
-
-            var controllerNamesWithManyUppers = controllerNames.Where(name => name.ToCharArray().Count(c => Char.IsUpper(c)) > 1);
-
-            var extra = new List<string>();
-            foreach (var controllerNameWithManyUpper in controllerNamesWithManyUppers)
-            {
-                bool found = false;
-                foreach (var rootName in rootControllers)
-                {
-                    if (controllerNameWithManyUpper.StartsWith(rootName))
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
-                {
-                    extra.Add(controllerNameWithManyUpper);
-                }
-            }
-
-            rootControllers.AddRange(extra);
-
-            rootControllers = rootControllers.OrderBy(s => s).ToList();
-
-            Debug.WriteLine("Root Controllers: " + rootControllers.Count);
-            Debug.WriteLine("================");
-            rootControllers.ForEach(x => Debug.WriteLine(x));
-
-
-            var notRoot = controllerNames.RemoveAll(name => rootControllers.Contains(name));
-            controllerNames = controllerNames.OrderBy(s => s).ToList();
-            Debug.WriteLine("");
-            Debug.WriteLine("Sub Controllers: " + controllerNames.Count);
-            Debug.WriteLine("====================");
-            controllerNames.ForEach(x => Debug.WriteLine(x));
-            return rootControllers;
-        }
-
-        private static IEnumerable<string> GetNamesWithOneUpper(List<string> controllerNames)
-        {
-            return controllerNames.Where(name => name.ToCharArray().Count(c => Char.IsUpper(c))<2);
-        }
-
-
-        public static string GetRootName(string ctlrName)
-        {
-            int secondUpperAfterFirstLower = 0;
-            var chars = ctlrName.ToCharArray();
-            bool foundFirstLower = false;
-            for (var i = 1; i < chars.Length - 1; i++)
-            {
-                if (foundFirstLower && Char.IsUpper(chars[i]))
-                {
-                    secondUpperAfterFirstLower = i;
-                    break;
-                }
-                if (Char.IsLower(chars[i]))
-                {
-                    foundFirstLower = true;
-                }
-
-            }
-            if (secondUpperAfterFirstLower == 0)
-            {
-                return ctlrName;
-            }
-            var rootName = ctlrName.Substring(0, secondUpperAfterFirstLower);
-            return rootName;
-        }
-
-        private static List<string> GetUniqueNames(IEnumerable<ApiDescription> uniqueControllers)
-        {
-            return uniqueControllers
-                .Select(c => c.ActionDescriptor.ControllerDescriptor.ControllerName)
-                .Distinct()
-                .ToList();
-        }
+        
     }
 }
 

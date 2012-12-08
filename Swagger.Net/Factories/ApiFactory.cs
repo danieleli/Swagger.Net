@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -49,52 +50,64 @@ namespace Swagger.Net.Factories
 
         #endregion --- fields & ctors ---
 
-        public ApiDeclaration[] CreateAllApiDeclarations(string root)
+        public IOrderedEnumerable<ApiDeclaration> CreateAllApiDeclarations(string rootUrl)
         {
+
             var uniqueControllers = _apiDescriptions
                 .Select(api => api.ActionDescriptor.ControllerDescriptor)
-                .Distinct(new ResourceComparer()).ToList();
+                .Distinct();
+
+            var rtnApis = uniqueControllers
+                .Select(controller => CreateApiDeclaration(rootUrl, controller));
             
-            return uniqueControllers.Select(controller => CreateApiDeclaration(root, controller)).OrderBy(ctrl => ctrl.resourcePath).ToArray();
+            return rtnApis.OrderBy(api => api.resourcePath);
+                
         }
 
-        public ApiDeclaration CreateApiDeclaration(string root, string controllerName)
-        {
-            var myApi =
-                _apiDescriptions.FirstOrDefault(api => api.ActionDescriptor.ControllerDescriptor.ControllerName.ToLower() == controllerName.ToLower());
-            return CreateApiDeclaration(root, myApi.ActionDescriptor.ControllerDescriptor);
-        }
+        
 
-        public ApiDeclaration CreateApiDeclaration(string root, HttpControllerDescriptor controller)
+        public ApiDeclaration CreateApiDeclaration(string rootUrl, HttpControllerDescriptor controller)
         {
-            var apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString();
+            var rootCtlrName = controller.ControllerName;
+            
+            var apiDescripts = GetFilteredApiDescriptions(rootCtlrName);
 
-            var apiDescriptions = GetApiDescriptions(controller.ControllerName);
-            var apis = this.CreateApi(apiDescriptions);
-            var models = _modelFactory.GetModels(apiDescriptions);
+            var dataModels = _modelFactory.GetModels(apiDescripts);
+            var apis = CreateApis(apiDescripts, rootCtlrName);
+
+            var docs = _docProvider.GetDocumentation(controller.ControllerType);
 
             return new ApiDeclaration()
             {
-                description = _docProvider.GetDocumentation(controller.ControllerType),
-                apiVersion = apiVersion,
+                description = docs,
                 swaggerVersion = G.SWAGGER_VERSION,
-                basePath = root + _appVirtualPath,
+                basePath = rootUrl + _appVirtualPath,
                 resourcePath = controller.ControllerName,
                 apis = apis.ToList(),
-                models = models
+                models = dataModels,
+                apiVersion = Assembly.GetCallingAssembly().GetName().Version.ToString()
             };
         }
 
-        public IEnumerable<Models.Api> CreateApi(IEnumerable<ApiDescription> apiDescs)
+
+        public IEnumerable<Models.Api> CreateApis(IEnumerable<ApiDescription> apiDescs, string rootControllerName)
         {
-            var rtnApis = from apiDescription in apiDescs
-                          let operations = CreateOperation(apiDescription)
-                          select new Models.Api()
+            var rtnApis = new List<Models.Api>();
+            foreach (var apiDescription in apiDescs)
+            {
+                var operations = CreateOperation(apiDescription);
+                var currentControllerName = apiDescription.ActionDescriptor.ControllerDescriptor.ControllerName;
+                var alternatePath = PpsUtil.GetAlternatePath(rootControllerName, currentControllerName, apiDescription.RelativePath);
+
+                Debug.WriteLine(currentControllerName + ":" + apiDescription.HttpMethod + ":" + alternatePath.ToLower() + ":" + apiDescription.RelativePath.ToLower());
+
+                rtnApis.Add(new Models.Api()
                           {
-                              path = "/" + apiDescription.RelativePath,
+                              path = alternatePath,
                               description = apiDescription.Documentation,
-                              operations = operations
-                          };
+                              operations = operations,
+                          });
+            }
             return rtnApis;
         }
 
@@ -116,15 +129,27 @@ namespace Swagger.Net.Factories
             return new[] { rApiOperation };
         }
 
-        private List<ApiDescription> GetApiDescriptions(string controllerName)
+        public ApiDeclaration CreateApiDeclaration(string rootUrl, string controllerName)
+        {
+            var apiDescription = _apiDescriptions
+                .FirstOrDefault(api => api.ActionDescriptor.ControllerDescriptor.ControllerName.ToLower() == controllerName.ToLower());
+
+            if (apiDescription == null) return null;
+
+            var rtnApiDeclare = CreateApiDeclaration(rootUrl, apiDescription.ActionDescriptor.ControllerDescriptor);
+
+            return rtnApiDeclare;
+        }
+
+        private List<ApiDescription> GetFilteredApiDescriptions(string rootControllerName)
         {
             var filteredDescs =
                 _apiDescriptions
                     .Where(d =>
-                        d.ActionDescriptor.ControllerDescriptor.ControllerName.ToLower().StartsWith(controllerName.ToLower())
+                        d.ActionDescriptor.ControllerDescriptor.ControllerName.ToLower().StartsWith(rootControllerName.ToLower())
                      );
 
-            return filteredDescs.OrderBy(api=>api.ActionDescriptor.ControllerDescriptor.ControllerName).ToList();
+            return filteredDescs.OrderBy(api => api.ActionDescriptor.ControllerDescriptor.ControllerName).ToList();
         }
 
         private static string CalculateResponseClass(Type type)

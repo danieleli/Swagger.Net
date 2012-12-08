@@ -67,6 +67,7 @@
     <Compile Include="Models\Api.cs" />
     <Compile Include="Models\ApiOperation.cs" />
     <Compile Include="Models\ResourceListing.cs" />
+    <Compile Include="PpsUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Factories\ResourceListingFactory.cs" />
     <Compile Include="G.cs" />
