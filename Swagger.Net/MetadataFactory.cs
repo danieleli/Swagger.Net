@@ -7,6 +7,29 @@ using System.Web.Http.Description;
 
 namespace Swagger.Net
 {
+    /// <summary>
+    /// This is a sample class
+    /// </summary>
+    /// <remarks>Use this class as a sample in the documentation</remarks>
+    public class Foo
+    {
+        /// <summary>
+        /// This is integer id
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
+        /// The name of foo
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// The city in which foo can be found
+        /// </summary>
+        public string City { get; set; }
+        /// <summary>
+        /// How much foo charges
+        /// </summary>
+        public double Amount { get; set; }
+    }
 
     public abstract class Metadata
     {
@@ -17,6 +40,11 @@ namespace Swagger.Net
 
     public class TypeMetadata : Metadata
     {
+        public TypeMetadata()
+        {
+            this.Samples = new Dictionary<string, string>();
+        }
+        public Dictionary<string, string> Samples { get; set; } 
         public IEnumerable<PropertyMetadata> Properties { get; set; }
     }
 
@@ -57,9 +85,8 @@ namespace Swagger.Net
         public IEnumerable<OperationMetadata> Operations { get; set; }
         public IEnumerable<ControllerMetadata> Children { get; set; }
         public TypeMetadata ModelType { get; set; }
-
-
     }
+
 
     public class MetadataFactory
     {
@@ -106,7 +133,8 @@ namespace Swagger.Net
             var typeName = "MXM.API.Services.Models." + controllerName;
             try
             {
-                model = GetTypeMetaData(typeof(OperationMetadata));
+                model = GetTypeMetaData(typeof(Foo));
+                model.Samples.Add("JSON", Newtonsoft.Json.JsonConvert.SerializeObject(new Foo()));
             }
             catch (Exception)
             {
@@ -114,13 +142,14 @@ namespace Swagger.Net
                 model = GetTypeMetaData(typeof(object));
             }
 
-
+            var ipsum =
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ";
 
             var controlMeta = new ControllerMetadata()
                 {
                     Name = controllerName,
                     Summary = _docProvider.GetDocumentation(currentApiDescs.First().ActionDescriptor.ControllerDescriptor.ControllerType),
-                    Remarks = "TBD",
+                    Remarks = ipsum,
                     Operations = operations,
                     Children = children,
                     Controller = controllerName,
