@@ -21,9 +21,6 @@ namespace Swagger.Net
         private readonly ApiFactory _apiFactory;
         private readonly ResourceListingFactory _resourceListingFactory;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DocsController"/> class.
-        /// </summary>
         public DocsController()
         {
             _resourceListingFactory = new ResourceListingFactory();
@@ -31,9 +28,6 @@ namespace Swagger.Net
 
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DocsController"/> class.
-        /// </summary>
         public DocsController(ResourceListingFactory resourceListingFactory, ApiFactory apiFactory)
         {
             _resourceListingFactory = resourceListingFactory;
@@ -89,7 +83,6 @@ namespace Swagger.Net
             var docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
             var factory = new MetadataFactory(apiDescriptions, docProvider);
             var rtn = factory.CreateMetadata();
-
             return WrapResponse(rtn);
         }
 

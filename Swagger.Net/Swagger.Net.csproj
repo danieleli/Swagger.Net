@@ -73,6 +73,7 @@
     <Compile Include="Factories\ResourceListingFactory.cs" />
     <Compile Include="G.cs" />
     <Compile Include="Models\AllowableValues.cs" />
+    <Compile Include="RootControllerFilter.cs" />
     <Compile Include="XmlCommentDocumentationProvider.cs" />
   </ItemGroup>
   <ItemGroup>
