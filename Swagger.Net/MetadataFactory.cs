@@ -261,7 +261,7 @@ namespace Swagger.Net
             return rtn;
         } 
 
-        private ModelMetadata GetModelMetaData(Type type)
+        public ModelMetadata GetModelMetaData(Type type)
         {
             var props = GetPropertyMetadatas(type);
             var samples = GetSamples(type);
@@ -297,7 +297,8 @@ namespace Swagger.Net
             return rtn;
         }
 
-        private IEnumerable<PropertyMetadata> GetPropertyMetadatas(Type type)
+        // todo: test me
+        public IEnumerable<PropertyMetadata> GetPropertyMetadatas(Type type)
         {
             var props = new List<PropertyMetadata>();
 
