@@ -7,6 +7,8 @@ using System.Runtime.CompilerServices;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using System.Web.Mvc;
+using System.Web.UI;
 using Newtonsoft.Json;
 using Swagger.Net.Factories;
 using Swagger.Net.Models;
@@ -43,6 +45,7 @@ namespace Swagger.Net
         /// It is very convenient to have this information available for generating clients. This is the entry point for the swagger UI
         /// </remarks>
         /// <returns>JSON document that lists resource urls and descriptions </returns>
+        [OutputCache(Duration = int.MaxValue, Location = OutputCacheLocation.Server)]
         public HttpResponseMessage Get()
         {
             // Arrange
@@ -55,7 +58,7 @@ namespace Swagger.Net
             var resp = WrapResponse(resourceListing);
             return resp;
         }
-
+        [OutputCache(Duration = int.MaxValue, Location = OutputCacheLocation.Server, VaryByParam = "id")]
         public HttpResponseMessage Get(string id)
         {
             // Arrange
@@ -67,7 +70,8 @@ namespace Swagger.Net
             {
                 var apis = _apiFactory.CreateAllApiDeclarations(rootUrl);
                 return WrapResponse(apis);
-            } else if (id.ToLower() == "custom")
+            }
+            else if (id.ToLower() == "custom")
             {
                 return GetCustomMeta();
             }
@@ -76,7 +80,7 @@ namespace Swagger.Net
             return WrapResponse(docs);
         }
 
-   
+        [OutputCache(Duration = int.MaxValue, Location = OutputCacheLocation.Server)]
         public HttpResponseMessage GetCustomMeta()
         {
             var apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
@@ -86,7 +90,7 @@ namespace Swagger.Net
             return WrapResponse(rtn);
         }
 
-       
+
 
         private HttpResponseMessage WrapResponse<T>(T resourceListing)
         {
