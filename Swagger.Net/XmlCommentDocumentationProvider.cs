@@ -109,6 +109,21 @@ namespace Swagger.Net
             return GetActionDocumentation(actionDescriptor, "remarks");
         }
 
+        public string GetRemarks(Type type)
+        {
+            try
+            {
+                var selector = string.Format(TYPE_EXPRESSION, type.FullName);
+                var modelNode = _documentNavigator.SelectSingleNode(selector);
+
+                return GetNodeText(modelNode, "remarks");
+            }
+            catch (Exception)
+            {
+                return NO_DOCS_FOUND;
+            }
+        }
+
         public string GetResponseClass(HttpActionDescriptor actionDescriptor)
         {
             var reflectedActionDescriptor = actionDescriptor as ReflectedHttpActionDescriptor;
@@ -182,6 +197,8 @@ namespace Swagger.Net
 
             return rtn.Replace("`1", "");
         }
+
+
     }
 
     public static class TypeUtils

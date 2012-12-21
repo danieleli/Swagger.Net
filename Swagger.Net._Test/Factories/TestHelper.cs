@@ -16,7 +16,7 @@ namespace Swagger.Net._Test.Factories
         public const string RELATIVE_PATH = "SOME/RELATIVE/path";
         public const string DOCUMENTATION = "SOME DOCUmenation that si used";
         public const string ROUTE_TEMPLATE = "fjdkl/ffdklsa/{myparam}/{id}";
-        public const string XML_DOC_PATH = @"C:\Users\danieleli\Documents\_projects\Swagger.Net\Sample.WebApi\bin\Sample.WebApi.XML";
+        public const string XML_DOC_PATH = @"..\..\..\Sample.WebApi\bin\Sample.WebApi.XML";
 
         public static ApiDescription GetApiDescription(string ctlrName = CONTROLLER_NAME, string docs = DOCUMENTATION, HttpMethod method = null)
         {

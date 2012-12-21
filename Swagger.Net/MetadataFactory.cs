@@ -98,7 +98,6 @@ namespace Swagger.Net
 
     public class MetadataFactory
     {
-        const string IPSUM = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ";
 
         private readonly IList<ApiDescription> _apis;
         private readonly XmlCommentDocumentationProvider _docProvider;
@@ -118,7 +117,7 @@ namespace Swagger.Net
 
         public IEnumerable<ControllerMetadata> CreateMetadata()
         {
-            var rootControllers = RootControllerFilter.GetRootControllers(_distinctControllerNames);
+            var rootControllers = RootControllerFinder.GetRootControllers(_distinctControllerNames);
 
             var rtn = new List<ControllerMetadata>();
 
@@ -136,9 +135,10 @@ namespace Swagger.Net
             var currentApiDescs = _apis
                 .Where(a => a.ActionDescriptor.ControllerDescriptor.ControllerName == controllerName).ToArray();
 
+            var controllerType = currentApiDescs.First().ActionDescriptor.ControllerDescriptor.ControllerType;
             var possibleModelTypes = GetPossibleModelTypes(currentApiDescs);
-            var modelType = GetModelType(possibleModelTypes) ?? typeof (Foo);
-            var modelMeta = GetModelMetaData(modelType);  
+            var modelType = GetModelType(possibleModelTypes);
+            var modelMeta = modelType ==null ? null : GetModelMetaData(modelType);  
             
             
 
@@ -148,8 +148,8 @@ namespace Swagger.Net
             var controlMeta = new ControllerMetadata()
                 {
                     Name = controllerName,
-                    Summary = _docProvider.GetDocumentation(currentApiDescs.First().ActionDescriptor.ControllerDescriptor.ControllerType),
-                    Remarks = IPSUM,
+                    Summary = _docProvider.GetDocumentation(controllerType),
+                    Remarks = _docProvider.GetRemarks(controllerType),
                     Operations = operations,
                     Children = children,
                     Controller = controllerName,
