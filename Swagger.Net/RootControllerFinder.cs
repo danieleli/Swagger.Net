@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Swagger.Net
 {
-    public class RootControllerFilter
+    public class RootControllerFinder
     {
         public static IList<string> GetRootControllers(string[] distinctControllerNames)
         {

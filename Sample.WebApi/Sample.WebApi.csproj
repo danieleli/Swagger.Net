@@ -70,7 +70,7 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.dll</HintPath>
     </Reference>
     <Reference Include="WebActivator">
-      <HintPath>..\..\packages\WebActivator.1.5.2\lib\net40\WebActivator.dll</HintPath>
+      <HintPath>..\packages\WebActivator.1.5.3\lib\net40\WebActivator.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
