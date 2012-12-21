@@ -80,8 +80,7 @@ namespace Swagger.Net
             return WrapResponse(docs);
         }
 
-        [OutputCache(Duration = int.MaxValue, Location = OutputCacheLocation.Server)]
-        public HttpResponseMessage GetCustomMeta()
+        private HttpResponseMessage GetCustomMeta()
         {
             var apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
             var docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
