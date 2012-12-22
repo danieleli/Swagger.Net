@@ -9,6 +9,20 @@ namespace Swagger.Net.Custom
         public string Remarks { get; set; }
     }
 
+    public class TypeMetadata : Metadata
+    {
+        public IEnumerable<PropertyMetadata> Properties { get; set; }
+    }
+
+    public class PropertyMetadata : Metadata
+    {
+        public string DataType { get; set; }
+        //public string Value { get; set; }
+    }
+
+
+
+
 
     public class ControllerMetadata : Metadata
     {
@@ -37,16 +51,7 @@ namespace Swagger.Net.Custom
         public TypeMetadata Type { get; set; }
     }
 
-    public class TypeMetadata : Metadata
-    {
-        public IEnumerable<PropertyMetadata> Properties { get; set; }
-    }
 
-    public class PropertyMetadata : Metadata
-    {
-        public string DataType { get; set; }
-        //public string Value { get; set; }
-    }
 
     public class ModelMetadata : TypeMetadata
     {

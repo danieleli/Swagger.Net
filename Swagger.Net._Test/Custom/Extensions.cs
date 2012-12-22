@@ -22,8 +22,8 @@ namespace Swagger.Net._Test.Custom
             var rtn = new TypeMetadata()
             {
                 Name = type.Name,
-                Summary = GetNodeValue(node, "summary"),
-                Remarks = GetNodeValue(node, "remarks"),
+                Summary = Utils.GetNodeValue(node, "summary"),
+                Remarks = Utils.GetNodeValue(node, "remarks"),
                 Properties = GetPropertyDocs(type, docs)
             };
 
@@ -41,14 +41,8 @@ namespace Swagger.Net._Test.Custom
             return propertiesDocs;
         }
 
-        private static string GetNodeValue(XPathNavigator node, string query)
-        {
-            if (node == null) return "N/A";
-
-            var rtnNode = node.SelectSingleNode(query);
-            return rtnNode == null ? "N/A" : rtnNode.Value.Trim();
-        }
     }
+
 
     public static class PropertyExtensions
     {
@@ -68,14 +62,19 @@ namespace Swagger.Net._Test.Custom
                 {
                     Name = propInfo.Name,
                     DataType = propInfo.PropertyType.Name,
-                    Remarks = GetNodeValue(node, "remarks"),
-                    Summary = GetNodeValue(node, "summary")
+                    Remarks = Utils.GetNodeValue(node, "remarks"),
+                    Summary = Utils.GetNodeValue(node, "summary")
                 };
 
             return rtn;
         }
 
-        private static string GetNodeValue(XPathNavigator node, string query)
+        
+    }
+
+    public static class Utils
+    {
+        public static string GetNodeValue(XPathNavigator node, string query)
         {
             if (node == null) return "N/A";
 
