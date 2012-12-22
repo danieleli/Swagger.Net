@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -9,93 +8,8 @@ using System.Web.Http.Description;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 
-namespace Swagger.Net
+namespace Swagger.Net.Custom
 {
-    /// <summary>
-    /// This is a sample class
-    /// </summary>
-    /// <remarks>Use this class as a sample in the documentation</remarks>
-    public class Foo
-    {
-        /// <summary>
-        /// This is integer id
-        /// </summary>
-        public int Id { get; set; }
-        /// <summary>
-        /// The name of foo
-        /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// The city in which foo can be found
-        /// </summary>
-        public string City { get; set; }
-        /// <summary>
-        /// How much foo charges
-        /// </summary>
-        public double Amount { get; set; }
-    }
-
-    public abstract class Metadata
-    {
-        public string Name { get; set; }
-        public string Summary { get; set; }
-        public string Remarks { get; set; }
-    }
-
-    public class ControllerMetadata : Metadata
-    {
-        public string ParentController { get; set; }
-        public string Controller { get; set; }
-        public IEnumerable<OperationMetadata> Operations { get; set; }
-        public IEnumerable<ControllerMetadata> Children { get; set; }
-        public TypeMetadata ModelType { get; set; }
-    }
-
-    public class OperationMetadata : Metadata
-    {
-        public string ReturnsComment { get; set; }
-        public TypeMetadata ReturnType { get; set; }
-        public string RelativePath { get; set; }
-        public string AlternatePath { get; set; }
-        public string HttpMethod { get; set; }
-        public IEnumerable<ErrorMetadata> ErrorResponses { get; set; }
-        public IEnumerable<ParamMetadata> Params { get; set; }
-    }
-
-    public class ParamMetadata
-    {
-        public string Name { get; set; }
-        public string Comment { get; set; }
-        public TypeMetadata Type { get; set; }
-    }
-
-    public class TypeMetadata : Metadata
-    {    
-        public IEnumerable<PropertyMetadata> Properties { get; set; }
-    }
-
-    public class PropertyMetadata : Metadata
-    {
-        public string DataType { get; set; }
-        public string Value { get; set; }
-    }
-
-    public class ModelMetadata : TypeMetadata
-    {
-        public ModelMetadata()
-        {
-            this.Samples = new Dictionary<string, string>();
-        }
-        public Dictionary<string, string> Samples { get; set; }
-
-    }
-
-    public class ErrorMetadata
-    {
-        public int Code { get; set; }
-        public string Message { get; set; }
-    }
-
     public class MetadataFactory
     {
 

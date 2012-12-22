@@ -58,12 +58,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Custom\Foo.cs" />
+    <Compile Include="Custom\Metadata.cs" />
+    <Compile Include="DocProvider.cs" />
     <Compile Include="DocsController.cs" />
     <Compile Include="Factories\ModelFactory.cs" />
     <Compile Include="Factories\ParameterFactory.cs" />
     <Compile Include="Factories\ApiFactory.cs" />
     <Compile Include="Factories\ResourceComparer.cs" />
-    <Compile Include="MetadataFactory.cs" />
+    <Compile Include="Custom\MetadataFactory.cs" />
     <Compile Include="Models\ApiParameter.cs" />
     <Compile Include="Models\ErrorResponse.cs" />
     <Compile Include="Models\ApiModel.cs" />

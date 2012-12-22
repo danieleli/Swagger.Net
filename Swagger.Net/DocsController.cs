@@ -10,6 +10,7 @@ using System.Web.Http.Description;
 using System.Web.Mvc;
 using System.Web.UI;
 using Newtonsoft.Json;
+using Swagger.Net.Custom;
 using Swagger.Net.Factories;
 using Swagger.Net.Models;
 

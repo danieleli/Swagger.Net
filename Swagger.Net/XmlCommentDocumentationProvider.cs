@@ -18,11 +18,11 @@ namespace Swagger.Net
     /// </summary>
     public class XmlCommentDocumentationProvider : IDocumentationProvider
     {
-        const string METHOD_EXPRESSION = "/doc/members/member[@name='M:{0}']";
-        const string TYPE_EXPRESSION = "/doc/members/member[@name='T:{0}']";
-        const string ENUM_ITEM_EXPRESSION = "/doc/members/member[@name='F:{0}']";
-        const string MEMBER_PARAM_EXPRESSION = "param[@name='{0}']";
-        const string PROPERTY_EXPRESSION = "/doc/members/member[contains(@name,'P:{0}')]";
+        const string METHOD_XPATH_QUERY = "/doc/members/member[@name='M:{0}']";
+        const string TYPE_XPATH_QUERY = "/doc/members/member[@name='T:{0}']";
+        const string ENUM_ITEM_XPATH_QUERY = "/doc/members/member[@name='F:{0}']";
+        const string MEMBER_PARAM_XPATH_QUERY = "param[@name='{0}']";
+        const string PROPERTY_XPATH_QUERY = "/doc/members/member[contains(@name,'P:{0}')]";
         const string NO_DOCS_FOUND = "";  //"No documentation found."
 
 
@@ -59,7 +59,7 @@ namespace Swagger.Net
         {
             try
             {
-                var selector = string.Format(TYPE_EXPRESSION, type.FullName);
+                var selector = string.Format(TYPE_XPATH_QUERY, type.FullName);
                 var modelNode = _documentNavigator.SelectSingleNode(selector);
 
                 return GetNodeText(modelNode, "summary");
@@ -75,7 +75,7 @@ namespace Swagger.Net
         public string GetDocumentation(HttpParameterDescriptor parameterDescriptor)
         {
             var parameterName = parameterDescriptor.ParameterName;
-            var selector = string.Format("param[@name='{0}']", parameterName);
+            var selector = string.Format(MEMBER_PARAM_XPATH_QUERY, parameterName);
 
             var rtn = GetActionDocumentation(parameterDescriptor.ActionDescriptor, selector);
             return rtn;
@@ -92,7 +92,7 @@ namespace Swagger.Net
             var type = propInfo.ReflectedType;
             try
             {
-                var selector = string.Format(PROPERTY_EXPRESSION, type.FullName + "." + propInfo.Name);
+                var selector = string.Format(PROPERTY_XPATH_QUERY, type.FullName + "." + propInfo.Name);
                 var modelNode = _documentNavigator.SelectSingleNode(selector);
 
                 return GetNodeText(modelNode, "summary");
@@ -113,7 +113,7 @@ namespace Swagger.Net
         {
             try
             {
-                var selector = string.Format(TYPE_EXPRESSION, type.FullName);
+                var selector = string.Format(TYPE_XPATH_QUERY, type.FullName);
                 var modelNode = _documentNavigator.SelectSingleNode(selector);
 
                 return GetNodeText(modelNode, "remarks");
@@ -151,7 +151,7 @@ namespace Swagger.Net
             if (action != null)
             {
                 var methodSignature = GetMethodSignature(action.MethodInfo);
-                var selectExpression = string.Format(METHOD_EXPRESSION, methodSignature);
+                var selectExpression = string.Format(METHOD_XPATH_QUERY, methodSignature);
                 var node = _documentNavigator.SelectSingleNode(selectExpression);
                 return node;
             }
