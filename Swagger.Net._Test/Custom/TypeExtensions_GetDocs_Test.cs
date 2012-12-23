@@ -6,6 +6,7 @@ using System.Xml.XPath;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Swagger.Net;
 using Swagger.Net.Custom;
+using Swagger.Net._Test.Custom.Extensions;
 using Swagger.Net._Test.Factories;
 
 namespace Swagger.Net._Test.Custom
@@ -13,19 +14,13 @@ namespace Swagger.Net._Test.Custom
     [TestClass]
     public class TypeExtensions_GetDocs_Test
     {
-        private XPathNavigator _docs;
+  
 
-        [TestInitialize]
-        public void Setup()
-        {
-            _docs = new XPathDocument(@"..\Debug\Swagger.Net._Test.XML").CreateNavigator();
-
-        }
         [TestMethod]
         public void Returns_TypeMetadataWithName()
         {
             var type = typeof(object);
-            var typeDocs = type.GetDocs(_docs);
+            var typeDocs = type.GetDocs();
 
             Assert.AreEqual(typeof(TypeMetadata), typeDocs.GetType(), "return type");
             Assert.AreEqual("Object", typeDocs.Name, "Name");
@@ -35,7 +30,7 @@ namespace Swagger.Net._Test.Custom
         public void MissingSummary_Returns_NA()
         {
             var type = typeof(object);
-            var typeDocs = type.GetDocs(_docs);
+            var typeDocs = type.GetDocs();
             Assert.AreEqual("N/A", typeDocs.Summary, "Summary");
         }
 
@@ -45,7 +40,7 @@ namespace Swagger.Net._Test.Custom
         public void Returns_Summary()
         {
             var type = typeof(Foo);
-            var typeDocs = type.GetDocs(_docs);
+            var typeDocs = type.GetDocs();
 
             Assert.AreEqual("Foo Summary", typeDocs.Summary, "Summary");
         }
@@ -54,7 +49,7 @@ namespace Swagger.Net._Test.Custom
         public void Returns_Remarks()
         {
             var type = typeof(Foo);
-            var typeDocs = type.GetDocs(_docs);
+            var typeDocs = type.GetDocs();
 
             Assert.AreEqual("Foo Remarks", typeDocs.Remarks, "Remarks");
         }
@@ -63,7 +58,7 @@ namespace Swagger.Net._Test.Custom
         public void Returns_Properties()
         {
             var type = typeof(Foo);
-            var typeDocs = type.GetDocs(_docs);
+            var typeDocs = type.GetDocs();
 
             Assert.IsNotNull(typeDocs.Properties, "Docs.Properties");
             Assert.AreNotEqual(0, typeDocs.Properties.Count(), "Property Count");
@@ -74,7 +69,7 @@ namespace Swagger.Net._Test.Custom
         public void Returns_Property_Name()
         {
             var type = typeof(Foo);
-            var typeDocs = type.GetDocs(_docs);
+            var typeDocs = type.GetDocs();
 
             var fooNameDocs = typeDocs.Properties.Single(p => p.Name == "FooName");
 
@@ -87,7 +82,7 @@ namespace Swagger.Net._Test.Custom
         public void Returns_Property_DataType()
         {
             var type = typeof(Foo);
-            var typeDocs = type.GetDocs(_docs);
+            var typeDocs = type.GetDocs();
 
             var fooNameDocs = typeDocs.Properties.Single(p => p.Name == "FooName");
 
@@ -98,7 +93,7 @@ namespace Swagger.Net._Test.Custom
         public void Returns_Property_Summary()
         {
             var type = typeof(Foo);
-            var typeDocs = type.GetDocs(_docs);
+            var typeDocs = type.GetDocs();
 
             var fooNameDocs = typeDocs.Properties.Single(p => p.Name == "FooName");
 
@@ -110,7 +105,7 @@ namespace Swagger.Net._Test.Custom
         public void Returns_Property_Remarks()
         {
             var type = typeof(Foo);
-            var typeDocs = type.GetDocs(_docs);
+            var typeDocs = type.GetDocs();
 
             var fooNameDocs = typeDocs.Properties.Single(p => p.Name == "FooName");
 

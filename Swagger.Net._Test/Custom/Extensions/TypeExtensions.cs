@@ -4,15 +4,20 @@ using System.Reflection;
 using System.Xml.XPath;
 using Swagger.Net.Custom;
 
-namespace Swagger.Net._Test.Custom
+namespace Swagger.Net._Test.Custom.Extensions
 {
-    public static class Extensions
+    public static class TypeExtensions
     {
         const string TYPE_XPATH_QUERY = "/doc/members/member[@name='T:{0}']";
 
         public static string XPathQuery(this Type type)
         {
             return string.Format(TYPE_XPATH_QUERY, type.FullName);
+        }
+
+        public static TypeMetadata GetDocs(this Type type)
+        {
+            return GetDocs(type, DocNavigator.Instance);
         }
 
         public static TypeMetadata GetDocs(this Type type, XPathNavigator docs)

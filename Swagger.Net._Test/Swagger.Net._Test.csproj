@@ -27,7 +27,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>2</WarningLevel>
     <DocumentationFile>bin\Debug\Swagger.Net._Test.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -65,7 +65,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Custom\Extensions.cs" />
+    <Compile Include="Custom\Extensions\TypeExtensions.cs" />
     <Compile Include="Custom\MetadataFactory_Test.cs" />
     <Compile Include="Custom\TypeExtensions_GetDocs_Test.cs" />
     <Compile Include="Factories\ModelFactory_Test.cs" />
