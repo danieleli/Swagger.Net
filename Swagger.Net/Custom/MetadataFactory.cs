@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
+using System.Web.Mvc;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 
@@ -95,36 +96,42 @@ namespace Swagger.Net.Custom
             var rtn = new List<OperationMetadata>();
             foreach (var apiDescription in currentApiDescs)
             {
-                var paramz = GetParams(apiDescription.ActionDescriptor);
-                var returnType = GetTypeMetaData(apiDescription.ActionDescriptor.ReturnType);
-
-                var path = apiDescription.RelativePath.ToLower();
-                var altPath = "";
-                if (parentControllerName != null)
-                {
-                    altPath = path;
-                    path = GetAlternatePath(parentControllerName,
-                                            apiDescription.ActionDescriptor.ControllerDescriptor.ControllerName,
-                                            apiDescription.RelativePath).ToLower();
-                }
-
-                var op = new OperationMetadata()
-                    {
-                        Name = apiDescription.ActionDescriptor.ActionName,
-                        HttpMethod = apiDescription.HttpMethod.ToString(),
-                        RelativePath = path,
-                        AlternatePath = altPath,
-                        Summary = _docProvider.GetDocumentation(apiDescription.ActionDescriptor),
-                        Remarks = _docProvider.GetRemarks(apiDescription.ActionDescriptor),
-                        ReturnType = returnType,
-                        ReturnsComment = _docProvider.GetResponseClass(apiDescription.ActionDescriptor),
-                        Params = paramz,
-                        ErrorResponses = null
-
-                    };
+                var op = GetOperationMetadata(parentControllerName, apiDescription.ActionDescriptor, apiDescription.RelativePath, apiDescription.HttpMethod);
                 rtn.Add(op);
             }
             return rtn;
+        }
+
+        private OperationMetadata GetOperationMetadata(string parentControllerName, HttpActionDescriptor action, 
+            string relativePath, HttpMethod httpMethod)
+        {
+            var paramz = GetParams(action);
+            var returnType = GetTypeMetaData(action.ReturnType);
+
+            var path = relativePath.ToLower();
+            var altPath = "";
+            if (parentControllerName != null)
+            {
+                altPath = path;
+                path = GetAlternatePath(parentControllerName,
+                                        action.ControllerDescriptor.ControllerName,
+                                        relativePath).ToLower();
+            }
+
+            var op = new OperationMetadata()
+                {
+                    Name = action.ActionName,
+                    HttpMethod = httpMethod.ToString(),
+                    RelativePath = path,
+                    AlternatePath = altPath,
+                    Summary = _docProvider.GetDocumentation(action),
+                    Remarks = _docProvider.GetRemarks(action),
+                    ReturnType = returnType,
+                    ReturnsComment = _docProvider.GetResponseClass(action),
+                    Params = paramz,
+                    ErrorResponses = null
+                };
+            return op;
         }
 
         private IEnumerable<ParamMetadata> GetParams(HttpActionDescriptor actionDescriptor)

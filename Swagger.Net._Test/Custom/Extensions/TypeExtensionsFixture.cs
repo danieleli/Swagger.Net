@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Swagger.Net.Custom;
+using Swagger.Net.Custom.Extensions;
 
 namespace Swagger.Net._Test.Custom.Extensions
 {
