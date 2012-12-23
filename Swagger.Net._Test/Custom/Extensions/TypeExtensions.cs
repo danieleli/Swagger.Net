@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Xml.XPath;
 using Swagger.Net.Custom;
@@ -24,8 +25,8 @@ namespace Swagger.Net._Test.Custom.Extensions
         {
             var node = docs.SelectSingleNode(type.XPathQuery());
 
-            var rtn = new TypeMetadata()
-            {
+            var rtn = new TypeMetadata
+                {
                 Name = type.Name,
                 Summary = Utils.GetNodeValue(node, "summary"),
                 Remarks = Utils.GetNodeValue(node, "remarks"),
@@ -35,17 +36,10 @@ namespace Swagger.Net._Test.Custom.Extensions
             return rtn;
         }
 
-        private static List<PropertyMetadata> GetPropertyDocs(Type type, XPathNavigator docs)
+        private static IEnumerable<PropertyMetadata> GetPropertyDocs(Type type, XPathNavigator docs)
         {
-            var propertiesDocs = new List<PropertyMetadata>();
-            foreach (var propertyInfo in type.GetProperties())
-            {
-                var pDoc = propertyInfo.GetDocs(docs);
-                propertiesDocs.Add(pDoc);
-            }
-            return propertiesDocs;
+            return type.GetProperties().Select(propertyInfo => propertyInfo.GetDocs(docs));
         }
-
     }
 
 
@@ -63,7 +57,7 @@ namespace Swagger.Net._Test.Custom.Extensions
         {
             var node = docs.SelectSingleNode(propInfo.XPathQuery());
 
-            var rtn = new PropertyMetadata()
+            var rtn = new PropertyMetadata
                 {
                     Name = propInfo.Name,
                     DataType = propInfo.PropertyType.Name,

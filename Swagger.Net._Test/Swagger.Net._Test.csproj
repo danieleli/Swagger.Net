@@ -67,7 +67,7 @@
   <ItemGroup>
     <Compile Include="Custom\Extensions\TypeExtensions.cs" />
     <Compile Include="Custom\MetadataFactory_Test.cs" />
-    <Compile Include="Custom\TypeExtensions_GetDocs_Test.cs" />
+    <Compile Include="Custom\Extensions\TypeExtensionsFixture.cs" />
     <Compile Include="Factories\ModelFactory_Test.cs" />
     <Compile Include="DocumentationProvider_Test.cs" />
     <Compile Include="Factories\ParameterFactory_Test.cs" />

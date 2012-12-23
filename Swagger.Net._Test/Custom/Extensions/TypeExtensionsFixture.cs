@@ -1,21 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Xml.XPath;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Swagger.Net;
 using Swagger.Net.Custom;
-using Swagger.Net._Test.Custom.Extensions;
-using Swagger.Net._Test.Factories;
 
-namespace Swagger.Net._Test.Custom
+namespace Swagger.Net._Test.Custom.Extensions
 {
     [TestClass]
-    public class TypeExtensions_GetDocs_Test
+    public class TypeExtensionsFixture
     {
-  
-
         [TestMethod]
         public void Returns_TypeMetadataWithName()
         {
