@@ -6,12 +6,6 @@ namespace Swagger.Net.Custom.Extensions
     public static class PropertyExtensions
     {
 
-        public static string XPathQuery(this PropertyInfo propInfo)
-        {
-            var fullName = propInfo.ReflectedType.FullName + "." + propInfo.Name;
-            return string.Format(XPathQueries.PROPERTY, fullName);
-        }
-
         public static PropertyMetadata GetDocs(this PropertyInfo propInfo, XPathNavigator docs)
         {
             var node = docs.SelectSingleNode(propInfo.XPathQuery());

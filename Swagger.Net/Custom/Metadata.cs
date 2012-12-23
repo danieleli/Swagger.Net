@@ -28,12 +28,12 @@ namespace Swagger.Net.Custom
     {
         public string ParentController { get; set; }
         public string Controller { get; set; }
-        public IEnumerable<OperationMetadata> Operations { get; set; }
+        public IEnumerable<ActionMetadata> Operations { get; set; }
         public IEnumerable<ControllerMetadata> Children { get; set; }
         public TypeMetadata ModelType { get; set; }
     }
 
-    public class OperationMetadata : Metadata
+    public class ActionMetadata : Metadata
     {
         public string ReturnsComment { get; set; }
         public TypeMetadata ReturnType { get; set; }

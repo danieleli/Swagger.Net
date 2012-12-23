@@ -65,6 +65,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Custom\Extensions\ActionExtensionsFixture.cs" />
+    <Compile Include="Custom\Extensions\Foo.cs" />
+    <Compile Include="Custom\Extensions\PropertiesExtensionsFixture.cs" />
     <Compile Include="Custom\MetadataFactory_Test.cs" />
     <Compile Include="Custom\Extensions\TypeExtensionsFixture.cs" />
     <Compile Include="Factories\ModelFactory_Test.cs" />

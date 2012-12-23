@@ -8,10 +8,6 @@ namespace Swagger.Net.Custom.Extensions
     public static class TypeExtensions
     {
 
-        public static string XPathQuery(this Type type)
-        {
-            return string.Format(XPathQueries.TYPE, type.FullName);
-        }
 
         public static TypeMetadata GetDocs(this Type type)
         {

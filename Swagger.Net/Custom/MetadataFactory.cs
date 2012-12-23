@@ -91,9 +91,9 @@ namespace Swagger.Net.Custom
             return rtnList;
         }
 
-        private IEnumerable<OperationMetadata> GetOperations(IEnumerable<ApiDescription> currentApiDescs, string parentControllerName)
+        private IEnumerable<ActionMetadata> GetOperations(IEnumerable<ApiDescription> currentApiDescs, string parentControllerName)
         {
-            var rtn = new List<OperationMetadata>();
+            var rtn = new List<ActionMetadata>();
             foreach (var apiDescription in currentApiDescs)
             {
                 var op = GetOperationMetadata(parentControllerName, apiDescription.ActionDescriptor, apiDescription.RelativePath, apiDescription.HttpMethod);
@@ -102,7 +102,7 @@ namespace Swagger.Net.Custom
             return rtn;
         }
 
-        private OperationMetadata GetOperationMetadata(string parentControllerName, HttpActionDescriptor action, 
+        private ActionMetadata GetOperationMetadata(string parentControllerName, HttpActionDescriptor action, 
             string relativePath, HttpMethod httpMethod)
         {
             var paramz = GetParams(action);
@@ -118,7 +118,7 @@ namespace Swagger.Net.Custom
                                         relativePath).ToLower();
             }
 
-            var op = new OperationMetadata()
+            var op = new ActionMetadata()
                 {
                     Name = action.ActionName,
                     HttpMethod = httpMethod.ToString(),

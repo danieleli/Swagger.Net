@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Web.Http.Controllers;
 using System.Xml.XPath;
@@ -7,48 +9,88 @@ namespace Swagger.Net.Custom.Extensions
 {
     public static class ActionExtensions
     {
-        public static string XPathQuery(this HttpActionDescriptor action)
+
+
+
+        public static ActionMetadata GetDocs(this HttpActionDescriptor action, 
+                                                        string parentControllerName,
+                                                        string relativePath, 
+                                                        HttpMethod httpMethod)
         {
-            var myAction = action as ReflectedHttpActionDescriptor;
-            if (myAction != null)
+            return GetDocs(action, parentControllerName, relativePath, httpMethod, DocNavigator.Instance);
+        }
+
+
+        public static ActionMetadata GetDocs(this HttpActionDescriptor action, 
+                                                        string parentControllerName, 
+                                                        string relativePath, 
+                                                        HttpMethod httpMethod, 
+                                                        XPathNavigator docs)
+        {
+            var node = docs.SelectSingleNode(action.XPathQuery());
+
+            //var paramz =  GetParams(action);
+            var returnType = action.ReturnType.GetDocs();
+
+            var path = relativePath.ToLower();
+            var altPath = "";
+            if (parentControllerName != null)
             {
-                var methodSignature = GetMethodSignature(myAction.MethodInfo);
-                var selectExpression = string.Format(XPathQueries.METHOD, methodSignature);
-                return selectExpression;
+                altPath = path;
+                path = "";// GetAlternatePath(parentControllerName,action.ControllerDescriptor.ControllerName,relativePath).ToLower();
             }
-            return null;
-        }
 
-        private static string GetMethodSignature(MethodInfo method)
-        {
-            if (method.DeclaringType == null) return "Method.DeclaringType not found.";
-            
-            var name = string.Format("{0}.{1}", method.DeclaringType.FullName, method.Name);
-            var parameters = method.GetParameters();
-            if (parameters.Length != 0)
+            var op = new ActionMetadata()
             {
-                string[] parameterTypeNames = parameters.Select(param => TypeUtils.GetNullableTypeName(param.ParameterType.FullName)).ToArray();
-                name += string.Format("({0})", string.Join(",", parameterTypeNames));
+                Name = action.ActionName,
+                HttpMethod = httpMethod.ToString(),
+                RelativePath = path,
+                AlternatePath = altPath,
+                Summary = Utils.GetNodeValue(node, "summary"),
+                Remarks = Utils.GetNodeValue(node, "remarks"),
+                ReturnType = returnType,
+                ReturnsComment = "",//_docProvider.GetResponseClass(action),
+                Params = null, //paramz,
+                ErrorResponses = null
+            };
+            return op;
+        }
+
+
+        public static ActionMetadata GetDocs(string xPathQuery, 
+            Type returnType,
+            string actionName,
+                                                 string parentControllerName,
+                                                 string relativePath,
+                                                 HttpMethod httpMethod,
+                                                 XPathNavigator docs)
+        {
+            var node = docs.SelectSingleNode(xPathQuery);
+
+            //var paramz =  GetParams(action);
+
+            var path = relativePath.ToLower();
+            var altPath = "";
+            if (parentControllerName != null)
+            {
+                altPath = path;
+                path = "";// GetAlternatePath(parentControllerName,action.ControllerDescriptor.ControllerName,relativePath).ToLower();
             }
 
-            return name;
+            var op = new ActionMetadata()
+            {
+                Name = actionName,
+                HttpMethod = httpMethod.ToString(),
+                RelativePath = path,
+                AlternatePath = altPath,
+                Summary = Utils.GetNodeValue(node, "summary"),
+                Remarks = Utils.GetNodeValue(node, "remarks"),
+                ReturnType = returnType.GetDocs(docs),
+                ReturnsComment = "",//_docProvider.GetResponseClass(action),
+                Params = null, //paramz,
+                ErrorResponses = null
+            };
+            return op;
         }
-
-
-        public static OperationMetadata GetDocs(this HttpActionDescriptor action)
-        {
-            return GetDocs(action, DocNavigator.Instance);
-        }
-
-        public static OperationMetadata GetDocs(this HttpActionDescriptor actionDescriptor, XPathNavigator docs)
-        {
-            var node = docs.SelectSingleNode(actionDescriptor.XPathQuery());
-
-            var rtn = new OperationMetadata();
-
-            return rtn;
-        }
-
-
     }
 }
