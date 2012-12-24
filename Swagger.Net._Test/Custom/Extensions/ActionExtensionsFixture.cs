@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Swagger.Net.Custom;
@@ -34,21 +35,59 @@ namespace Swagger.Net._Test.Custom.Extensions
 
         }
 
+        [TestMethod]
+        public void Returns_ReturnsComment()
+        {
+            var actionData = GetActionMeta();
+            Assert.AreEqual("returns a foo by id", actionData.ReturnsComment, "action returns comment");
+        }
+
+
+        [TestMethod]
+        public void Returns_RelativePath()
+        {
+            var actionData = GetActionMeta();
+            Assert.AreEqual(RELATIVE_PATH.ToLower(), actionData.RelativePath, "relative path");
+        }
+
+        [TestMethod]
+        public void Returns_AlternatePath()
+        {
+            var actionData = GetActionMeta();
+            Assert.AreEqual("/customer/{id}/order/{subid}", actionData.AlternatePath, "alternate path");
+        }
+
+        [TestMethod]
+        public void Returns_HttpMethods()
+        {
+            var actionData = GetActionMeta();
+            Assert.AreEqual("POST", actionData.HttpMethod, "http method");
+        }
+
+
+        [TestMethod]
+        public void GetAlternatePath()
+        {
+            Assert.Fail("not implemented");
+        }
+
+        const string ACTION_NAME = "GetFoo";
+        const string PARENT_CONTROLLER_NAME = "Customer";
+        const string CONTROLLER_NAME = "CustomerOrder";
+        const string RELATIVE_PATH = "CustomerOrder/{id}";
+
 
         // Helper
         private ActionMetadata GetActionMeta()
         {
             var xPathQuery = string.Format(XPathQueries.METHOD,
                                            "Swagger.Net._Test.Custom.Extensions.Foo.GetFoo(System.Int32)");
+            
             var returnType = typeof(Foo);
-            var actionName = "GetFoo";
-            var parentControllerName = "";
-            var relativePath = "";
             var docs = DocNavigator.Instance;
-            var supportedMethods = new[] { HttpMethod.Get, HttpMethod.Post };
+            var supportedMethod = HttpMethod.Get;
 
-            var actionMetadata = ActionExtensions.GetDocs(actionName, returnType,
-                                                          parentControllerName, relativePath, supportedMethods, xPathQuery, docs);
+            var actionMetadata = ActionExtensions.GetDocs(CONTROLLER_NAME, ACTION_NAME, returnType, PARENT_CONTROLLER_NAME, RELATIVE_PATH, supportedMethod, xPathQuery, docs);
 
             return actionMetadata;
 
