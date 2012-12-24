@@ -61,7 +61,7 @@ namespace Swagger.Net._Test.Custom.Extensions
         public void Returns_HttpMethods()
         {
             var actionData = GetActionMeta();
-            Assert.AreEqual("POST", actionData.HttpMethod, "http method");
+            Assert.AreEqual("GET", actionData.HttpMethod, "http method");
         }
 
 
