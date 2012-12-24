@@ -1,6 +1,6 @@
-using System.Diagnostics;
-using System.Linq;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Web.Http.Controllers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Swagger.Net.Custom;
 using Swagger.Net.Custom.Extensions;
@@ -86,8 +86,9 @@ namespace Swagger.Net._Test.Custom.Extensions
             var returnType = typeof(Foo);
             var docs = DocNavigator.Instance;
             var supportedMethod = HttpMethod.Get;
+            var paramz = new List<HttpParameterDescriptor>();
 
-            var actionMetadata = ActionExtensions.GetDocs(CONTROLLER_NAME, ACTION_NAME, returnType, PARENT_CONTROLLER_NAME, RELATIVE_PATH, supportedMethod, xPathQuery, docs);
+            var actionMetadata = ActionExtensions.GetDocs(CONTROLLER_NAME, ACTION_NAME, returnType, PARENT_CONTROLLER_NAME, RELATIVE_PATH, supportedMethod, xPathQuery, docs, paramz);
 
             return actionMetadata;
 

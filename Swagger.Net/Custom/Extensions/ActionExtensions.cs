@@ -11,54 +11,51 @@ namespace Swagger.Net.Custom.Extensions
 {
     public static class ActionExtensions
     {
-        public static ActionMetadata GetDocs(this HttpActionDescriptor action,
-                                                        string parentControllerName,
-                                                        string relativePath,
-                                                        HttpMethod httpMethod)
+        public static ActionMetadata GetDocs(this HttpActionDescriptor action, string parentControllerName, string relativePath, HttpMethod httpMethod)
         {
-            return GetDocs(action, parentControllerName, relativePath,  httpMethod, DocNavigator.Instance);
+            return GetDocs(action, parentControllerName, relativePath, httpMethod, DocNavigator.Instance);
         }
 
 
-        public static ActionMetadata GetDocs(this HttpActionDescriptor action,
-                                                        string parentControllerName,
-                                                        string relativePath,
-                                                        HttpMethod httpMethod,
-                                                        XPathNavigator docs)
+        public static ActionMetadata GetDocs(this HttpActionDescriptor action, string parentControllerName, string relativePath, HttpMethod httpMethod, XPathNavigator docs)
         {
-        
-            var rtn = GetDocs(action.ControllerDescriptor.ControllerName, action.ActionName, action.ReturnType, parentControllerName, relativePath, httpMethod, action.XPathQuery(), docs);
-            rtn.Params = GetParams(action.GetParameters(), docs);
-            return rtn;
+            return GetDocs(action.ControllerDescriptor.ControllerName, action.ActionName, action.ReturnType, parentControllerName, 
+                            relativePath, httpMethod, action.XPathQuery(), docs, action.GetParameters());
         }
 
-        private static IEnumerable<ParamMetadata> GetParams(IEnumerable<HttpParameterDescriptor> param, XPathNavigator docs)
-        {
-            var rtn = param.Select(p => p.GetDocs(docs));
-            return rtn;
-        }
 
+        public static ActionMetadata GetDocs(string controllerName, string actionName, Type returnType, string parentControllerName, string relativePath,
+                                                HttpMethod httpMethod, string xPathQuery, XPathNavigator docs, IEnumerable<HttpParameterDescriptor> paramz)
+        {
+            var actionNode = docs.SelectSingleNode(xPathQuery);
+
+            var actionMeta = GetDocs(controllerName, actionName, returnType, parentControllerName, relativePath, httpMethod, actionNode);
+            actionMeta.Params = paramz.Select(p => p.GetDocs(actionNode)).ToList();
+
+            // todo: ErrorResponses
+            actionMeta.ErrorResponses = null;
+
+            return actionMeta;
+        }
 
         // No dependency on HttpActionDescriptor - Easier Testing
-        public static ActionMetadata GetDocs(string controllerName, string actionName, Type returnType, string parentControllerName, string relativePath, HttpMethod httpMethod, string xPathQuery, XPathNavigator docs)
+        public static ActionMetadata GetDocs(string controllerName, string actionName, Type returnType, string parentControllerName, string relativePath, HttpMethod httpMethod, XPathNavigator actionNode)
         {
-            var node = docs.SelectSingleNode(xPathQuery);
             var alternatePath = GetAlternatePath(controllerName, parentControllerName, relativePath).ToLower();
-           
-   
-            var op = new ActionMetadata()
+
+            var actionMeta = new ActionMetadata()
             {
                 Name = actionName,
                 HttpMethod = httpMethod.ToString(),
                 RelativePath = relativePath.ToLower(),
                 AlternatePath = alternatePath,
-                Summary = Utils.GetNodeValue(node, "summary"),
-                Remarks = Utils.GetNodeValue(node, "remarks"),
-                ReturnType = returnType.GetDocs(docs),
-                ReturnsComment = Utils.GetNodeValue(node, "returns"),
+                Summary = Utils.GetNodeValue(actionNode, "summary"),
+                Remarks = Utils.GetNodeValue(actionNode, "remarks"),
+                ReturnType = returnType.GetDocs(actionNode),
+                ReturnsComment = Utils.GetNodeValue(actionNode, "returns"),
                 ErrorResponses = null
             };
-            return op;
+            return actionMeta;
         }
 
 

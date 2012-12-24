@@ -65,7 +65,6 @@
     <Compile Include="Custom\Extensions\TypeExtensions.cs" />
     <Compile Include="Custom\Extensions\Utils.cs" />
     <Compile Include="Custom\Extensions\XPathQueries.cs" />
-    <Compile Include="Custom\Foo.cs" />
     <Compile Include="Custom\Metadata.cs" />
     <Compile Include="DocsController.cs" />
     <Compile Include="Factories\ModelFactory.cs" />
