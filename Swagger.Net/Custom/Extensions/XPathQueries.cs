@@ -12,7 +12,7 @@ namespace Swagger.Net.Custom.Extensions
         public const string METHOD = "/doc/members/member[@name='M:{0}']";
         public const string TYPE = "/doc/members/member[@name='T:{0}']";
         public const string ENUM = "/doc/members/member[@name='F:{0}']";
-        public const string MEMBER = "param[@name='{0}']";
+        public const string PARAM = "param[@name='{0}']";
         public const string PROPERTY = "/doc/members/member[contains(@name,'P:{0}')]";
         public const string NO_DOCS_FOUND = "No docs found.";  //"No documentation found."
 
@@ -30,6 +30,13 @@ namespace Swagger.Net.Custom.Extensions
             var fullName = propInfo.ReflectedType.FullName + "." + propInfo.Name;
             return string.Format(XPathQueries.PROPERTY, fullName);
         }
+
+        // ParameterInfo
+        public static string XPathQuery(this HttpParameterDescriptor param)
+        {
+            return string.Format(XPathQueries.PARAM, param.ParameterName);
+        }
+
 
         #region -- ActionDescriptor --
 

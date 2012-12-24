@@ -74,7 +74,7 @@ namespace Swagger.Net._Test.Custom.Extensions
         const string ACTION_NAME = "GetFoo";
         const string PARENT_CONTROLLER_NAME = "Customer";
         const string CONTROLLER_NAME = "CustomerOrder";
-        const string RELATIVE_PATH = "CustomerOrder/{id}";
+        const string RELATIVE_PATH = "CustomerOrder/{subid}";
 
 
         // Helper

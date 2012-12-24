@@ -61,6 +61,7 @@
     <Compile Include="Custom\DocNavigator.cs" />
     <Compile Include="Custom\Extensions\ActionExtensions.cs" />
     <Compile Include="Custom\Extensions\PropertyExtensions.cs" />
+    <Compile Include="Custom\Extensions\ParamExtensions.cs" />
     <Compile Include="Custom\Extensions\TypeExtensions.cs" />
     <Compile Include="Custom\Extensions\Utils.cs" />
     <Compile Include="Custom\Extensions\XPathQueries.cs" />

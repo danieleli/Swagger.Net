@@ -143,11 +143,8 @@ namespace Swagger.Net.Custom
                     {
                         Name = parmDescriptor.ParameterName,
                         Comment = _docProvider.GetDocumentation(parmDescriptor),
-                        Type = new TypeMetadata()
-                            {
-                                Name = parmDescriptor.ParameterType.Name,
-                                Properties = null
-                            }
+                        Type = parmDescriptor.ParameterType.Name
+                               
                     };
 
                 rtn.Add(p);

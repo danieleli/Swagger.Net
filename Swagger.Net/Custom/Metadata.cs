@@ -20,17 +20,13 @@ namespace Swagger.Net.Custom
         //public string Value { get; set; }
     }
 
-
-
-
-
-    public class ControllerMetadata : Metadata
+    
+    public class ParamMetadata
     {
-        public string ParentController { get; set; }
-        public string Controller { get; set; }
-        public IEnumerable<ActionMetadata> Operations { get; set; }
-        public IEnumerable<ControllerMetadata> Children { get; set; }
-        public TypeMetadata ModelType { get; set; }
+        public string Name { get; set; }
+        public string Comment { get; set; }
+        public string Type { get; set; }
+      //  public TypeMetadata Type { get; set; }
     }
 
     public class ActionMetadata : Metadata
@@ -44,12 +40,19 @@ namespace Swagger.Net.Custom
         public IEnumerable<ParamMetadata> Params { get; set; }
     }
 
-    public class ParamMetadata
+
+
+
+    public class ControllerMetadata : Metadata
     {
-        public string Name { get; set; }
-        public string Comment { get; set; }
-        public TypeMetadata Type { get; set; }
+        public string ParentController { get; set; }
+        public string Controller { get; set; }
+        public IEnumerable<ActionMetadata> Operations { get; set; }
+        public IEnumerable<ControllerMetadata> Children { get; set; }
+        public TypeMetadata ModelType { get; set; }
     }
+
+
 
 
 

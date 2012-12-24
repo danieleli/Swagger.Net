@@ -26,16 +26,41 @@ namespace Swagger.Net.Custom.Extensions
                                                         HttpMethod httpMethod,
                                                         XPathNavigator docs)
         {
-
-            
-
+        
             var rtn = GetDocs(action.ControllerDescriptor.ControllerName, action.ActionName, action.ReturnType, parentControllerName, relativePath, httpMethod, action.XPathQuery(), docs);
-            
-            
-            rtn.Params = null; // GetParams(action);
-
+            rtn.Params = GetParams(action.GetParameters(), docs);
             return rtn;
         }
+
+        private static IEnumerable<ParamMetadata> GetParams(IEnumerable<HttpParameterDescriptor> param, XPathNavigator docs)
+        {
+            var rtn = param.Select(p => p.GetDocs(docs));
+            return rtn;
+        }
+
+
+        // No dependency on HttpActionDescriptor - Easier Testing
+        public static ActionMetadata GetDocs(string controllerName, string actionName, Type returnType, string parentControllerName, string relativePath, HttpMethod httpMethod, string xPathQuery, XPathNavigator docs)
+        {
+            var node = docs.SelectSingleNode(xPathQuery);
+            var alternatePath = GetAlternatePath(controllerName, parentControllerName, relativePath).ToLower();
+           
+   
+            var op = new ActionMetadata()
+            {
+                Name = actionName,
+                HttpMethod = httpMethod.ToString(),
+                RelativePath = relativePath.ToLower(),
+                AlternatePath = alternatePath,
+                Summary = Utils.GetNodeValue(node, "summary"),
+                Remarks = Utils.GetNodeValue(node, "remarks"),
+                ReturnType = returnType.GetDocs(docs),
+                ReturnsComment = Utils.GetNodeValue(node, "returns"),
+                ErrorResponses = null
+            };
+            return op;
+        }
+
 
         public static string GetAlternatePath(string currentControllerName, string parentControllerName, string relativePath)
         {
@@ -66,27 +91,6 @@ namespace Swagger.Net.Custom.Extensions
                 path += morePath;
             }
             return path;
-        }
-
-
-        // No dependency on HttpActionDescriptor - Easier Testing
-        public static ActionMetadata GetDocs(string controllerName, string actionName, Type returnType, string parentControllerName, string relativePath, HttpMethod httpMethod, string xPathQuery, XPathNavigator docs)
-        {
-            var node = docs.SelectSingleNode(xPathQuery);
-            var alternatePath = GetAlternatePath(controllerName, parentControllerName, relativePath).ToLower();
-            var op = new ActionMetadata()
-            {
-                Name = actionName,
-                HttpMethod = httpMethod.ToString(),
-                RelativePath = relativePath.ToLower(),
-                AlternatePath = alternatePath,
-                Summary = Utils.GetNodeValue(node, "summary"),
-                Remarks = Utils.GetNodeValue(node, "remarks"),
-                ReturnType = returnType.GetDocs(docs),
-                ReturnsComment = Utils.GetNodeValue(node, "returns"),
-                ErrorResponses = null
-            };
-            return op;
         }
 
 
