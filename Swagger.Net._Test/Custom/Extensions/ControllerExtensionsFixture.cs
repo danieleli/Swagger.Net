@@ -55,15 +55,13 @@ namespace Swagger.Net._Test.Custom.Extensions
         // Helper
         private ControllerMetadata GetControllerMeta()
         {
-            var xPathQuery = string.Format(XPathQueries.TYPE,
-                                           "Swagger.Net._Test.Custom.Extensions.Foo.GetFoo(System.Int32)");
             
             var repo = new MockRepository();
 
             var returnType = typeof(Foo);
             var docs = DocNavigator.Instance;
 
-            //var actionMetadata = ControllerExtensions.GetDocs(CONTROLLER_NAME, ACTION_NAME, returnType, PARENT_CONTROLLER_NAME, RELATIVE_PATH, supportedMethod, xPathQuery, docs, paramz);
+            //var controllerMetadata = ControllerExtensions.GetDocs(PARENT_CONTROLLER_NAME);
 
             return null;
 

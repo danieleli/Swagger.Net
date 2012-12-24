@@ -84,8 +84,8 @@ namespace Swagger.Net
         private HttpResponseMessage GetCustomMeta()
         {
             var apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
-            var docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
-            var factory = new MetadataFactory(apiDescriptions, docProvider);
+            //var docProvider = (XmlCommentDocumentationProvider)GlobalConfiguration.Configuration.Services.GetService((typeof(IDocumentationProvider)));
+            var factory = new MetadataFactory(apiDescriptions);
             var rtn = factory.CreateMetadata();
             return WrapResponse(rtn);
         }

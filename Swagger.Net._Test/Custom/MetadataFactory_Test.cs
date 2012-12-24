@@ -19,7 +19,7 @@ namespace Swagger.Net._Test.Custom
         public void NoControllers_Returns_EmptyMetadata()
         {
             var apis = new List<ApiDescription>();
-            var factory = new MetadataFactory(apis, null);
+            var factory = new MetadataFactory(apis);
 
             var meta = factory.CreateMetadata();
 
@@ -44,7 +44,7 @@ namespace Swagger.Net._Test.Custom
             
 
             var apis = new List<ApiDescription>() { mockApi };
-            var factory = new MetadataFactory(apis, null);
+            var factory = new MetadataFactory(apis);
 
             var meta = factory.CreateMetadata();
 
