@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -9,65 +11,34 @@ namespace Swagger.Net.Custom.Extensions
 {
     public static class ActionExtensions
     {
-
-
-
-        public static ActionMetadata GetDocs(this HttpActionDescriptor action, 
+        public static ActionMetadata GetDocs(this HttpActionDescriptor action,
                                                         string parentControllerName,
-                                                        string relativePath, 
-                                                        HttpMethod httpMethod)
+                                                        string relativePath)
         {
-            return GetDocs(action, parentControllerName, relativePath, httpMethod, DocNavigator.Instance);
+            return GetDocs(action, parentControllerName, relativePath, DocNavigator.Instance);
         }
 
 
-        public static ActionMetadata GetDocs(this HttpActionDescriptor action, 
-                                                        string parentControllerName, 
-                                                        string relativePath, 
-                                                        HttpMethod httpMethod, 
+        public static ActionMetadata GetDocs(this HttpActionDescriptor action,
+                                                        string parentControllerName,
+                                                        string relativePath,
                                                         XPathNavigator docs)
         {
-            var node = docs.SelectSingleNode(action.XPathQuery());
 
-            //var paramz =  GetParams(action);
-            var returnType = action.ReturnType.GetDocs();
+            var rtn = GetDocs(action.ActionName, action.ReturnType, parentControllerName,
+                           relativePath, action.SupportedHttpMethods, action.XPathQuery(), docs);
+            rtn.Params = null; // GetParams(action);
 
-            var path = relativePath.ToLower();
-            var altPath = "";
-            if (parentControllerName != null)
-            {
-                altPath = path;
-                path = "";// GetAlternatePath(parentControllerName,action.ControllerDescriptor.ControllerName,relativePath).ToLower();
-            }
-
-            var op = new ActionMetadata()
-            {
-                Name = action.ActionName,
-                HttpMethod = httpMethod.ToString(),
-                RelativePath = path,
-                AlternatePath = altPath,
-                Summary = Utils.GetNodeValue(node, "summary"),
-                Remarks = Utils.GetNodeValue(node, "remarks"),
-                ReturnType = returnType,
-                ReturnsComment = "",//_docProvider.GetResponseClass(action),
-                Params = null, //paramz,
-                ErrorResponses = null
-            };
-            return op;
+            return rtn;
         }
 
 
-        public static ActionMetadata GetDocs(string xPathQuery, 
-            Type returnType,
-            string actionName,
-                                                 string parentControllerName,
-                                                 string relativePath,
-                                                 HttpMethod httpMethod,
-                                                 XPathNavigator docs)
+        // No dependency on HttpActionDescriptor - Easier Testing
+        public static ActionMetadata GetDocs(string actionName, Type returnType, string parentControllerName, string relativePath, IEnumerable<HttpMethod> httpMethod, string xPathQuery, XPathNavigator docs)
         {
             var node = docs.SelectSingleNode(xPathQuery);
 
-            //var paramz =  GetParams(action);
+
 
             var path = relativePath.ToLower();
             var altPath = "";
@@ -86,8 +57,7 @@ namespace Swagger.Net.Custom.Extensions
                 Summary = Utils.GetNodeValue(node, "summary"),
                 Remarks = Utils.GetNodeValue(node, "remarks"),
                 ReturnType = returnType.GetDocs(docs),
-                ReturnsComment = "",//_docProvider.GetResponseClass(action),
-                Params = null, //paramz,
+                ReturnsComment = Utils.GetNodeValue(node, "returns"),
                 ErrorResponses = null
             };
             return op;
