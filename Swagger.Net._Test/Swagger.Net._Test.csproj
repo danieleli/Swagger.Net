@@ -66,6 +66,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Custom\Extensions\ActionExtensionsFixture.cs" />
+    <Compile Include="Custom\Extensions\ControllerExtensionsFixture.cs" />
     <Compile Include="Custom\Extensions\ParameterExtensionsFixture.cs" />
     <Compile Include="Custom\Extensions\Foo.cs" />
     <Compile Include="Custom\Extensions\PropertiesExtensionsFixture.cs" />

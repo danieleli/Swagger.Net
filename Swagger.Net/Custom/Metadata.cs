@@ -36,8 +36,8 @@ namespace Swagger.Net.Custom
         public string RelativePath { get; set; }
         public string AlternatePath { get; set; }
         public string HttpMethod { get; set; }
-        public IEnumerable<ErrorMetadata> ErrorResponses { get; set; }
         public IEnumerable<ParamMetadata> Params { get; set; }
+        public IEnumerable<ErrorMetadata> ErrorResponses { get; set; }  // Todo
     }
 
 
@@ -46,14 +46,10 @@ namespace Swagger.Net.Custom
     public class ControllerMetadata : Metadata
     {
         public string ParentController { get; set; }
-        public string Controller { get; set; }
         public IEnumerable<ActionMetadata> Operations { get; set; }
         public IEnumerable<ControllerMetadata> Children { get; set; }
         public TypeMetadata ModelType { get; set; }
     }
-
-
-
 
 
     public class ModelMetadata : TypeMetadata

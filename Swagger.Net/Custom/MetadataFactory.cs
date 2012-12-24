@@ -67,7 +67,6 @@ namespace Swagger.Net.Custom
                     Remarks = _docProvider.GetRemarks(controllerType),
                     Operations = operations,
                     Children = children,
-                    Controller = controllerName,
                     ParentController = parentControllerName,
                     ModelType = modelMeta
                 };

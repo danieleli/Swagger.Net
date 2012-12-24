@@ -9,14 +9,11 @@ namespace Swagger.Net.Custom.Extensions
 
         public static ParamMetadata GetDocs(this HttpParameterDescriptor param, XPathNavigator actionDocs)
         {
-            var pName = param.ParameterName;
-            var comment = Utils.GetNodeValue(actionDocs, "param");
-            var t = param.ParameterType.Name;
             var rtn = new ParamMetadata
                 {
-                    Name = pName,
-                    Comment = comment,
-                    Type = t
+                    Name = param.ParameterName,
+                    Comment = Utils.GetNodeValue(actionDocs, "param"),
+                    Type = param.ParameterType.Name
                 };
             
             return rtn;
