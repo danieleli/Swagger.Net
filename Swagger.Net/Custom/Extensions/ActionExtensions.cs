@@ -43,6 +43,9 @@ namespace Swagger.Net.Custom.Extensions
         {
             var alternatePath = GetAlternatePath(controllerName, parentControllerName, relativePath).ToLower();
 
+
+            var returnTypeMeta = returnType==null ? null : returnType.GetDocs();
+
             var actionMeta = new ActionMetadata()
             {
                 Name = actionName,
@@ -51,7 +54,7 @@ namespace Swagger.Net.Custom.Extensions
                 AlternatePath = alternatePath,
                 Summary = Utils.GetNodeValue(actionNode, "summary"),
                 Remarks = Utils.GetNodeValue(actionNode, "remarks"),
-                ReturnType = returnType.GetDocs(actionNode),
+                ReturnType = returnTypeMeta,
                 ReturnsComment = Utils.GetNodeValue(actionNode, "returns"),
                 ErrorResponses = null
             };
@@ -61,12 +64,14 @@ namespace Swagger.Net.Custom.Extensions
 
         public static string GetAlternatePath(string currentControllerName, string parentControllerName, string relativePath)
         {
-            var path = "/" + relativePath;
+            parentControllerName = parentControllerName ?? currentControllerName;
+
+            var rtn = "";
 
             if (currentControllerName != parentControllerName && relativePath.Contains(currentControllerName))
             {
                 var shortName = currentControllerName.Substring(parentControllerName.Length);
-                path = "/" + parentControllerName + "/{id}/" + shortName;
+                rtn += parentControllerName + "/{id}/" + shortName;
 
 
                 var morePath = relativePath.Substring(currentControllerName.Length);
@@ -85,9 +90,9 @@ namespace Swagger.Net.Custom.Extensions
                     morePath = morePath.Substring(0, morePath.Length - 1);
                 }
 
-                path += morePath;
+                rtn += morePath;
             }
-            return path;
+            return rtn;
         }
 
 

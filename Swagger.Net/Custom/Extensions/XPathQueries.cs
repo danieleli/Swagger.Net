@@ -20,6 +20,7 @@ namespace Swagger.Net.Custom.Extensions
         // Type
         public static string XPathQuery(this Type type)
         {
+            type = type.IsGenericType ? type.GetGenericArguments()[0] : type;
             return string.Format(XPathQueries.TYPE, type.FullName);
         }
 

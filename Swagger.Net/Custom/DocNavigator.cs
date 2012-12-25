@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Web.Http;
+using System.Web.Http.Description;
 using System.Xml.XPath;
 
 namespace Swagger.Net.Custom
@@ -19,7 +22,9 @@ namespace Swagger.Net.Custom
                            
         private DocNavigator()
         {
-            _navigator = new XPathDocument(@"..\Debug\Swagger.Net._Test.XML").CreateNavigator();
+            var filename = ConfigurationManager.AppSettings["code_comments_file_name"];
+            filename = System.Reflection.Assembly.GetExecutingAssembly().CodeBase.TrimEnd("Swagger.Net.DLL".ToCharArray()) + filename;
+            _navigator = new XPathDocument(filename).CreateNavigator();
         }
     }
 }

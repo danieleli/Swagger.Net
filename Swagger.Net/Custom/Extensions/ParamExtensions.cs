@@ -13,7 +13,7 @@ namespace Swagger.Net.Custom.Extensions
                 {
                     Name = param.ParameterName,
                     Comment = Utils.GetNodeValue(actionDocs, "param"),
-                    Type = param.ParameterType.Name
+                    Type = Utils.GetCleanTypeName(param.ParameterType)
                 };
             
             return rtn;

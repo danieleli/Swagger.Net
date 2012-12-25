@@ -57,15 +57,12 @@ namespace Sample.WebApi.Models
         /// BlogPost.InfoNums  Remarks
         /// </remarks>
         public int? InfoNums { get; set; }
-
-
-
-
+                  
         /// <summary>
-        /// BlogPost.Id Data 
+        /// BlogPost.Data Data 
         /// </summary>
         /// <remarks>
-        /// BlogPost.Id Data 
+        /// BlogPost.Data Data 
         /// </remarks>
         public Byte[] Data { get; set; }
 
@@ -84,6 +81,7 @@ namespace Sample.WebApi.Models
         /// BlogPost.SomeNumbers Remarks
         /// </remarks>
         public int[] SomeNumbers { get; set; }
+
         /// <summary>
         /// BlogPost.PublishDate Summary
         /// </summary>

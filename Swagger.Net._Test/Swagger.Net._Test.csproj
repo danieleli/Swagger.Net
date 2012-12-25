@@ -72,6 +72,7 @@
     <Compile Include="Custom\Extensions\PropertiesExtensionsFixture.cs" />
     <Compile Include="Custom\MetadataFactory_Test.cs" />
     <Compile Include="Custom\Extensions\TypeExtensionsFixture.cs" />
+    <Compile Include="Custom\UtilsFixture.cs" />
     <Compile Include="Factories\ModelFactory_Test.cs" />
     <Compile Include="DocumentationProvider_Test.cs" />
     <Compile Include="Factories\ParameterFactory_Test.cs" />
@@ -90,6 +91,7 @@
     <Content Include="sample_api_description.js" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Choose>

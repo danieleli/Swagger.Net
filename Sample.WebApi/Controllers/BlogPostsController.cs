@@ -72,7 +72,7 @@ namespace Sample.WebApi.Controllers
         /// <summary>
         /// BlogPostsController.Put
         /// </summary>
-        /// <param name="id"><see cref="Int32"/></param>
+        /// <param name="id"><see cref="Int32"/>The id of the blogpost to update</param>
         /// <param name="value"><see cref="BlogPost"/>The post to put to database</param>
         public void Put(int? id, BlogPost value)
         {

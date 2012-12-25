@@ -1,4 +1,7 @@
-﻿using System.Xml.XPath;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml.XPath;
 
 namespace Swagger.Net.Custom.Extensions
 {
@@ -10,6 +13,19 @@ namespace Swagger.Net.Custom.Extensions
 
             var rtnNode = node.SelectSingleNode(query);
             return rtnNode == null ? "N/A" : rtnNode.Value.Trim();
+        }
+
+        public static string GetCleanTypeName(Type type)
+        {
+            if (type.IsGenericType)
+            {
+                var rtn = type.Name.Substring(0, type.Name.Length - 2);
+                
+                var args =  type.GetGenericArguments().Select(t=>t.Name);
+                rtn = rtn + "<" + string.Join(",", args) + ">";
+                return rtn;
+            }
+            return type.Name;
         }
     }
 }

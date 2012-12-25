@@ -20,11 +20,11 @@ namespace Swagger.Net.Custom.Extensions
 
             var rtn = new TypeMetadata
                 {
-                Name = type.Name,
-                Summary = Utils.GetNodeValue(node, "summary"),
-                Remarks = Utils.GetNodeValue(node, "remarks"),
-                Properties = GetPropertyDocs(type, docs)
-            };
+                    Name = Utils.GetCleanTypeName(type),
+                    Summary = Utils.GetNodeValue(node, "summary"),
+                    Remarks = Utils.GetNodeValue(node, "remarks"),
+                    Properties = GetPropertyDocs(type, docs)
+                };
 
             return rtn;
         }

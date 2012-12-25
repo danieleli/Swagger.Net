@@ -45,5 +45,17 @@ namespace Swagger.Net._Test.Custom.Extensions
 
             Assert.AreEqual("Foo Remarks", typeDocs.Remarks, "Remarks");
         }
+        
+        [TestMethod]
+        public void Returns_TypeMetadata_For_NullableInt()
+        {
+            var type = typeof(int?);
+            var typeDocs = type.GetDocs();
+
+            Assert.AreEqual(typeof(TypeMetadata), typeDocs.GetType(), "return type");
+            Assert.AreEqual("Nullable<Int32>", typeDocs.Name, "Name");
+        }
     }
+
+
 }

@@ -13,7 +13,7 @@ namespace Swagger.Net.Custom.Extensions
             var rtn = new PropertyMetadata
                 {
                     Name = propInfo.Name,
-                    DataType = propInfo.PropertyType.Name,
+                    DataType = Utils.GetCleanTypeName(propInfo.PropertyType),
                     Remarks = Utils.GetNodeValue(node, "remarks"),
                     Summary = Utils.GetNodeValue(node, "summary")
                 };
