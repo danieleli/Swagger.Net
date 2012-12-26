@@ -6,6 +6,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Swagger.Net.Custom.Extensions;
 using Swagger.Net.Models;
 
 namespace Swagger.Net.Factories
@@ -93,7 +94,7 @@ namespace Swagger.Net.Factories
             else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 var gType = type.GetGenericArguments().First();
-                var name = TypeUtils.GetNullableTypeName(gType.FullName);
+                var name = Utils.GetCleanTypeName(gType);
                 name = name.Substring(name.IndexOf(".") + 1);
                 return  name + "?";
             }

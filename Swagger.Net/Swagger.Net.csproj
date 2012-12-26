@@ -65,7 +65,7 @@
     <Compile Include="Custom\Extensions\PropertyExtensions.cs" />
     <Compile Include="Custom\Extensions\ParamExtensions.cs" />
     <Compile Include="Custom\Extensions\TypeExtensions.cs" />
-    <Compile Include="Custom\Extensions\Utils.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="Custom\Extensions\XPathQueries.cs" />
     <Compile Include="Custom\Metadata.cs" />
     <Compile Include="DocsController.cs" />

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Web.Http.Controllers;
 
-namespace Swagger.Net.Custom.Extensions
+namespace Custom.ApiDescriber.Extensions
 {
     public static class XPathQueries
     {

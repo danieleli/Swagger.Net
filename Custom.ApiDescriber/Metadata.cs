@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Swagger.Net.Custom
+namespace Custom.ApiDescriber
 {
     public abstract class Metadata
     {

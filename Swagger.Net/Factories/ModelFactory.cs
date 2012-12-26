@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Newtonsoft.Json.Linq;
+using Swagger.Net.Custom.Extensions;
 using Swagger.Net.Models;
 
 namespace Swagger.Net.Factories
@@ -153,7 +154,7 @@ namespace Swagger.Net.Factories
             else if (prop.PropertyType.IsGenericType)
             {
                 var gType = prop.PropertyType.GetGenericArguments().First();
-                var name = TypeUtils.GetNullableTypeName(gType.FullName);
+                var name = Utils.GetCleanTypeName(gType);
                 name = name.Substring(name.IndexOf(".") + 1);
                 item = new { type = name + "?", description = docs };
             }

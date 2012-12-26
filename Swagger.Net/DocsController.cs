@@ -96,8 +96,8 @@ namespace Swagger.Net
             var formatter = ControllerContext.Configuration.Formatters.JsonFormatter;
             var content = new ObjectContent<T>(resourceListing, formatter);
 
-            var resp = new HttpResponseMessage { Content = content };
-            return resp;
+            var response = new HttpResponseMessage { Content = content };
+            return response;
         }
 
     }

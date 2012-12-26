@@ -8,6 +8,7 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Xml.XPath;
 using Newtonsoft.Json.Linq;
+using Swagger.Net.Custom.Extensions;
 using Swagger.Net.Models;
 
 namespace Swagger.Net
@@ -165,7 +166,7 @@ namespace Swagger.Net
             var parameters = method.GetParameters();
             if (parameters.Length != 0)
             {
-                string[] parameterTypeNames = parameters.Select(param => TypeUtils.GetNullableTypeName(param.ParameterType.FullName)).ToArray();
+                string[] parameterTypeNames = parameters.Select(param => Utils.GetCleanTypeName(param.ParameterType)).ToArray();
                 name += string.Format("({0})", string.Join(",", parameterTypeNames));
             }
 
@@ -199,21 +200,6 @@ namespace Swagger.Net
         }
 
 
-    }
-
-    public static class TypeUtils
-    {
-        static readonly Regex NullableTypeNameRegex = new Regex(@"(.*\.Nullable)" + Regex.Escape("`1[[") + "([^,]*),.*");
-        public static string GetNullableTypeName(string typeName)
-        {
-            //handle nullable
-            var result = NullableTypeNameRegex.Match(typeName);
-            if (result.Success)
-            {
-                return String.Format("{0}{{{1}}}", result.Groups[1].Value, result.Groups[2].Value);
-            }
-            return typeName;
-        }
     }
 
 

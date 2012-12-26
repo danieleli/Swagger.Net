@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Xml.XPath;
 
-namespace Swagger.Net.Custom.Extensions
+namespace Custom.ApiDescriber.Extensions
 {
     public static class Utils
     {
