@@ -1,14 +1,7 @@
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Web.Http.Controllers;
-using System.Xml.XPath;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rhino.Mocks;
-using Swagger.Net.Custom;
-using Swagger.Net.Custom.Extensions;
-using Swagger.Net._Test.Custom.Extensions;
 
-namespace Swagger.Net._Test.Custom
+namespace Swagger.Net._Test
 {
     [TestClass]
     public class UtilsFixture
@@ -46,5 +39,7 @@ namespace Swagger.Net._Test.Custom
         }
     }
 
-
+    public class Foo
+    {
+    }
 }

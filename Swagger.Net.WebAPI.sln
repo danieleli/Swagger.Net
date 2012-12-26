@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.WebApi._Tests", "Sam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Custom.ApiDescriber", "Custom.ApiDescriber\Custom.ApiDescriber.csproj", "{389B82F8-8EB6-4F3B-8FC1-A9E08862EBC4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Custom.ApiDescriber._Test", "Custom.ApiDescriber._Test\Custom.ApiDescriber._Test.csproj", "{CDFA0FA2-D7C4-467B-8EE3-47F535985547}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Swagger.Net.WebAPI.vsmdi
@@ -49,6 +51,10 @@ Global
 		{389B82F8-8EB6-4F3B-8FC1-A9E08862EBC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{389B82F8-8EB6-4F3B-8FC1-A9E08862EBC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{389B82F8-8EB6-4F3B-8FC1-A9E08862EBC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDFA0FA2-D7C4-467B-8EE3-47F535985547}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDFA0FA2-D7C4-467B-8EE3-47F535985547}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDFA0FA2-D7C4-467B-8EE3-47F535985547}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDFA0FA2-D7C4-467B-8EE3-47F535985547}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

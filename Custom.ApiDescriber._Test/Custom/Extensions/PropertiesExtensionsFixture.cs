@@ -1,6 +1,6 @@
 using System.Linq;
+using Custom.ApiDescriber.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Swagger.Net.Custom.Extensions;
 
 namespace Swagger.Net._Test.Custom.Extensions
 {

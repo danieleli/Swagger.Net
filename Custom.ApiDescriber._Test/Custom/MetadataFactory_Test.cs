@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
-using System.Web.Mvc;
+using Custom.ApiDescriber;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
-using Swagger.Net.Custom;
 
 namespace Swagger.Net._Test.Custom
 {

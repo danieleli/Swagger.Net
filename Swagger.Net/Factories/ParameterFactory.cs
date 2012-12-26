@@ -1,12 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Dynamic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Swagger.Net.Custom.Extensions;
 using Swagger.Net.Models;
 
 namespace Swagger.Net.Factories

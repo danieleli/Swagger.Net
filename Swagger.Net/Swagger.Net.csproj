@@ -58,16 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Custom\MetadataFactory.cs" />
-    <Compile Include="Custom\DocNavigator.cs" />
-    <Compile Include="Custom\Extensions\ActionExtensions.cs" />
-    <Compile Include="Custom\Extensions\ControllerExtensions.cs" />
-    <Compile Include="Custom\Extensions\PropertyExtensions.cs" />
-    <Compile Include="Custom\Extensions\ParamExtensions.cs" />
-    <Compile Include="Custom\Extensions\TypeExtensions.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="Custom\Extensions\XPathQueries.cs" />
-    <Compile Include="Custom\Metadata.cs" />
     <Compile Include="DocsController.cs" />
     <Compile Include="Factories\ModelFactory.cs" />
     <Compile Include="Factories\ParameterFactory.cs" />

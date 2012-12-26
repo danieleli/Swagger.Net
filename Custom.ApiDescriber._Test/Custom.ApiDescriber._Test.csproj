@@ -3,12 +3,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E284446F-DEC0-4514-9DCD-86AE7357104C}</ProjectGuid>
+    <ProjectGuid>{CDFA0FA2-D7C4-467B-8EE3-47F535985547}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Swagger.Net._Test</RootNamespace>
-    <AssemblyName>Swagger.Net._Test</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>Custom.ApiDescriber._Test</RootNamespace>
+    <AssemblyName>Custom.ApiDescriber._Test</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -18,7 +18,6 @@
     <TestProjectType>UnitTest</TestProjectType>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,8 +26,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>2</WarningLevel>
-    <DocumentationFile>bin\Debug\Swagger.Net._Test.XML</DocumentationFile>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -39,18 +37,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -65,27 +58,24 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UtilsFixture.cs" />
-    <Compile Include="Factories\ModelFactory_Test.cs" />
-    <Compile Include="DocumentationProvider_Test.cs" />
-    <Compile Include="Factories\ParameterFactory_Test.cs" />
-    <Compile Include="Factories\ApiFactory_Test.cs" />
-    <Compile Include="Factories\ResourceListingFactory_Test.cs" />
-    <Compile Include="Factories\TestHelper.cs" />
+    <Compile Include="Custom\Extensions\ActionExtensionsFixture.cs" />
+    <Compile Include="Custom\Extensions\ControllerExtensionsFixture.cs" />
+    <Compile Include="Custom\Extensions\Foo.cs" />
+    <Compile Include="Custom\Extensions\ParameterExtensionsFixture.cs" />
+    <Compile Include="Custom\Extensions\PropertiesExtensionsFixture.cs" />
+    <Compile Include="Custom\Extensions\TypeExtensionsFixture.cs" />
+    <Compile Include="Custom\MetadataFactory_Test.cs" />
+    <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Swagger.Net\Swagger.Net.csproj">
-      <Project>{23f318e4-d42f-484e-9c5a-41b652145cf0}</Project>
-      <Name>Swagger.Net</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="sample_api_description.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Custom.ApiDescriber\Custom.ApiDescriber.csproj">
+      <Project>{389B82F8-8EB6-4F3B-8FC1-A9E08862EBC4}</Project>
+      <Name>Custom.ApiDescriber</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

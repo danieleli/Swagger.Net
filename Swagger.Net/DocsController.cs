@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 using System.Web.Mvc;
 using System.Web.UI;
-using Newtonsoft.Json;
-using Swagger.Net.Custom;
 using Swagger.Net.Factories;
-using Swagger.Net.Models;
 
 namespace Swagger.Net
 {
@@ -84,9 +76,9 @@ namespace Swagger.Net
         private HttpResponseMessage GetCustomMeta()
         {
             var apiDescriptions = GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions;
-            var factory = new MetadataFactory(apiDescriptions);
-            var rtn = factory.CreateMetadata();
-            return WrapResponse(rtn);
+            //var factory = new MetadataFactory(apiDescriptions);
+            //var rtn = factory.CreateMetadata();
+            return WrapResponse("Not implemented");
         }
 
 
