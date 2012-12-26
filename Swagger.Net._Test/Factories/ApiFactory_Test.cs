@@ -9,9 +9,7 @@
 
 //namespace Swagger.Net._Test.Adapters
 //{
-//    // todo: parameter: allowableValues and allowMultiple
-//    // todo: errorResponse
-//    // todo: models
+
 
 //    [TestClass]
 //    public class ApiFactory_Test

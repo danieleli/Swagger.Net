@@ -98,9 +98,11 @@ namespace Swagger.Net.Custom
             Type rtn = null;
             foreach (var t in possibleTypes)
             {
+
+                // todo: move this into config file
                 if (t.FullName.StartsWith("MXM.API.Services.Models"))
                 {
-                    if (t.FullName.Contains("PagedList"))
+                    if (t.IsGenericType)
                     {
                         rtn = t.GetGenericArguments().First();
                         break;
