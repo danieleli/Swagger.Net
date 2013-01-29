@@ -58,6 +58,12 @@ Configuration
   a. /api/swagger returns json listing of all api controllers.  (Implemented by SwaggerController)   
   b. /api/docs/{controller} returns json documentation for given controller.  (Implemented by SwaggerActionFilter)   
 
+4. Hiding Endpoints.  If there are any public controller methods that you do not want to expose. You can add a tag to the method to hide them from the API. 
+```
+[ApiExplorerSettings(IgnoreApi = true)]
+public HttpResponseMessage Post(BlogPost value)
+```
+
 High Level Object Mappings
 --------------------------
 <table>
