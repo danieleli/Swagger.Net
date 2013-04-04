@@ -65,15 +65,29 @@ namespace Swagger.Net.Factories
         private static IEnumerable<Type> GetAllTypes(IEnumerable<ApiDescription> apiDescs)
         {
             // return types
-            var types = apiDescs.Select(a => a.ActionDescriptor.ReturnType).ToList();
+            // except httpresponsemessages
+            var types = apiDescs
+                .Where(t => !(t.ActionDescriptor.ReturnType == typeof(System.Net.Http.HttpResponseMessage)) && !t.ActionDescriptor.ReturnType.IsInstanceOfType(typeof(System.Net.Http.HttpResponseMessage))
+                )
+                .Select(a => a.ActionDescriptor.ReturnType).ToList();
 
             // param types
             var paramTypes = apiDescs.SelectMany(
                 a => a.ParameterDescriptions.Select(
                     p => p.ParameterDescriptor.ParameterType));
-
+            
             // all types
             types.AddRange(paramTypes);
+
+            //inner types non-system, single element or collection
+            var propertiesTypes = types
+                .Where(tn => !tn.Namespace.StartsWith("System"))
+                .SelectMany(
+                t => t.GetProperties()
+                    .Where(n => !GetDataType(n.PropertyType).Namespace.StartsWith("System"))
+                    .Select(p => GetDataType(p.PropertyType))).ToList();
+
+            types.AddRange(propertiesTypes);
             return types;
         }
 
@@ -110,12 +124,14 @@ namespace Swagger.Net.Factories
 
             object item;
             var docs = _docProvider.GetDocumentation(prop);
-            if (prop.PropertyType.IsArray)
-            {   // Array
+            if (prop.PropertyType.IsArray || prop.PropertyType.IsGenericType)
+            {   // Array Or Collection
+                var elemType = GetDataType(prop.PropertyType);
                 item = new
                 {
-                    type = prop.PropertyType.GetElementType().Name + "[]",
-                    items = new { Sref = prop.PropertyType.GetElementType().Name },
+                    //type = elemType.Name + "[]",
+                    type = "Array",
+                    items = new ApiReference() { Reference = elemType.Name },
                     description = docs
                 };
             }

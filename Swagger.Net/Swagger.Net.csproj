@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ApiReference.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="DocsController.cs" />
     <Compile Include="Factories\ModelFactory.cs" />
