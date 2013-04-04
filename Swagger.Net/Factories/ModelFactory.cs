@@ -67,13 +67,21 @@ namespace Swagger.Net.Factories
             // return types
             var types = apiDescs.Select(a => a.ActionDescriptor.ReturnType).ToList();
 
+
             // param types
             var paramTypes = apiDescs.SelectMany(
                 a => a.ParameterDescriptions.Select(
                     p => p.ParameterDescriptor.ParameterType));
-
+            
             // all types
             types.AddRange(paramTypes);
+
+            //inner types non-system
+            var propertiesTypes = types.SelectMany(
+                t => t.GetProperties()
+                    .Where(n => !n.PropertyType.Namespace.StartsWith("System"))
+                    .Select(p => p.PropertyType)).ToList();
+            types.AddRange(propertiesTypes);
             return types;
         }
 
