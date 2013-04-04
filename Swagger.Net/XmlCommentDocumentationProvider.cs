@@ -91,8 +91,17 @@ namespace Swagger.Net
             {
                 var selector = string.Format(PROPERTY_XPATH_QUERY, type.FullName + "." + propInfo.Name);
                 var modelNode = _documentNavigator.SelectSingleNode(selector);
+                var text = GetNodeText(modelNode, "summary");
+                if (!propInfo.CanWrite)
+                {
+                    text = "Note: Read only\n" + text;
+                }
+                else if (!propInfo.CanRead)
+                {
+                    text = "Note: Write only\n" + text;
+                }
 
-                return GetNodeText(modelNode, "summary");
+                return text;
             }
             catch (Exception)
             {
