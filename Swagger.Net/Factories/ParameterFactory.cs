@@ -77,7 +77,7 @@ namespace Swagger.Net.Factories
             var paramType = ParamType.body;
             if (parameterDescription.Source == ApiParameterSource.FromUri)
             {
-                paramType = relativePath.IndexOf("{" + parameterDescription.Name + "}") > -1 ? ParamType.path :  ParamType.query;
+                paramType = relativePath.IndexOf("{" + parameterDescription.Name + "}") > -1 && !parameterDescription.ParameterDescriptor.IsOptional ? ParamType.path : ParamType.query;
             }
             return paramType;
         }
