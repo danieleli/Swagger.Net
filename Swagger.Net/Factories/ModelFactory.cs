@@ -131,7 +131,7 @@ namespace Swagger.Net.Factories
                 {
                     //type = elemType.Name + "[]",
                     type = "Array",
-                    items = new { Sref = elemType.Name },
+                    items = new ApiReference() { Reference = elemType.Name },
                     description = docs
                 };
             }
