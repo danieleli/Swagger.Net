@@ -129,7 +129,8 @@ namespace Swagger.Net.Factories
                 var elemType = GetDataType(prop.PropertyType);
                 item = new
                 {
-                    type = elemType.Name + "[]",
+                    //type = elemType.Name + "[]",
+                    type = "Array",
                     items = new { Sref = elemType.Name },
                     description = docs
                 };
