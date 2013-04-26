@@ -20,11 +20,11 @@ namespace Swagger.Net
             {
                 var rtn = type.Name.Substring(0, type.Name.Length - 2);
                 
-                var args =  type.GetGenericArguments().Select(t=>t.Name);
+                var args =  type.GetGenericArguments().Select(t=>t.FullName);
                 rtn = rtn + "<" + string.Join(",", args) + ">";
                 return rtn;
             }
-            return type.Name;
+            return type.FullName;
         }
     }
 }
